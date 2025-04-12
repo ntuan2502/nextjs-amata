@@ -1,7 +1,4 @@
-// app/layout.tsx
-
-// globals.css includes @tailwind directives
-// adjust the path if necessary
+import NavbarComponent from "@/components/navbar";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -13,7 +10,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="light">
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <NavbarComponent />
+          {children}
+        </Providers>
       </body>
     </html>
   );
