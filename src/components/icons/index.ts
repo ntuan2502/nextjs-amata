@@ -5,4 +5,4 @@ export * from "./Flash";
 export * from "./Server";
 export * from "./TagUser";
 export * from "./Scale";
-export * from "./AcmeLogo";
+export * from "./AcmeIcon";
