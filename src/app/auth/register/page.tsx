@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Input,
@@ -15,12 +15,31 @@ import {
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { ROUTES } from "@/constants/routes";
+import { toast } from "react-toastify";
+import {
+  emailErrorMessage,
+  isValidPassword,
+  passwordErrorMessage,
+} from "@/utils/validators";
 
 export default function RegisterPage() {
+  const examplePassword = "8Uhbnji9@";
+  const [fullname, setFullname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState(examplePassword);
+  const [confirmPassword, setConfirmPassword] = useState(examplePassword);
+  const [isAgree, setIsAgree] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+
+  const [errors, setErrors] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [isAgree, setIsAgree] = useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
@@ -30,9 +49,61 @@ export default function RegisterPage() {
     onClose();
   }
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    if (isAgree == false) console.log(isAgree);
+  function validateForm() {
+    const newErrors = {
+      fullname: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    };
+    let hasError = false;
+
+    if (!fullname.trim()) {
+      newErrors.fullname = "Fullname is required.";
+      hasError = true;
+    }
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required.";
+      hasError = true;
+    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+      newErrors.email = emailErrorMessage;
+      hasError = true;
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required.";
+      hasError = true;
+    } else if (!isValidPassword(password)) {
+      newErrors.password = passwordErrorMessage;
+      hasError = true;
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password.";
+      hasError = true;
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match.";
+      hasError = true;
+    }
+
+    return { hasError, newErrors };
+  }
+
+  function handleSubmit() {
+    const { hasError, newErrors } = validateForm();
+    setErrors(newErrors);
+
+    if (hasError) return;
+
+    if (!isAgree) {
+      toast.error("Must agree to terms.");
+      return;
+    }
+
+    toast.success(
+      `Registering user with values: Fullname: ${fullname}, Email: ${email}, Password: ${password}, Confirm Password: ${confirmPassword}`
+    );
   }
 
   return (
@@ -44,7 +115,7 @@ export default function RegisterPage() {
             👋
           </span>
         </p>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-4">
           <Input
             isRequired
             label="Fullname"
@@ -53,6 +124,10 @@ export default function RegisterPage() {
             placeholder="Enter your fullname"
             type="text"
             variant="bordered"
+            value={fullname}
+            onChange={(e) => setFullname(e.target.value)}
+            isInvalid={!!errors.fullname}
+            errorMessage={errors.fullname}
           />
           <Input
             isRequired
@@ -62,6 +137,10 @@ export default function RegisterPage() {
             placeholder="Enter your email"
             type="email"
             variant="bordered"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            isInvalid={!!errors.email}
+            errorMessage={errors.email}
           />
           <Input
             isRequired
@@ -86,6 +165,10 @@ export default function RegisterPage() {
             placeholder="Enter your password"
             type={isVisible ? "text" : "password"}
             variant="bordered"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            isInvalid={!!errors.password}
+            errorMessage={errors.password}
           />
           <Input
             isRequired
@@ -110,6 +193,10 @@ export default function RegisterPage() {
             placeholder="Confirm your password"
             type={isConfirmVisible ? "text" : "password"}
             variant="bordered"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            isInvalid={!!errors.confirmPassword}
+            errorMessage={errors.confirmPassword}
           />
           <div className="flex items-center">
             <Checkbox
@@ -131,7 +218,7 @@ export default function RegisterPage() {
               </Link>
             </div>
           </div>
-          <Button color="primary" type="submit">
+          <Button color="primary" onPress={handleSubmit}>
             Sign Up
           </Button>
         </form>
