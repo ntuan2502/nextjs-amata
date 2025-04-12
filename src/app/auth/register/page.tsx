@@ -3,6 +3,7 @@
 import React from "react";
 import { Button, Input, Checkbox, Link } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { ROUTES } from "@/constants/routes";
 
 export default function RegisterPage() {
   const [isVisible, setIsVisible] = React.useState(false);
@@ -105,7 +106,7 @@ export default function RegisterPage() {
           </Button>
         </form>
         <p className="text-center text-small">
-          <Link href="/auth/login" size="sm">
+          <Link href={ROUTES.AUTH.LOGIN} size="sm">
             Already have an account? Log In
           </Link>
         </p>

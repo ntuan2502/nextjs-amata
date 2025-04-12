@@ -26,6 +26,7 @@ import {
   Server,
   TagUser,
 } from "../icons";
+import { ROUTES } from "@/constants/routes";
 
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -146,10 +147,15 @@ export default function NavbarComponent() {
 
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
+          <Link href={ROUTES.AUTH.LOGIN}>Login</Link>
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color="warning" href="#" variant="flat">
+          <Button
+            as={Link}
+            color="warning"
+            href={ROUTES.AUTH.REGISTER}
+            variant="flat"
+          >
             Sign Up
           </Button>
         </NavbarItem>

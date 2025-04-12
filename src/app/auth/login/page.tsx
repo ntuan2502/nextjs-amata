@@ -4,6 +4,7 @@ import React from "react";
 import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { AcmeIcon } from "@/components/icons";
+import { ROUTES } from "@/constants/routes";
 
 export default function Component() {
   const [isVisible, setIsVisible] = React.useState(false);
@@ -17,7 +18,7 @@ export default function Component() {
 
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <div className="flex w-full max-w-sm flex-col gap-4 rounded-large">
+      <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
         <div className="flex flex-col items-center pb-6">
           <AcmeIcon size={60} />
           <p className="text-xl font-medium">Welcome Back</p>
@@ -96,7 +97,7 @@ export default function Component() {
         </div>
         <p className="text-center text-small">
           Need to create an account?&nbsp;
-          <Link href="/auth/register" size="sm">
+          <Link href={ROUTES.AUTH.REGISTER} size="sm">
             Sign Up
           </Link>
         </p>
