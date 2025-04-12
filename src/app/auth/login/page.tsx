@@ -5,12 +5,7 @@ import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { AcmeIcon } from "@/components/icons";
 import { ROUTES } from "@/constants/routes";
-import {
-  emailErrorMessage,
-  isValidEmail,
-  isValidPassword,
-  passwordErrorMessage,
-} from "@/utils/validators";
+import { emailErrorMessage, isValidEmail } from "@/utils/validators";
 import { toast } from "react-toastify";
 
 export default function Component() {
