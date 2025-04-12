@@ -22,23 +22,19 @@ import {
   isValidPassword,
   passwordErrorMessage,
 } from "@/utils/validators";
+import { AuthFieldErrors } from "@/types/auth";
+import { useFormField } from "@/hooks/useFormField";
 
 export default function RegisterPage() {
-  const examplePassword = "";
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState(examplePassword);
-  const [confirmPassword, setConfirmPassword] = useState(examplePassword);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isAgree, setIsAgree] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
-  const [errors, setErrors] = useState({
-    fullname: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [errors, setErrors] = useState<AuthFieldErrors>({});
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -50,13 +46,31 @@ export default function RegisterPage() {
     onClose();
   }
 
+  const fullnameProps = useFormField(
+    "fullname",
+    fullname,
+    setFullname,
+    errors,
+    setErrors
+  );
+  const emailProps = useFormField("email", email, setEmail, errors, setErrors);
+  const passwordProps = useFormField(
+    "password",
+    password,
+    setPassword,
+    errors,
+    setErrors
+  );
+  const confirmPasswordProps = useFormField(
+    "confirmPassword",
+    confirmPassword,
+    setConfirmPassword,
+    errors,
+    setErrors
+  );
+
   function validateForm() {
-    const newErrors = {
-      fullname: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    };
+    const newErrors: AuthFieldErrors = {};
     let hasError = false;
 
     if (!fullname.trim()) {
@@ -125,10 +139,7 @@ export default function RegisterPage() {
             placeholder="Enter your fullname"
             type="text"
             variant="bordered"
-            value={fullname}
-            onChange={(e) => setFullname(e.target.value)}
-            isInvalid={!!errors.fullname}
-            errorMessage={errors.fullname}
+            {...fullnameProps}
           />
           <Input
             isRequired
@@ -138,10 +149,7 @@ export default function RegisterPage() {
             placeholder="Enter your email"
             type="email"
             variant="bordered"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            isInvalid={!!errors.email}
-            errorMessage={errors.email}
+            {...emailProps}
           />
           <Input
             isRequired
@@ -166,10 +174,7 @@ export default function RegisterPage() {
             placeholder="Enter your password"
             type={isVisible ? "text" : "password"}
             variant="bordered"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            isInvalid={!!errors.password}
-            errorMessage={errors.password}
+            {...passwordProps}
           />
           <Input
             isRequired
@@ -194,10 +199,7 @@ export default function RegisterPage() {
             placeholder="Confirm your password"
             type={isConfirmVisible ? "text" : "password"}
             variant="bordered"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            isInvalid={!!errors.confirmPassword}
-            errorMessage={errors.confirmPassword}
+            {...confirmPasswordProps}
           />
           <div className="flex items-center">
             <Checkbox

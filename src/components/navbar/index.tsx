@@ -154,14 +154,12 @@ export default function NavbarComponent() {
           <Link href={ROUTES.AUTH.LOGIN}>Login</Link>
         </NavbarItem>
         <NavbarItem>
-          <Button
-            as={Link}
+          <Link
             color="warning"
             href={ROUTES.AUTH.REGISTER}
-            variant="flat"
           >
             Sign Up
-          </Button>
+          </Link>
         </NavbarItem>
         <Dropdown placement="bottom-end">
           <DropdownTrigger>

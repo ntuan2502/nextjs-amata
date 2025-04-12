@@ -7,25 +7,29 @@ import { AcmeIcon } from "@/components/icons";
 import { ROUTES } from "@/constants/routes";
 import { emailErrorMessage, isValidEmail } from "@/utils/validators";
 import { toast } from "react-toastify";
+import { AuthFieldErrors } from "@/types/auth";
+import { useFormField } from "@/hooks/useFormField";
 
-export default function Component() {
-  const examplePassword = "";
+export default function LoginPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState(examplePassword);
+  const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
 
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
+  const [errors, setErrors] = useState<AuthFieldErrors>({});
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
+  const emailProps = useFormField("email", email, setEmail, errors, setErrors);
+  const passwordProps = useFormField(
+    "password",
+    password,
+    setPassword,
+    errors,
+    setErrors
+  );
+
   function validateForm() {
-    const newErrors = {
-      email: "",
-      password: "",
-    };
+    const newErrors: AuthFieldErrors = {};
     let hasError = false;
 
     if (!email.trim()) {
@@ -73,10 +77,7 @@ export default function Component() {
             placeholder="Enter your email"
             type="email"
             variant="bordered"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            isInvalid={!!errors.email}
-            errorMessage={errors.email}
+            {...emailProps}
           />
           <Input
             isRequired
@@ -100,10 +101,7 @@ export default function Component() {
             placeholder="Enter your password"
             type={isVisible ? "text" : "password"}
             variant="bordered"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            isInvalid={!!errors.password}
-            errorMessage={errors.password}
+            {...passwordProps}
           />
           <div className="flex w-full items-center justify-between px-1 py-2">
             <Checkbox name="remember" size="sm">
