@@ -5,16 +5,60 @@ import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { AcmeIcon } from "@/components/icons";
 import { ROUTES } from "@/constants/routes";
+import {
+  emailErrorMessage,
+  isValidEmail,
+  isValidPassword,
+  passwordErrorMessage,
+} from "@/utils/validators";
+import { toast } from "react-toastify";
 
 export default function Component() {
+  const examplePassword = "";
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState(examplePassword);
   const [isVisible, setIsVisible] = useState(false);
+
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log("handleSubmit");
-  };
+  function validateForm() {
+    const newErrors = {
+      email: "",
+      password: "",
+    };
+    let hasError = false;
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required.";
+      hasError = true;
+    } else if (!isValidEmail(email)) {
+      newErrors.email = emailErrorMessage;
+      hasError = true;
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required.";
+      hasError = true;
+    }
+
+    return { hasError, newErrors };
+  }
+
+  function handleSubmit() {
+    const { hasError, newErrors } = validateForm();
+    setErrors(newErrors);
+
+    if (hasError) return;
+
+    toast.success(
+      `Login user with values: Email: ${email}, Password: ${password}`
+    );
+  }
 
   return (
     <div className="flex h-full w-full items-center justify-center">
@@ -26,11 +70,7 @@ export default function Component() {
             Log in to your account to continue
           </p>
         </div>
-        <Form
-          className="flex flex-col gap-3"
-          validationBehavior="native"
-          onSubmit={handleSubmit}
-        >
+        <Form className="flex flex-col gap-3" validationBehavior="native">
           <Input
             isRequired
             label="Email Address"
@@ -38,6 +78,10 @@ export default function Component() {
             placeholder="Enter your email"
             type="email"
             variant="bordered"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            isInvalid={!!errors.email}
+            errorMessage={errors.email}
           />
           <Input
             isRequired
@@ -61,6 +105,10 @@ export default function Component() {
             placeholder="Enter your password"
             type={isVisible ? "text" : "password"}
             variant="bordered"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            isInvalid={!!errors.password}
+            errorMessage={errors.password}
           />
           <div className="flex w-full items-center justify-between px-1 py-2">
             <Checkbox name="remember" size="sm">
@@ -70,7 +118,7 @@ export default function Component() {
               Forgot password?
             </Link>
           </div>
-          <Button className="w-full" color="primary" type="submit">
+          <Button className="w-full" color="primary" onPress={handleSubmit}>
             Sign In
           </Button>
         </Form>

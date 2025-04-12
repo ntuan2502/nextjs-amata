@@ -18,12 +18,13 @@ import { ROUTES } from "@/constants/routes";
 import { toast } from "react-toastify";
 import {
   emailErrorMessage,
+  isValidEmail,
   isValidPassword,
   passwordErrorMessage,
 } from "@/utils/validators";
 
 export default function RegisterPage() {
-  const examplePassword = "8Uhbnji9@";
+  const examplePassword = "";
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState(examplePassword);
@@ -66,7 +67,7 @@ export default function RegisterPage() {
     if (!email.trim()) {
       newErrors.email = "Email is required.";
       hasError = true;
-    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+    } else if (!isValidEmail(email)) {
       newErrors.email = emailErrorMessage;
       hasError = true;
     }
