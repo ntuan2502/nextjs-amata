@@ -1,7 +1,7 @@
 import { IconProps } from "@/types/icons";
-import React from "react";
+import { FC } from "react";
 
-export const AcmeIcon: React.FC<IconProps> = ({
+export const AcmeIcon: FC<IconProps> = ({
   size = 32,
   width,
   height,

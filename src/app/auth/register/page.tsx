@@ -1,16 +1,39 @@
 "use client";
 
-import React from "react";
-import { Button, Input, Checkbox, Link } from "@heroui/react";
+import { FormEvent, useState } from "react";
+import {
+  Button,
+  Input,
+  Checkbox,
+  Link,
+  useDisclosure,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { ROUTES } from "@/constants/routes";
 
 export default function RegisterPage() {
-  const [isVisible, setIsVisible] = React.useState(false);
-  const [isConfirmVisible, setIsConfirmVisible] = React.useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isAgree, setIsAgree] = useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
+
+  function handleAgree(status: boolean, onClose: () => void) {
+    setIsAgree(status);
+    onClose();
+  }
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (isAgree == false) console.log(isAgree);
+  }
 
   return (
     <div className="flex h-full w-full items-center justify-center">
@@ -21,10 +44,7 @@ export default function RegisterPage() {
             👋
           </span>
         </p>
-        <form
-          className="flex flex-col gap-4"
-          onSubmit={(e) => e.preventDefault()}
-        >
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <Input
             isRequired
             label="Fullname"
@@ -91,16 +111,26 @@ export default function RegisterPage() {
             type={isConfirmVisible ? "text" : "password"}
             variant="bordered"
           />
-          <Checkbox isRequired className="py-4" size="sm">
-            I agree with the&nbsp;
-            <Link className="relative z-[1]" href="#" size="sm">
-              Terms
-            </Link>
-            &nbsp; and&nbsp;
-            <Link className="relative z-[1]" href="#" size="sm">
-              Privacy Policy
-            </Link>
-          </Checkbox>
+          <div className="flex items-center">
+            <Checkbox
+              isRequired
+              className="py-4"
+              size="sm"
+              isSelected={isAgree}
+              isDisabled
+            ></Checkbox>
+            <div>
+              I agree with the&nbsp;
+              <Link
+                className="relative z-[1]"
+                href="#"
+                size="sm"
+                onPress={onOpen}
+              >
+                Terms and Privacy Policy
+              </Link>
+            </div>
+          </div>
           <Button color="primary" type="submit">
             Sign Up
           </Button>
@@ -111,6 +141,113 @@ export default function RegisterPage() {
           </Link>
         </p>
       </div>
+      <Modal
+        isOpen={isOpen}
+        scrollBehavior="inside"
+        size="2xl"
+        onOpenChange={onOpenChange}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Terms and Privacy Policy
+              </ModalHeader>
+              <ModalBody>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                </p>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                </p>
+                <p>
+                  Magna exercitation reprehenderit magna aute tempor cupidatat
+                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
+                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
+                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
+                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
+                  eiusmod et. Culpa deserunt nostrud ad veniam.
+                </p>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                  Magna exercitation reprehenderit magna aute tempor cupidatat
+                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
+                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
+                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
+                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
+                  eiusmod et. Culpa deserunt nostrud ad veniam.
+                </p>
+                <p>
+                  Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit
+                  duis sit officia eiusmod Lorem aliqua enim laboris do dolor
+                  eiusmod. Et mollit incididunt nisi consectetur esse laborum
+                  eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt
+                  nostrud ad veniam. Lorem ipsum dolor sit amet, consectetur
+                  adipiscing elit. Nullam pulvinar risus non risus hendrerit
+                  venenatis. Pellentesque sit amet hendrerit risus, sed
+                  porttitor quam. Magna exercitation reprehenderit magna aute
+                  tempor cupidatat consequat elit dolor adipisicing. Mollit
+                  dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit
+                  officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et
+                  mollit incididunt nisi consectetur esse laborum eiusmod
+                  pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad
+                  veniam.
+                </p>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                </p>
+                <p>
+                  Magna exercitation reprehenderit magna aute tempor cupidatat
+                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
+                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
+                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
+                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
+                  eiusmod et. Culpa deserunt nostrud ad veniam.
+                </p>
+                <p>
+                  Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit
+                  duis sit officia eiusmod Lorem aliqua enim laboris do dolor
+                  eiusmod. Et mollit incididunt nisi consectetur esse laborum
+                  eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt
+                  nostrud ad veniam. Lorem ipsum dolor sit amet, consectetur
+                  adipiscing elit. Nullam pulvinar risus non risus hendrerit
+                  venenatis. Pellentesque sit amet hendrerit risus, sed
+                  porttitor quam. Magna exercitation reprehenderit magna aute
+                  tempor cupidatat consequat elit dolor adipisicing. Mollit
+                  dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit
+                  officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et
+                  mollit incididunt nisi consectetur esse laborum eiusmod
+                  pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad
+                  veniam.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="danger"
+                  variant="light"
+                  onPress={() => handleAgree(false, onClose)}
+                >
+                  Close
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={() => handleAgree(true, onClose)}
+                >
+                  Confirm
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import { useState } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -29,7 +29,7 @@ import {
 import { ROUTES } from "@/constants/routes";
 
 export default function NavbarComponent() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
     "Profile",
@@ -66,15 +66,19 @@ export default function NavbarComponent() {
 
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
-          <AcmeIcon />
-          <p className="font-bold text-inherit">ACME</p>
+          <Link href={ROUTES.HOME}>
+            <AcmeIcon />
+            <p className="font-bold text-inherit">ACME</p>
+          </Link>
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
-          <AcmeIcon />
-          <p className="font-bold text-inherit">ACME</p>
+          <Link href={ROUTES.HOME}>
+            <AcmeIcon />
+            <p className="font-bold text-inherit">ACME</p>
+          </Link>
         </NavbarBrand>
         <NavbarItem>
           <Dropdown>
