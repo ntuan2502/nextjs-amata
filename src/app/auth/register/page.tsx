@@ -128,10 +128,9 @@ export default function RegisterPage() {
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
         <div className="flex flex-col items-center pb-6">
           <AcmeIcon size={60} />
-          <p className="text-xl font-medium">Forgot your password?</p>
+          <p className="text-xl font-medium">Create your account</p>
           <p className="text-small text-default-500 text-center">
-            Enter your email address below and we will send you instructions to
-            reset your password.
+            Join us by filling in your details below. It only takes a minute!
           </p>
         </div>
         <form className="flex flex-col gap-4">
