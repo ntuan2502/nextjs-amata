@@ -24,6 +24,7 @@ import {
 } from "@/utils/validators";
 import { AuthFieldErrors } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
+import { AcmeIcon } from "@/components/icons";
 
 export default function RegisterPage() {
   const [fullname, setFullname] = useState("");
@@ -124,12 +125,14 @@ export default function RegisterPage() {
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
-        <p className="pb-4 text-left text-3xl font-semibold">
-          Sign Up
-          <span aria-label="emoji" className="ml-2" role="img">
-            👋
-          </span>
-        </p>
+        <div className="flex flex-col items-center pb-6">
+          <AcmeIcon size={60} />
+          <p className="text-xl font-medium">Forgot your password?</p>
+          <p className="text-small text-default-500 text-center">
+            Enter your email address below and we will send you instructions to
+            reset your password.
+          </p>
+        </div>
         <form className="flex flex-col gap-4">
           <Input
             isRequired
@@ -226,11 +229,13 @@ export default function RegisterPage() {
           </Button>
         </form>
         <p className="text-center text-small">
+          Already have an account?&nbsp;
           <Link href={ROUTES.AUTH.LOGIN} size="sm">
-            Already have an account? Log In
+            Log In
           </Link>
         </p>
       </div>
+
       <Modal
         isOpen={isOpen}
         scrollBehavior="inside"

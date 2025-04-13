@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
+import { Button, Input, Link, Form, Divider } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { AcmeIcon } from "@/components/icons";
 import { ROUTES } from "@/constants/routes";
@@ -10,23 +10,12 @@ import { toast } from "react-toastify";
 import { AuthFieldErrors } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
 
   const [errors, setErrors] = useState<AuthFieldErrors>({});
 
-  const toggleVisibility = () => setIsVisible(!isVisible);
-
   const emailProps = useFormField("email", email, setEmail, errors, setErrors);
-  const passwordProps = useFormField(
-    "password",
-    password,
-    setPassword,
-    errors,
-    setErrors
-  );
 
   function validateForm() {
     const newErrors: AuthFieldErrors = {};
@@ -40,11 +29,6 @@ export default function LoginPage() {
       hasError = true;
     }
 
-    if (!password) {
-      newErrors.password = "Password is required.";
-      hasError = true;
-    }
-
     return { hasError, newErrors };
   }
 
@@ -54,9 +38,7 @@ export default function LoginPage() {
 
     if (hasError) return;
 
-    toast.success(
-      `Login user with values: Email: ${email}, Password: ${password}`
-    );
+    toast.success(`Forgot password for user with values: Email: ${email}`);
   }
 
   return (
@@ -64,9 +46,10 @@ export default function LoginPage() {
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
         <div className="flex flex-col items-center pb-6">
           <AcmeIcon size={60} />
-          <p className="text-xl font-medium">Welcome Back</p>
-          <p className="text-small text-default-500">
-            Log in to your account to continue
+          <p className="text-xl font-medium">Forgot your password?</p>
+          <p className="text-small text-default-500 text-center">
+            Enter your email address below and we will send you instructions to
+            reset your password.
           </p>
         </div>
         <Form className="flex flex-col gap-3" validationBehavior="native">
@@ -79,40 +62,8 @@ export default function LoginPage() {
             variant="bordered"
             {...emailProps}
           />
-          <Input
-            isRequired
-            endContent={
-              <button type="button" onClick={toggleVisibility}>
-                {isVisible ? (
-                  <Icon
-                    className="pointer-events-none text-2xl text-default-400"
-                    icon="solar:eye-closed-linear"
-                  />
-                ) : (
-                  <Icon
-                    className="pointer-events-none text-2xl text-default-400"
-                    icon="solar:eye-bold"
-                  />
-                )}
-              </button>
-            }
-            label="Password"
-            name="password"
-            placeholder="Enter your password"
-            type={isVisible ? "text" : "password"}
-            variant="bordered"
-            {...passwordProps}
-          />
-          <div className="flex w-full items-center justify-between px-1 py-2">
-            <Checkbox name="remember" size="sm">
-              Remember me
-            </Checkbox>
-            <Link className="text-default-500" href={ROUTES.AUTH.FORGOT_PASSWORD} size="sm">
-              Forgot password?
-            </Link>
-          </div>
           <Button className="w-full" color="primary" onPress={handleSubmit}>
-            Sign In
+            Submit
           </Button>
         </Form>
         <div className="flex items-center gap-4 py-2">
@@ -137,9 +88,9 @@ export default function LoginPage() {
           </Button>
         </div>
         <p className="text-center text-small">
-          Need to create an account?&nbsp;
-          <Link href={ROUTES.AUTH.REGISTER} size="sm">
-            Sign Up
+          Remember your password?&nbsp;
+          <Link href={ROUTES.AUTH.LOGIN} size="sm">
+            Log In
           </Link>
         </p>
       </div>
