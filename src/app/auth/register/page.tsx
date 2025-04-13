@@ -25,6 +25,7 @@ import {
 import { AuthFieldErrors } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
 import { AcmeIcon } from "@/components/icons";
+import AuthSocialLogin from "@/components/auth/AuthSocialLogin";
 
 export default function RegisterPage() {
   const [fullname, setFullname] = useState("");
@@ -228,6 +229,7 @@ export default function RegisterPage() {
             Sign Up
           </Button>
         </form>
+        <AuthSocialLogin />
         <p className="text-center text-small">
           Already have an account?&nbsp;
           <Link href={ROUTES.AUTH.LOGIN} size="sm">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
+import { Button, Input, Checkbox, Link, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { AcmeIcon } from "@/components/icons";
 import { ROUTES } from "@/constants/routes";
@@ -9,6 +9,7 @@ import { emailErrorMessage, isValidEmail } from "@/utils/validators";
 import { toast } from "react-toastify";
 import { AuthFieldErrors } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
+import AuthSocialLogin from "@/components/auth/AuthSocialLogin";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -107,7 +108,11 @@ export default function LoginPage() {
             <Checkbox name="remember" size="sm">
               Remember me
             </Checkbox>
-            <Link className="text-default-500" href={ROUTES.AUTH.FORGOT_PASSWORD} size="sm">
+            <Link
+              className="text-default-500"
+              href={ROUTES.AUTH.FORGOT_PASSWORD}
+              size="sm"
+            >
               Forgot password?
             </Link>
           </div>
@@ -115,27 +120,7 @@ export default function LoginPage() {
             Sign In
           </Button>
         </Form>
-        <div className="flex items-center gap-4 py-2">
-          <Divider className="flex-1" />
-          <p className="shrink-0 text-tiny text-default-500">OR</p>
-          <Divider className="flex-1" />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Button
-            startContent={<Icon icon="flat-color-icons:google" width={24} />}
-            variant="bordered"
-          >
-            Continue with Google
-          </Button>
-          <Button
-            startContent={
-              <Icon className="text-default-500" icon="fe:github" width={24} />
-            }
-            variant="bordered"
-          >
-            Continue with Github
-          </Button>
-        </div>
+        <AuthSocialLogin />
         <p className="text-center text-small">
           Need to create an account?&nbsp;
           <Link href={ROUTES.AUTH.REGISTER} size="sm">

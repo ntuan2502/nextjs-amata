@@ -9,6 +9,7 @@ import { isValidPassword, passwordErrorMessage } from "@/utils/validators";
 import { AuthFieldErrors } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
 import { AcmeIcon } from "@/components/icons";
+import AuthSocialLogin from "@/components/auth/AuthSocialLogin";
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
@@ -136,6 +137,7 @@ export default function ResetPasswordPage() {
             Submit
           </Button>
         </form>
+        <AuthSocialLogin />
         <p className="text-center text-small">
           Already have an account?&nbsp;
           <Link href={ROUTES.AUTH.LOGIN} size="sm">
