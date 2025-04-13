@@ -6,8 +6,8 @@ import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="light">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Providers>
           <ToastContainer />
           <NavbarComponent />

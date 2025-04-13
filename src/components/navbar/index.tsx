@@ -27,6 +27,7 @@ import {
   TagUser,
 } from "../icons";
 import { ROUTES } from "@/constants/routes";
+import { ThemeSwitcher } from "../theme/ThemeSwitcher";
 
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -154,12 +155,12 @@ export default function NavbarComponent() {
           <Link href={ROUTES.AUTH.LOGIN}>Login</Link>
         </NavbarItem>
         <NavbarItem>
-          <Link
-            color="warning"
-            href={ROUTES.AUTH.REGISTER}
-          >
+          <Link color="warning" href={ROUTES.AUTH.REGISTER}>
             Sign Up
           </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <ThemeSwitcher />
         </NavbarItem>
         <Dropdown placement="bottom-end">
           <DropdownTrigger>
