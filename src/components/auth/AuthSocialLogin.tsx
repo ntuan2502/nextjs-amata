@@ -1,9 +1,11 @@
 "use client";
 
+import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { Divider, Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
 export default function AuthSocialLogin() {
+  const { tSocialLogin } = useAppTranslations();
   return (
     <>
       <div className="flex items-center gap-4 py-2">
@@ -16,7 +18,7 @@ export default function AuthSocialLogin() {
           startContent={<Icon icon="flat-color-icons:google" width={24} />}
           variant="bordered"
         >
-          Continue with Google
+          {tSocialLogin("google")}
         </Button>
         <Button
           startContent={
@@ -24,7 +26,7 @@ export default function AuthSocialLogin() {
           }
           variant="bordered"
         >
-          Continue with Github
+          {tSocialLogin("github")}
         </Button>
       </div>
     </>

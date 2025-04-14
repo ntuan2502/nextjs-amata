@@ -1,0 +1,63 @@
+{
+  "cta": {
+    "back": "Quay lại",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "continue": "Tiếp tục",
+    "create": "Tạo mới",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "next": "Tiếp theo",
+    "retry": "Thử lại",
+    "save": "Lưu",
+    "signIn": "Đăng nhập",
+    "signUp": "Đăng ký",
+    "submit": "Gửi",
+    "update": "Cập nhật",
+    "view": "Xem"
+  },
+  "auth": {
+    "login": {
+      "forgot": "Quên mật khẩu?",
+      "noAccount": "Cần tạo tài khoản?",
+      "remember": "Ghi nhớ tôi",
+      "submit": "Đăng nhập",
+      "subtitle": "Đăng nhập vào tài khoản của bạn để tiếp tục",
+      "successMessage": "Đăng nhập với: Email: {email}, Mật khẩu: {password}",
+      "title": "Chào mừng quay lại"
+    },
+    "register": {
+      "agreeTerms": "Tôi đồng ý với Điều khoản và Chính sách bảo mật",
+      "alreadyHaveAccount": "Đã có tài khoản?",
+      "submit": "Đăng ký",
+      "subtitle": "Hãy gia nhập chúng tôi bằng cách điền thông tin của bạn dưới đây. Chỉ mất một phút!",
+      "termsModalBody": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non risus hendrerit venenatis. Pellentesque sit amet hendrerit risus, sed porttitor quam.",
+      "termsModalTitle": "Điều khoản và Chính sách bảo mật",
+      "title": "Tạo tài khoản của bạn"
+    },
+    "socialLogin": {
+      "github": "Tiếp tục với Github",
+      "google": "Tiếp tục với Google",
+      "or": "HOẶC"
+    }
+  },
+  "errors": {
+    "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu.",
+    "emailInvalid": "Email không hợp lệ.",
+    "emailRequired": "Email là bắt buộc.",
+    "fullnameRequired": "Họ và tên là bắt buộc.",
+    "passwordInvalid": "Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm một chữ số và một ký tự đặc biệt.",
+    "passwordRequired": "Mật khẩu là bắt buộc.",
+    "passwordsDoNotMatch": "Mật khẩu không khớp."
+  },
+  "labels": {
+    "confirmPasswordLabel": "Xác nhận mật khẩu",
+    "confirmPasswordPlaceholder": "Xác nhận mật khẩu của bạn",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Nhập email của bạn",
+    "fullnameLabel": "Họ và tên",
+    "fullnamePlaceholder": "Nhập họ và tên của bạn",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu của bạn"
+  }
+}

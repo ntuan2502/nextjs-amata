@@ -5,13 +5,15 @@ import { Button, Input, Checkbox, Link, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { AcmeIcon } from "@/components/icons";
 import { ROUTES } from "@/constants/routes";
-import { emailErrorMessage, isValidEmail } from "@/utils/validators";
+import { isValidEmail } from "@/utils/validators";
 import { toast } from "react-toastify";
 import { AuthFieldErrors } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
 import AuthSocialLogin from "@/components/auth/AuthSocialLogin";
+import { useAppTranslations } from "@/hooks/useAppTranslations";
 
 export default function LoginPage() {
+  const { tLogin, tCta, tLabels, tErrors } = useAppTranslations();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
@@ -34,15 +36,15 @@ export default function LoginPage() {
     let hasError = false;
 
     if (!email.trim()) {
-      newErrors.email = "Email is required.";
+      newErrors.email = tErrors("emailRequired");
       hasError = true;
     } else if (!isValidEmail(email)) {
-      newErrors.email = emailErrorMessage;
+      newErrors.email = tErrors("emailInvalid");
       hasError = true;
     }
 
     if (!password) {
-      newErrors.password = "Password is required.";
+      newErrors.password = tErrors("passwordRequired");
       hasError = true;
     }
 
@@ -55,9 +57,7 @@ export default function LoginPage() {
 
     if (hasError) return;
 
-    toast.success(
-      `Login user with values: Email: ${email}, Password: ${password}`
-    );
+    toast.success(tLogin("successMessage", { email, password }));
   }
 
   return (
@@ -65,17 +65,15 @@ export default function LoginPage() {
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
         <div className="flex flex-col items-center pb-6">
           <AcmeIcon size={60} />
-          <p className="text-xl font-medium">Welcome Back</p>
-          <p className="text-small text-default-500">
-            Log in to your account to continue
-          </p>
+          <p className="text-xl font-medium">{tLogin("title")}</p>
+          <p className="text-small text-default-500">{tLogin("subtitle")}</p>
         </div>
         <Form className="flex flex-col gap-3" validationBehavior="native">
           <Input
             isRequired
-            label="Email Address"
+            label={tLabels("emailLabel")}
             name="email"
-            placeholder="Enter your email"
+            placeholder={tLabels("emailPlaceholder")}
             type="email"
             variant="bordered"
             {...emailProps}
@@ -97,34 +95,34 @@ export default function LoginPage() {
                 )}
               </button>
             }
-            label="Password"
+            label={tLabels("passwordLabel")}
             name="password"
-            placeholder="Enter your password"
+            placeholder={tLabels("passwordPlaceholder")}
             type={isVisible ? "text" : "password"}
             variant="bordered"
             {...passwordProps}
           />
           <div className="flex w-full items-center justify-between px-1 py-2">
             <Checkbox name="remember" size="sm">
-              Remember me
+              {tLogin("remember")}
             </Checkbox>
             <Link
               className="text-default-500"
               href={ROUTES.AUTH.FORGOT_PASSWORD}
               size="sm"
             >
-              Forgot password?
+              {tLogin("forgot")}
             </Link>
           </div>
           <Button className="w-full" color="primary" onPress={handleSubmit}>
-            Sign In
+            {tLogin("submit")}
           </Button>
         </Form>
         <AuthSocialLogin />
         <p className="text-center text-small">
-          Need to create an account?&nbsp;
+          {tLogin("noAccount")}&nbsp;
           <Link href={ROUTES.AUTH.REGISTER} size="sm">
-            Sign Up
+            {tCta("signUp")}
           </Link>
         </p>
       </div>

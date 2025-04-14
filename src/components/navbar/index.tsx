@@ -28,6 +28,7 @@ import {
 } from "../icons";
 import { ROUTES } from "@/constants/routes";
 import { ThemeSwitcher } from "../theme/ThemeSwitcher";
+import LanguageSwitcher from "../language/LanguageSwitcher";
 
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -161,6 +162,9 @@ export default function NavbarComponent() {
         </NavbarItem>
         <NavbarItem>
           <ThemeSwitcher />
+        </NavbarItem>
+        <NavbarItem>
+          <LanguageSwitcher />
         </NavbarItem>
         <Dropdown placement="bottom-end">
           <DropdownTrigger>

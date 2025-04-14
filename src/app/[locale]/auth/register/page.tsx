@@ -16,18 +16,16 @@ import {
 import { Icon } from "@iconify/react";
 import { ROUTES } from "@/constants/routes";
 import { toast } from "react-toastify";
-import {
-  emailErrorMessage,
-  isValidEmail,
-  isValidPassword,
-  passwordErrorMessage,
-} from "@/utils/validators";
+import { isValidEmail, isValidPassword } from "@/utils/validators";
 import { AuthFieldErrors } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
 import { AcmeIcon } from "@/components/icons";
 import AuthSocialLogin from "@/components/auth/AuthSocialLogin";
+import { useAppTranslations } from "@/hooks/useAppTranslations";
 
 export default function RegisterPage() {
+  const { tRegister, tCta, tLabels, tErrors } = useAppTranslations();
+
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -76,31 +74,31 @@ export default function RegisterPage() {
     let hasError = false;
 
     if (!fullname.trim()) {
-      newErrors.fullname = "Fullname is required.";
+      newErrors.fullname = tErrors("fullnameRequired");
       hasError = true;
     }
 
     if (!email.trim()) {
-      newErrors.email = "Email is required.";
+      newErrors.email = tErrors("emailRequired");
       hasError = true;
     } else if (!isValidEmail(email)) {
-      newErrors.email = emailErrorMessage;
+      newErrors.email = tErrors("emailInvalid");
       hasError = true;
     }
 
     if (!password) {
-      newErrors.password = "Password is required.";
+      newErrors.password = tErrors("passwordRequired");
       hasError = true;
     } else if (!isValidPassword(password)) {
-      newErrors.password = passwordErrorMessage;
+      newErrors.password = tErrors("passwordInvalid");
       hasError = true;
     }
 
     if (!confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password.";
+      newErrors.confirmPassword = tErrors("confirmPasswordRequired");
       hasError = true;
     } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match.";
+      newErrors.confirmPassword = tErrors("passwordsDoNotMatch");
       hasError = true;
     }
 
@@ -128,28 +126,28 @@ export default function RegisterPage() {
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
         <div className="flex flex-col items-center pb-6">
           <AcmeIcon size={60} />
-          <p className="text-xl font-medium">Create your account</p>
+          <p className="text-xl font-medium">{tRegister("title")}</p>
           <p className="text-small text-default-500 text-center">
-            Join us by filling in your details below. It only takes a minute!
+            {tRegister("subtitle")}{" "}
           </p>
         </div>
         <form className="flex flex-col gap-4">
           <Input
             isRequired
-            label="Fullname"
+            label={tLabels("fullnameLabel")}
             labelPlacement="outside"
             name="fullname"
-            placeholder="Enter your fullname"
+            placeholder={tLabels("fullnamePlaceholder")}
             type="text"
             variant="bordered"
             {...fullnameProps}
           />
           <Input
             isRequired
-            label="Email"
+            label={tLabels("emailLabel")}
             labelPlacement="outside"
             name="email"
-            placeholder="Enter your email"
+            placeholder={tLabels("emailPlaceholder")}
             type="email"
             variant="bordered"
             {...emailProps}
@@ -171,10 +169,10 @@ export default function RegisterPage() {
                 )}
               </button>
             }
-            label="Password"
+            label={tLabels("passwordLabel")}
             labelPlacement="outside"
             name="password"
-            placeholder="Enter your password"
+            placeholder={tLabels("passwordPlaceholder")}
             type={isVisible ? "text" : "password"}
             variant="bordered"
             {...passwordProps}
@@ -196,10 +194,10 @@ export default function RegisterPage() {
                 )}
               </button>
             }
-            label="Confirm Password"
+            label={tLabels("confirmPasswordLabel")}
             labelPlacement="outside"
             name="confirmPassword"
-            placeholder="Confirm your password"
+            placeholder={tLabels("confirmPasswordPlaceholder")}
             type={isConfirmVisible ? "text" : "password"}
             variant="bordered"
             {...confirmPasswordProps}
@@ -213,26 +211,25 @@ export default function RegisterPage() {
               isDisabled
             ></Checkbox>
             <div>
-              I agree with the&nbsp;
               <Link
                 className="relative z-[1]"
                 href="#"
                 size="sm"
                 onPress={onOpen}
               >
-                Terms and Privacy Policy
+                {tRegister("agreeTerms")}
               </Link>
             </div>
           </div>
           <Button color="primary" onPress={handleSubmit}>
-            Sign Up
+            {tRegister("submit")}
           </Button>
         </form>
         <AuthSocialLogin />
         <p className="text-center text-small">
-          Already have an account?&nbsp;
+          {tRegister("alreadyHaveAccount")}&nbsp;
           <Link href={ROUTES.AUTH.LOGIN} size="sm">
-            Log In
+            {tCta("signIn")}
           </Link>
         </p>
       </div>
@@ -247,83 +244,10 @@ export default function RegisterPage() {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Terms and Privacy Policy
+                {tRegister("termsModalTitle")}
               </ModalHeader>
               <ModalBody>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-                <p>
-                  Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit
-                  duis sit officia eiusmod Lorem aliqua enim laboris do dolor
-                  eiusmod. Et mollit incididunt nisi consectetur esse laborum
-                  eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt
-                  nostrud ad veniam. Lorem ipsum dolor sit amet, consectetur
-                  adipiscing elit. Nullam pulvinar risus non risus hendrerit
-                  venenatis. Pellentesque sit amet hendrerit risus, sed
-                  porttitor quam. Magna exercitation reprehenderit magna aute
-                  tempor cupidatat consequat elit dolor adipisicing. Mollit
-                  dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit
-                  officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et
-                  mollit incididunt nisi consectetur esse laborum eiusmod
-                  pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad
-                  veniam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-                <p>
-                  Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit
-                  duis sit officia eiusmod Lorem aliqua enim laboris do dolor
-                  eiusmod. Et mollit incididunt nisi consectetur esse laborum
-                  eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt
-                  nostrud ad veniam. Lorem ipsum dolor sit amet, consectetur
-                  adipiscing elit. Nullam pulvinar risus non risus hendrerit
-                  venenatis. Pellentesque sit amet hendrerit risus, sed
-                  porttitor quam. Magna exercitation reprehenderit magna aute
-                  tempor cupidatat consequat elit dolor adipisicing. Mollit
-                  dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit
-                  officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et
-                  mollit incididunt nisi consectetur esse laborum eiusmod
-                  pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad
-                  veniam.
-                </p>
+                <p>{tRegister("termsModalBody")}</p>
               </ModalBody>
               <ModalFooter>
                 <Button
@@ -331,13 +255,13 @@ export default function RegisterPage() {
                   variant="light"
                   onPress={() => handleAgree(false, onClose)}
                 >
-                  Close
+                  {tCta("cancel")}
                 </Button>
                 <Button
                   color="primary"
                   onPress={() => handleAgree(true, onClose)}
                 >
-                  Confirm
+                  {tCta("confirm")}
                 </Button>
               </ModalFooter>
             </>

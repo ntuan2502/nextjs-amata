@@ -1,0 +1,63 @@
+{
+  "cta": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "continue": "Continue",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit",
+    "next": "Next",
+    "retry": "Retry",
+    "save": "Save",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "submit": "Submit",
+    "update": "Update",
+    "view": "View"
+  },
+  "auth": {
+    "login": {
+      "forgot": "Forgot password?",
+      "noAccount": "Need to create an account?",
+      "remember": "Remember me",
+      "submit": "Sign In",
+      "subtitle": "Log in to your account to continue",
+      "successMessage": "Login with: Email: {email}, Password: {password}",
+      "title": "Welcome Back"
+    },
+    "register": {
+      "agreeTerms": "I agree with the Terms and Privacy Policy",
+      "alreadyHaveAccount": "Already have an account?",
+      "submit": "Sign Up",
+      "subtitle": "Join us by filling in your details below. It only takes a minute!",
+      "termsModalBody": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non risus hendrerit venenatis. Pellentesque sit amet hendrerit risus, sed porttitor quam.",
+      "termsModalTitle": "Terms and Privacy Policy",
+      "title": "Create your account"
+    },
+    "socialLogin": {
+      "github": "Continue with Github",
+      "google": "Continue with Google",
+      "or": "OR"
+    }
+  },
+  "errors": {
+    "confirmPasswordRequired": "Please confirm your password.",
+    "emailInvalid": "Invalid email format.",
+    "emailRequired": "Email is required.",
+    "fullnameRequired": "Fullname is required.",
+    "passwordInvalid": "Password must contain at least 8 characters, including one number and one special character.",
+    "passwordRequired": "Password is required.",
+    "passwordsDoNotMatch": "Passwords do not match."
+  },
+  "labels": {
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your email",
+    "fullnameLabel": "Fullname",
+    "fullnamePlaceholder": "Fullname",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password"
+  }
+}
