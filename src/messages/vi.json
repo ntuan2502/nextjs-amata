@@ -17,6 +17,12 @@
     "view": "Xem"
   },
   "auth": {
+    "forgotPassword": {
+      "subtitle": "Nhập địa chỉ email của bạn bên dưới và chúng tôi sẽ gửi hướng dẫn để đặt lại mật khẩu.",
+      "successMessage": "Đặt lại mật khẩu cho người dùng với các giá trị: Email: {email}",
+      "title": "Quên mật khẩu của bạn?",
+      "rememberPassword": "Nhớ mật khẩu của bạn?"
+    },
     "login": {
       "forgot": "Quên mật khẩu?",
       "noAccount": "Cần tạo tài khoản?",
@@ -29,11 +35,18 @@
     "register": {
       "agreeTerms": "Tôi đồng ý với Điều khoản và Chính sách bảo mật",
       "alreadyHaveAccount": "Đã có tài khoản?",
+      "mustAgreeTerms": "Bạn phải đồng ý với điều khoản.",
       "submit": "Đăng ký",
       "subtitle": "Hãy gia nhập chúng tôi bằng cách điền thông tin của bạn dưới đây. Chỉ mất một phút!",
+      "successMessage": "Đăng ký người dùng với các giá trị: Họ và tên: {fullname}, Email: {email}, Mật khẩu: {password}, Xác nhận mật khẩu: {confirmPassword}",
       "termsModalBody": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non risus hendrerit venenatis. Pellentesque sit amet hendrerit risus, sed porttitor quam.",
       "termsModalTitle": "Điều khoản và Chính sách bảo mật",
       "title": "Tạo tài khoản của bạn"
+    },
+    "resetPassword": {
+      "subtitle": "Vui lòng nhập mật khẩu mới bên dưới. Đảm bảo mật khẩu đủ mạnh và bạn có thể ghi nhớ nó.",
+      "successMessage": "Đặt lại mật khẩu cho người dùng với các giá trị: Mật khẩu: {password}, Xác nhận mật khẩu: {confirmPassword}",
+      "title": "Đặt lại mật khẩu của bạn"
     },
     "socialLogin": {
       "github": "Tiếp tục với Github",
@@ -46,7 +59,7 @@
     "emailInvalid": "Email không hợp lệ.",
     "emailRequired": "Email là bắt buộc.",
     "fullnameRequired": "Họ và tên là bắt buộc.",
-    "passwordInvalid": "Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm một chữ số và một ký tự đặc biệt.",
+    "passwordInvalid": "Mật khẩu phải có ít nhất 8 ký tự và bao gồm ít nhất một chữ cái thường, một chữ cái hoa, một số và một ký tự đặc biệt.",
     "passwordRequired": "Mật khẩu là bắt buộc.",
     "passwordsDoNotMatch": "Mật khẩu không khớp."
   },

@@ -17,6 +17,12 @@
     "view": "View"
   },
   "auth": {
+    "forgotPassword": {
+      "subtitle": "Enter your email address below and we will send you instructions to reset your password.",
+      "successMessage": "Reset password for user with values: Email: {email}",
+      "title": "Forgot your password?",
+      "rememberPassword": "Nhớ mật khẩu của bạn?"
+    },
     "login": {
       "forgot": "Forgot password?",
       "noAccount": "Need to create an account?",
@@ -29,11 +35,18 @@
     "register": {
       "agreeTerms": "I agree with the Terms and Privacy Policy",
       "alreadyHaveAccount": "Already have an account?",
+      "mustAgreeTerms": "Must agree to terms.",
       "submit": "Sign Up",
       "subtitle": "Join us by filling in your details below. It only takes a minute!",
+      "successMessage": "Registering user with values: Fullname: {fullname}, Email: {email}, Password: {password}, Confirm Password: {confirmPassword}",
       "termsModalBody": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non risus hendrerit venenatis. Pellentesque sit amet hendrerit risus, sed porttitor quam.",
       "termsModalTitle": "Terms and Privacy Policy",
       "title": "Create your account"
+    },
+    "resetPassword": {
+      "subtitle": "Please enter your new password below. Make sure it is strong and something you will remember.",
+      "successMessage": "Reset password for user with values: Password: {password}, Confirm Password: {confirmPassword}",
+      "title": "Reset your password"
     },
     "socialLogin": {
       "github": "Continue with Github",
@@ -46,7 +59,7 @@
     "emailInvalid": "Invalid email format.",
     "emailRequired": "Email is required.",
     "fullnameRequired": "Fullname is required.",
-    "passwordInvalid": "Password must contain at least 8 characters, including one number and one special character.",
+    "passwordInvalid": "Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character.",
     "passwordRequired": "Password is required.",
     "passwordsDoNotMatch": "Passwords do not match."
   },

@@ -112,12 +112,17 @@ export default function RegisterPage() {
     if (hasError) return;
 
     if (!isAgree) {
-      toast.error("Must agree to terms.");
+      toast.error(tRegister("mustAgreeTerms"));
       return;
     }
 
     toast.success(
-      `Registering user with values: Fullname: ${fullname}, Email: ${email}, Password: ${password}, Confirm Password: ${confirmPassword}`
+      tRegister("successMessage", {
+        fullname,
+        email,
+        password,
+        confirmPassword,
+      })
     );
   }
 
@@ -128,7 +133,7 @@ export default function RegisterPage() {
           <AcmeIcon size={60} />
           <p className="text-xl font-medium">{tRegister("title")}</p>
           <p className="text-small text-default-500 text-center">
-            {tRegister("subtitle")}{" "}
+            {tRegister("subtitle")}
           </p>
         </div>
         <form className="flex flex-col gap-4">

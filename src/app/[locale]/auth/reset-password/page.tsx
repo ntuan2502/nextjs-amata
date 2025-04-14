@@ -5,13 +5,16 @@ import { Button, Input, Link } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { ROUTES } from "@/constants/routes";
 import { toast } from "react-toastify";
-import { isValidPassword, passwordErrorMessage } from "@/utils/validators";
+import { isValidPassword } from "@/utils/validators";
 import { AuthFieldErrors } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
 import { AcmeIcon } from "@/components/icons";
 import AuthSocialLogin from "@/components/auth/AuthSocialLogin";
+import { useAppTranslations } from "@/hooks/useAppTranslations";
 
 export default function ResetPasswordPage() {
+  const { tRegister, tResetPassword, tCta, tLabels, tErrors } =
+    useAppTranslations();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
@@ -42,18 +45,18 @@ export default function ResetPasswordPage() {
     let hasError = false;
 
     if (!password) {
-      newErrors.password = "Password is required.";
+      newErrors.password = tErrors("passwordRequired");
       hasError = true;
     } else if (!isValidPassword(password)) {
-      newErrors.password = passwordErrorMessage;
+      newErrors.password = tErrors("passwordInvalid");
       hasError = true;
     }
 
     if (!confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password.";
+      newErrors.confirmPassword = tErrors("confirmPasswordRequired");
       hasError = true;
     } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match.";
+      newErrors.confirmPassword = tErrors("passwordsDoNotMatch");
       hasError = true;
     }
 
@@ -67,7 +70,10 @@ export default function ResetPasswordPage() {
     if (hasError) return;
 
     toast.success(
-      `Reset password for user with values: Password: ${password}, Confirm Password: ${confirmPassword}`
+      tResetPassword("successMessage", {
+        password,
+        confirmPassword,
+      })
     );
   }
 
@@ -76,10 +82,9 @@ export default function ResetPasswordPage() {
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
         <div className="flex flex-col items-center pb-6">
           <AcmeIcon size={60} />
-          <p className="text-xl font-medium">Reset your password</p>
+          <p className="text-xl font-medium">{tResetPassword("title")}</p>
           <p className="text-small text-default-500 text-center">
-            Please enter your new password below. Make sure it is strong and
-            something you will remember.
+            {tResetPassword("subtitle")}
           </p>
         </div>
         <form className="flex flex-col gap-4">
@@ -100,10 +105,10 @@ export default function ResetPasswordPage() {
                 )}
               </button>
             }
-            label="Password"
+            label={tLabels("passwordLabel")}
             labelPlacement="outside"
             name="password"
-            placeholder="Enter your password"
+            placeholder={tLabels("passwordPlaceholder")}
             type={isVisible ? "text" : "password"}
             variant="bordered"
             {...passwordProps}
@@ -125,23 +130,23 @@ export default function ResetPasswordPage() {
                 )}
               </button>
             }
-            label="Confirm Password"
+            label={tLabels("confirmPasswordLabel")}
             labelPlacement="outside"
             name="confirmPassword"
-            placeholder="Confirm your password"
+            placeholder={tLabels("confirmPasswordPlaceholder")}
             type={isConfirmVisible ? "text" : "password"}
             variant="bordered"
             {...confirmPasswordProps}
           />
           <Button color="primary" onPress={handleSubmit}>
-            Submit
+            {tCta("submit")}
           </Button>
         </form>
         <AuthSocialLogin />
         <p className="text-center text-small">
-          Already have an account?&nbsp;
+          {tRegister("alreadyHaveAccount")}&nbsp;
           <Link href={ROUTES.AUTH.LOGIN} size="sm">
-            Log In
+            {tCta("signIn")}
           </Link>
         </p>
       </div>
