@@ -29,8 +29,10 @@ import {
 import { ROUTES } from "@/constants/routes";
 import { ThemeSwitcher } from "../theme/ThemeSwitcher";
 import LanguageSwitcher from "../language/LanguageSwitcher";
+import { useAppTranslations } from "@/hooks/useAppTranslations";
 
 export default function NavbarComponent() {
+  const { tCta } = useAppTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
@@ -153,11 +155,11 @@ export default function NavbarComponent() {
 
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Link href={ROUTES.AUTH.LOGIN}>Login</Link>
+          <Link href={ROUTES.AUTH.LOGIN}>{tCta("signIn")}</Link>
         </NavbarItem>
         <NavbarItem>
           <Link color="warning" href={ROUTES.AUTH.REGISTER}>
-            Sign Up
+            {tCta("signUp")}
           </Link>
         </NavbarItem>
         <NavbarItem>

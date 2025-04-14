@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
-import { Button } from "@heroui/react";
+import { Button, Link } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { ROUTES } from "@/constants/routes";
 
 export default function Component() {
   return (
@@ -35,6 +36,8 @@ export default function Component() {
             <Button
               className="h-10 w-[163px] bg-default-foreground px-[16px] py-[10px] text-small font-medium leading-5 text-background"
               radius="full"
+              as={Link}
+              href={ROUTES.SCAN}
             >
               Get Started
             </Button>
