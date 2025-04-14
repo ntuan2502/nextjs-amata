@@ -1,21 +1,4 @@
 {
-  "cta": {
-    "back": "Quay lại",
-    "cancel": "Hủy",
-    "confirm": "Xác nhận",
-    "continue": "Tiếp tục",
-    "create": "Tạo mới",
-    "delete": "Xóa",
-    "edit": "Chỉnh sửa",
-    "next": "Tiếp theo",
-    "retry": "Thử lại",
-    "save": "Lưu",
-    "signIn": "Đăng nhập",
-    "signUp": "Đăng ký",
-    "submit": "Gửi",
-    "update": "Cập nhật",
-    "view": "Xem"
-  },
   "auth": {
     "forgotPassword": {
       "subtitle": "Nhập địa chỉ email của bạn bên dưới và chúng tôi sẽ gửi hướng dẫn để đặt lại mật khẩu.",
@@ -53,6 +36,23 @@
       "google": "Tiếp tục với Google",
       "or": "HOẶC"
     }
+  },
+  "cta": {
+    "back": "Quay lại",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "continue": "Tiếp tục",
+    "create": "Tạo mới",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "next": "Tiếp theo",
+    "retry": "Thử lại",
+    "save": "Lưu",
+    "signIn": "Đăng nhập",
+    "signUp": "Đăng ký",
+    "submit": "Gửi",
+    "update": "Cập nhật",
+    "view": "Xem"
   },
   "errors": {
     "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu.",

@@ -1,21 +1,4 @@
 {
-  "cta": {
-    "back": "Back",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "continue": "Continue",
-    "create": "Create",
-    "delete": "Delete",
-    "edit": "Edit",
-    "next": "Next",
-    "retry": "Retry",
-    "save": "Save",
-    "signIn": "Sign In",
-    "signUp": "Sign Up",
-    "submit": "Submit",
-    "update": "Update",
-    "view": "View"
-  },
   "auth": {
     "forgotPassword": {
       "subtitle": "Enter your email address below and we will send you instructions to reset your password.",
@@ -53,6 +36,23 @@
       "google": "Continue with Google",
       "or": "OR"
     }
+  },
+  "cta": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "continue": "Continue",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit",
+    "next": "Next",
+    "retry": "Retry",
+    "save": "Save",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "submit": "Submit",
+    "update": "Update",
+    "view": "View"
   },
   "errors": {
     "confirmPasswordRequired": "Please confirm your password.",
