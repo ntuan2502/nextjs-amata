@@ -1,0 +1,27 @@
+# 1.0.0 (2025-04-15)
+
+
+### Bug Fixes
+
+* **workflows:** update Node.js version to 22 and improve checkout step naming ([42f6d49](https://github.com/ntuan2502/nextjs-amata/commit/42f6d490f48187a39aeb4195f86581b3ec1bf319))
+
+
+### Features
+
+* **auth:** add AuthSocialLogin component for social authentication options ([ad2033b](https://github.com/ntuan2502/nextjs-amata/commit/ad2033bcd21df66a28f0ec64e03d06ecdbe6bca5))
+* **auth:** add login page and install @iconify/react ([e354fcf](https://github.com/ntuan2502/nextjs-amata/commit/e354fcf31988d9df6e014848458cb17c8518a600))
+* **auth:** add register page to auth route ([7e7bc09](https://github.com/ntuan2502/nextjs-amata/commit/7e7bc098bfb6c35faee5c8a96da01e371b531bfd))
+* **auth:** enhance ForgotPassword and ResetPassword pages with translation support ([a9848fe](https://github.com/ntuan2502/nextjs-amata/commit/a9848fea97ba50fd9e55178ad32b23fe7a99def3))
+* **auth:** implement ForgotPassword and ResetPassword pages with form validation ([cb05b82](https://github.com/ntuan2502/nextjs-amata/commit/cb05b82037c75f0f6917e2b4b7101e5ae41e59fc))
+* **auth:** implement useFormField hook for form handling and validation ([d5d6293](https://github.com/ntuan2502/nextjs-amata/commit/d5d62933660adc694ba932371f14a99021dbb895))
+* **auth:** update registration page content for clarity and engagement ([9db679b](https://github.com/ntuan2502/nextjs-amata/commit/9db679ba0593b83e5503a4f082d819fa621e40f6))
+* **i18n:** add translation support for pause and reset actions in scan page ([bf12e0d](https://github.com/ntuan2502/nextjs-amata/commit/bf12e0d2926a062b7b7949336bc6f18da97468d8))
+* **i18n:** integrate next-intl and localize authentication flow ([d681242](https://github.com/ntuan2502/nextjs-amata/commit/d6812422cad0905a66c0dee3a15e631997730d41))
+* **i18n:** reorder cta section in localization files for consistency ([0aa2451](https://github.com/ntuan2502/nextjs-amata/commit/0aa24512c29910c0025a5403c5dcdeaa2f3e0d40))
+* **layout:** add footer component to application ([fcf2708](https://github.com/ntuan2502/nextjs-amata/commit/fcf2708490846670a9c09c96ad7323b2e1fd38e4))
+* **login:** use react-toastify and refactor form validation ([163eb4e](https://github.com/ntuan2502/nextjs-amata/commit/163eb4ec326d041e00b0a3e2b8364bff05f7c244))
+* **register:** add react-toastify and restructure validation logic ([c8b3f40](https://github.com/ntuan2502/nextjs-amata/commit/c8b3f40290f1dafd534494d713b0c4a3fbfb24d9))
+* **routes:** add centralized route definitions for cleaner and maintainable navigation ([f44db45](https://github.com/ntuan2502/nextjs-amata/commit/f44db456e4737e13aa949d5960517472750f9d53))
+* **scan:** add QR scanner page and integrate with navbar for navigation ([acb9259](https://github.com/ntuan2502/nextjs-amata/commit/acb9259b729f16db23a398d4119d89fbd7f9ec89))
+* **theme:** add ThemeSwitcher component and integrate next-themes for theme management ([c9c1e97](https://github.com/ntuan2502/nextjs-amata/commit/c9c1e970c05fc6a9bf90f3d3b1ba4c9f37a4b17d))
+* **ui:** add responsive navbar and refactor icon system ([8dc2f8f](https://github.com/ntuan2502/nextjs-amata/commit/8dc2f8f6339a87b38254eb08c1445a75195ecce6))
