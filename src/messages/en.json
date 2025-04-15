@@ -46,6 +46,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "next": "Next",
+    "pause": "Pause",
+    "reset": "Reset",
     "retry": "Retry",
     "save": "Save",
     "signIn": "Sign In",
