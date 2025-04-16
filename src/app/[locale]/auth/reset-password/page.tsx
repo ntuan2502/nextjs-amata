@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { Button, Input, Link } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { ROUTES } from "@/constants/routes";
+import { AUTH_ROUTES } from "@/constants/routes";
 import { toast } from "react-toastify";
 import { isValidPassword } from "@/utils/validators";
 import { AuthFieldErrors } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
 import { AcmeIcon } from "@/components/icons";
-import AuthSocialLogin from "@/components/auth/AuthSocialLogin";
+import SocialLogin from "@/components/auth/SocialLogin";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 
 export default function ResetPasswordPage() {
@@ -143,10 +143,10 @@ export default function ResetPasswordPage() {
             {tCta("submit")}
           </Button>
         </form>
-        <AuthSocialLogin />
+        <SocialLogin />
         <p className="text-center text-small">
           {tRegister("alreadyHaveAccount")}&nbsp;
-          <Link href={ROUTES.AUTH.LOGIN} size="sm">
+          <Link href={AUTH_ROUTES.LOGIN} size="sm">
             {tCta("signIn")}
           </Link>
         </p>

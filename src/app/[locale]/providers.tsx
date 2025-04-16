@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { HeroUIProvider } from "@heroui/react";
 import { ReactNode } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/auth";
 
 // Only if using TypeScript
 declare module "@react-types/shared" {

@@ -26,11 +26,11 @@ import {
   Server,
   TagUser,
 } from "../icons";
-import { ROUTES } from "@/constants/routes";
+import { AUTH_ROUTES, HOME_ROUTE } from "@/constants/routes";
 import { ThemeSwitcher } from "../theme/ThemeSwitcher";
 import LanguageSwitcher from "../language/LanguageSwitcher";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/auth/useAuth";
 
 export default function NavbarComponent() {
   const { tCta } = useAppTranslations();
@@ -75,7 +75,7 @@ export default function NavbarComponent() {
 
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
-          <Link href={ROUTES.HOME}>
+          <Link href={HOME_ROUTE}>
             <AcmeIcon />
             <p className="font-bold text-inherit">ACME</p>
           </Link>
@@ -84,7 +84,7 @@ export default function NavbarComponent() {
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
-          <Link href={ROUTES.HOME}>
+          <Link href={HOME_ROUTE}>
             <AcmeIcon />
             <p className="font-bold text-inherit">ACME</p>
           </Link>
@@ -162,10 +162,10 @@ export default function NavbarComponent() {
         {!user ? (
           <>
             <NavbarItem className="hidden lg:flex">
-              <Link href={ROUTES.AUTH.LOGIN}>{tCta("signIn")}</Link>
+              <Link href={AUTH_ROUTES.LOGIN}>{tCta("signIn")}</Link>
             </NavbarItem>
             <NavbarItem>
-              <Link color="warning" href={ROUTES.AUTH.REGISTER}>
+              <Link color="warning" href={AUTH_ROUTES.REGISTER}>
                 {tCta("signUp")}
               </Link>
             </NavbarItem>

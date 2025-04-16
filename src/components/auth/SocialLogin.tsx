@@ -4,7 +4,7 @@ import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { Divider, Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
-export default function AuthSocialLogin() {
+export default function SocialLogin() {
   const { tSocialLogin } = useAppTranslations();
   return (
     <>
