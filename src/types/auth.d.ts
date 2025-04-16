@@ -1,11 +1,9 @@
-// types/auth.ts
-
 export type AuthFieldErrors = {
   email?: string;
   password?: string;
   fullname?: string;
   confirmPassword?: string;
-  [key: string]: string | undefined; // để hỗ trợ thêm trường tùy ý sau này
+  [key: string]: string | undefined;
 };
 
 export type LoginPayload = {

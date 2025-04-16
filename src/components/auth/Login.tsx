@@ -4,15 +4,15 @@ import { useState } from "react";
 import { Button, Input, Checkbox, Link, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { AcmeIcon } from "@/components/icons";
-import { ROUTES } from "@/constants/routes";
 import { isValidEmail } from "@/utils/validators";
 import { toast } from "react-toastify";
 import { AuthFieldErrors, LoginPayload } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
-import AuthSocialLogin from "@/components/auth/AuthSocialLogin";
+import SocialLogin from "@/components/auth/SocialLogin";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/auth/useAuth";
 import { AxiosError } from "axios";
+import { AUTH_ROUTES } from "@/constants/routes";
 
 export default function LoginComponent() {
   const { tLogin, tCta, tLabels, tErrors } = useAppTranslations();
@@ -120,7 +120,7 @@ export default function LoginComponent() {
             </Checkbox>
             <Link
               className="text-default-500"
-              href={ROUTES.AUTH.FORGOT_PASSWORD}
+              href={AUTH_ROUTES.FORGOT_PASSWORD}
               size="sm"
             >
               {tLogin("forgot")}
@@ -130,10 +130,10 @@ export default function LoginComponent() {
             {tLogin("submit")}
           </Button>
         </Form>
-        <AuthSocialLogin />
+        <SocialLogin />
         <p className="text-center text-small">
           {tLogin("noAccount")}&nbsp;
-          <Link href={ROUTES.AUTH.REGISTER} size="sm">
+          <Link href={AUTH_ROUTES.REGISTER} size="sm">
             {tCta("signUp")}
           </Link>
         </p>

@@ -1,21 +1,13 @@
 "use client";
 
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { LoginPayload, User } from "@/types/auth";
 import axios from "axios";
-import { env } from "@/lib/env";
 
-type AuthContextType = {
-  user: User | null;
-  login: (payload: LoginPayload) => Promise<void>;
-  logout: () => void;
-};
-
-export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
-);
+import { ENV } from "@/config";
+import { AuthContext, AuthContextType } from "./AuthContext";
+import { User } from "@/types/auth";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -32,21 +24,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const login = async (payload: LoginPayload) => {
+  const login: AuthContextType["login"] = async (payload) => {
     const res = await axios.post<{
       user: User;
       access_token: string;
       refresh_token: string;
-    }>(`${env.api_url}/auth/login`, payload);
+    }>(`${ENV.API_URL}/auth/login`, payload);
+
     const { user, access_token, refresh_token } = res.data;
+
     Cookies.set("access_token", access_token, { path: "/" });
     Cookies.set("refresh_token", refresh_token, { path: "/" });
     Cookies.set("user", JSON.stringify(user), { path: "/" });
+
     setUser(user);
     router.push("/");
   };
 
-  const logout = () => {
+  const logout: AuthContextType["logout"] = () => {
     Cookies.remove("access_token");
     Cookies.remove("refresh_token");
     Cookies.remove("user");

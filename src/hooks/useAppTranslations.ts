@@ -1,4 +1,3 @@
-// hooks/useAppTranslations.ts
 import { useTranslations } from "next-intl";
 
 export function useAppTranslations() {

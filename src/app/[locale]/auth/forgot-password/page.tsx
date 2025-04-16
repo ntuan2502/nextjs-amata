@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { Button, Input, Link, Form } from "@heroui/react";
 import { AcmeIcon } from "@/components/icons";
-import { ROUTES } from "@/constants/routes";
 import { isValidEmail } from "@/utils/validators";
 import { toast } from "react-toastify";
 import { AuthFieldErrors } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
-import AuthSocialLogin from "@/components/auth/AuthSocialLogin";
+import SocialLogin from "@/components/auth/SocialLogin";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
+import { AUTH_ROUTES } from "@/constants/routes";
 
 export default function ForgotPasswordPage() {
   const { tForgotPassword, tCta, tLabels, tErrors } = useAppTranslations();
@@ -68,10 +68,10 @@ export default function ForgotPasswordPage() {
             {tCta("submit")}
           </Button>
         </Form>
-        <AuthSocialLogin />
+        <SocialLogin />
         <p className="text-center text-small">
           {tForgotPassword("rememberPassword")}&nbsp;
-          <Link href={ROUTES.AUTH.LOGIN} size="sm">
+          <Link href={AUTH_ROUTES.LOGIN} size="sm">
             {tCta("signIn")}
           </Link>
         </p>
