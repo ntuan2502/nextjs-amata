@@ -89,6 +89,7 @@ export default function ResetPasswordPage() {
         </div>
         <form className="flex flex-col gap-4">
           <Input
+            autoFocus
             isRequired
             endContent={
               <button type="button" onClick={toggleVisibility}>

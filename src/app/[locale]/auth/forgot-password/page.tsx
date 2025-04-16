@@ -55,6 +55,7 @@ export default function ForgotPasswordPage() {
         </div>
         <Form className="flex flex-col gap-3" validationBehavior="native">
           <Input
+            autoFocus
             isRequired
             label={tLabels("emailLabel")}
             name="email"

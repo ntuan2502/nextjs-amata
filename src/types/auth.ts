@@ -8,7 +8,7 @@ export type AuthFieldErrors = {
   [key: string]: string | undefined; // để hỗ trợ thêm trường tùy ý sau này
 };
 
-export type LoginFormData = {
+export type LoginPayload = {
   email: string;
   password: string;
 };
@@ -18,4 +18,10 @@ export type RegisterFormData = {
   email: string;
   password: string;
   confirmPassword: string;
+};
+
+export type User = {
+  id: number;
+  email: string;
+  name: string;
 };
