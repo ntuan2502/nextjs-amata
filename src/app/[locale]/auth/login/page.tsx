@@ -1,13 +1,12 @@
-import { redirect } from "next/navigation";
 import LoginComponent from "@/components/auth/Login";
-import { cookies } from "next/headers";
+import { getUserFromCookies } from "@/libs/auth/getUserFromCookies";
+import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
-  const cookieStore = await cookies();
-  const user = cookieStore.get("user");
+  const name = await getUserFromCookies();
 
-  if (user?.name) {
-    redirect("/");
+  if (name) {
+    return redirect("/");
   }
 
   return <LoginComponent />;
