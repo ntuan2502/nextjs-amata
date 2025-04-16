@@ -30,10 +30,15 @@ import { ROUTES } from "@/constants/routes";
 import { ThemeSwitcher } from "../theme/ThemeSwitcher";
 import LanguageSwitcher from "../language/LanguageSwitcher";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function NavbarComponent() {
   const { tCta } = useAppTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { user, logout } = useAuth();
+
+  const avatarInitial = user?.name ? user.name.charAt(0).toUpperCase() : "?";
 
   const menuItems = [
     "Profile",
@@ -154,64 +159,92 @@ export default function NavbarComponent() {
       </NavbarContent>
 
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href={ROUTES.AUTH.LOGIN}>{tCta("signIn")}</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="warning" href={ROUTES.AUTH.REGISTER}>
-            {tCta("signUp")}
-          </Link>
-        </NavbarItem>
+        {!user ? (
+          <>
+            <NavbarItem className="hidden lg:flex">
+              <Link href={ROUTES.AUTH.LOGIN}>{tCta("signIn")}</Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link color="warning" href={ROUTES.AUTH.REGISTER}>
+                {tCta("signUp")}
+              </Link>
+            </NavbarItem>
+          </>
+        ) : (
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              {/* <Avatar
+                isBordered
+                as="button"
+                className="transition-transform"
+                color="secondary"
+                name="Jason Hughes"
+                size="sm"
+                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+              /> */}
+              <Avatar
+                isBordered
+                as="button"
+                className="transition-transform"
+                color="secondary"
+                name={avatarInitial}
+                size="sm"
+              >
+                {avatarInitial}
+              </Avatar>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Profile Actions" variant="flat">
+              <DropdownItem
+                key="profile"
+                textValue="profile"
+                className="h-14 gap-2"
+              >
+                <p className="font-semibold">Signed in as</p>
+                <p className="font-semibold">{user.email}</p>
+              </DropdownItem>
+              <DropdownItem key="username" textValue="username">
+                {user.name}
+              </DropdownItem>
+
+              <DropdownItem key="settings" textValue="settings">
+                My Settings
+              </DropdownItem>
+              <DropdownItem key="team_settings" textValue="team_settings">
+                Team Settings
+              </DropdownItem>
+              <DropdownItem key="analytics" textValue="analytics">
+                Analytics
+              </DropdownItem>
+              <DropdownItem key="system" textValue="system">
+                System
+              </DropdownItem>
+              <DropdownItem key="configurations" textValue="configurations">
+                Configurations
+              </DropdownItem>
+              <DropdownItem
+                key="help_and_feedback"
+                textValue="help_and_feedback"
+              >
+                Help & Feedback
+              </DropdownItem>
+              <DropdownItem
+                key="logout"
+                color="danger"
+                textValue="logout"
+                onPress={logout}
+              >
+                Log Out
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        )}
+
         <NavbarItem>
           <ThemeSwitcher />
         </NavbarItem>
         <NavbarItem>
           <LanguageSwitcher />
         </NavbarItem>
-        <Dropdown placement="bottom-end">
-          <DropdownTrigger>
-            <Avatar
-              isBordered
-              as="button"
-              className="transition-transform"
-              color="secondary"
-              name="Jason Hughes"
-              size="sm"
-              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-            />
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Profile Actions" variant="flat">
-            <DropdownItem
-              key="profile"
-              textValue="profile"
-              className="h-14 gap-2"
-            >
-              <p className="font-semibold">Signed in as</p>
-              <p className="font-semibold">zoey@example.com</p>
-            </DropdownItem>
-            <DropdownItem key="settings" textValue="settings">
-              My Settings
-            </DropdownItem>
-            <DropdownItem key="team_settings" textValue="team_settings">
-              Team Settings
-            </DropdownItem>
-            <DropdownItem key="analytics" textValue="analytics">
-              Analytics
-            </DropdownItem>
-            <DropdownItem key="system" textValue="system">
-              System
-            </DropdownItem>
-            <DropdownItem key="configurations" textValue="configurations">
-              Configurations
-            </DropdownItem>
-            <DropdownItem key="help_and_feedback" textValue="help_and_feedback">
-              Help & Feedback
-            </DropdownItem>
-            <DropdownItem key="logout" color="danger" textValue="logout">
-              Log Out
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
       </NavbarContent>
 
       <NavbarMenu>

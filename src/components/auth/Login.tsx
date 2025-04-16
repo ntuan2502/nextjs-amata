@@ -1,0 +1,143 @@
+"use client";
+
+import { useState } from "react";
+import { Button, Input, Checkbox, Link, Form } from "@heroui/react";
+import { Icon } from "@iconify/react";
+import { AcmeIcon } from "@/components/icons";
+import { ROUTES } from "@/constants/routes";
+import { isValidEmail } from "@/utils/validators";
+import { toast } from "react-toastify";
+import { AuthFieldErrors, LoginPayload } from "@/types/auth";
+import { useFormField } from "@/hooks/useFormField";
+import AuthSocialLogin from "@/components/auth/AuthSocialLogin";
+import { useAppTranslations } from "@/hooks/useAppTranslations";
+import { useAuth } from "@/hooks/useAuth";
+import { AxiosError } from "axios";
+
+export default function LoginComponent() {
+  const { tLogin, tCta, tLabels, tErrors } = useAppTranslations();
+  const { login } = useAuth();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+  const [errors, setErrors] = useState<AuthFieldErrors>({});
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const emailProps = useFormField("email", email, setEmail, errors, setErrors);
+  const passwordProps = useFormField(
+    "password",
+    password,
+    setPassword,
+    errors,
+    setErrors
+  );
+
+  function validateForm() {
+    const newErrors: AuthFieldErrors = {};
+    let hasError = false;
+
+    if (!email.trim()) {
+      newErrors.email = tErrors("emailRequired");
+      hasError = true;
+    } else if (!isValidEmail(email)) {
+      newErrors.email = tErrors("emailInvalid");
+      hasError = true;
+    }
+
+    if (!password) {
+      newErrors.password = tErrors("passwordRequired");
+      hasError = true;
+    }
+
+    return { hasError, newErrors };
+  }
+
+  async function handleSubmit() {
+    const { hasError, newErrors } = validateForm();
+    setErrors(newErrors);
+
+    if (hasError) return;
+
+    try {
+      const payload: LoginPayload = { email, password };
+      await login(payload);
+    } catch (err) {
+      const error = err as AxiosError<{ message: string | string[] }>;
+      const errorMessage =
+        error.response?.data?.message || "Đăng nhập thất bại!";
+      toast.error(Array.isArray(errorMessage) ? errorMessage[0] : errorMessage);
+    }
+  }
+
+  return (
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
+        <div className="flex flex-col items-center pb-6">
+          <AcmeIcon size={60} />
+          <p className="text-xl font-medium">{tLogin("title")}</p>
+          <p className="text-small text-default-500">{tLogin("subtitle")}</p>
+        </div>
+        <Form className="flex flex-col gap-3" validationBehavior="native">
+          <Input
+            autoFocus
+            isRequired
+            label={tLabels("emailLabel")}
+            name="email"
+            placeholder={tLabels("emailPlaceholder")}
+            type="email"
+            variant="bordered"
+            {...emailProps}
+          />
+          <Input
+            isRequired
+            endContent={
+              <button type="button" onClick={toggleVisibility}>
+                {isVisible ? (
+                  <Icon
+                    className="pointer-events-none text-2xl text-default-400"
+                    icon="solar:eye-closed-linear"
+                  />
+                ) : (
+                  <Icon
+                    className="pointer-events-none text-2xl text-default-400"
+                    icon="solar:eye-bold"
+                  />
+                )}
+              </button>
+            }
+            label={tLabels("passwordLabel")}
+            name="password"
+            placeholder={tLabels("passwordPlaceholder")}
+            type={isVisible ? "text" : "password"}
+            variant="bordered"
+            {...passwordProps}
+          />
+          <div className="flex w-full items-center justify-between px-1 py-2">
+            <Checkbox name="remember" size="sm">
+              {tLogin("remember")}
+            </Checkbox>
+            <Link
+              className="text-default-500"
+              href={ROUTES.AUTH.FORGOT_PASSWORD}
+              size="sm"
+            >
+              {tLogin("forgot")}
+            </Link>
+          </div>
+          <Button className="w-full" color="primary" onPress={handleSubmit}>
+            {tLogin("submit")}
+          </Button>
+        </Form>
+        <AuthSocialLogin />
+        <p className="text-center text-small">
+          {tLogin("noAccount")}&nbsp;
+          <Link href={ROUTES.AUTH.REGISTER} size="sm">
+            {tCta("signUp")}
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}

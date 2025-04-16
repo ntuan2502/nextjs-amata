@@ -138,6 +138,7 @@ export default function RegisterPage() {
         </div>
         <form className="flex flex-col gap-4">
           <Input
+            autoFocus
             isRequired
             label={tLabels("fullnameLabel")}
             labelPlacement="outside"
