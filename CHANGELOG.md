@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.0.0...v1.1.0) (2025-04-16)
+
+
+### Features
+
+* **auth:** implement authentication context and login functionality ([2e66f5c](https://github.com/ntuan2502/nextjs-amata/commit/2e66f5cd45447a9dd732b29b81846536173b0efd))
+
 # 1.0.0 (2025-04-15)
 
 
