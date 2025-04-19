@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.1.0...v1.2.0) (2025-04-19)
+
+
+### Features
+
+* **account:** add account management pages and translations ([99242a7](https://github.com/ntuan2502/nextjs-amata/commit/99242a7f15d6e0cf479637cf96aeede06c1f02cc))
+* **auth:** implement user authentication flow with forgot, register, and reset password components ([c076ab2](https://github.com/ntuan2502/nextjs-amata/commit/c076ab212db6515768c7532089419e14fa6b8e13))
+
 # [1.1.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.0.0...v1.1.0) (2025-04-16)
 
 
