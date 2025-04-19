@@ -141,7 +141,6 @@ export default function RegisterComponent() {
             autoFocus
             isRequired
             label={tLabels("fullnameLabel")}
-            labelPlacement="outside"
             name="fullname"
             placeholder={tLabels("fullnamePlaceholder")}
             type="text"
@@ -151,7 +150,6 @@ export default function RegisterComponent() {
           <Input
             isRequired
             label={tLabels("emailLabel")}
-            labelPlacement="outside"
             name="email"
             placeholder={tLabels("emailPlaceholder")}
             type="email"
@@ -176,7 +174,6 @@ export default function RegisterComponent() {
               </button>
             }
             label={tLabels("passwordLabel")}
-            labelPlacement="outside"
             name="password"
             placeholder={tLabels("passwordPlaceholder")}
             type={isVisible ? "text" : "password"}
@@ -201,7 +198,6 @@ export default function RegisterComponent() {
               </button>
             }
             label={tLabels("confirmPasswordLabel")}
-            labelPlacement="outside"
             name="confirmPassword"
             placeholder={tLabels("confirmPasswordPlaceholder")}
             type={isConfirmVisible ? "text" : "password"}

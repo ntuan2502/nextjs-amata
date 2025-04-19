@@ -107,7 +107,6 @@ export default function ResetPasswordComponent() {
               </button>
             }
             label={tLabels("passwordLabel")}
-            labelPlacement="outside"
             name="password"
             placeholder={tLabels("passwordPlaceholder")}
             type={isVisible ? "text" : "password"}
@@ -132,7 +131,6 @@ export default function ResetPasswordComponent() {
               </button>
             }
             label={tLabels("confirmPasswordLabel")}
-            labelPlacement="outside"
             name="confirmPassword"
             placeholder={tLabels("confirmPasswordPlaceholder")}
             type={isConfirmVisible ? "text" : "password"}

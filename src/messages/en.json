@@ -1,4 +1,18 @@
 {
+  "account": {
+    "profile": {
+      "title": "Profile",
+      "description": "Manage your profile and account settings."
+    },
+    "sessions": {
+      "title": "Sessions",
+      "description": "Manage your active sessions and devices."
+    },
+    "changePassword": {
+      "title": "Change Password",
+      "description": "Update your password to keep your account secure."
+    }
+  },
   "auth": {
     "forgotPassword": {
       "subtitle": "Enter your email address below and we will send you instructions to reset your password.",
@@ -73,6 +87,12 @@
     "fullnameLabel": "Fullname",
     "fullnamePlaceholder": "Fullname",
     "passwordLabel": "Password",
-    "passwordPlaceholder": "Enter your password"
+    "passwordPlaceholder": "Enter your password",
+    "officeLabel": "Office",
+    "officePlaceholder": "e.g. AMATA City Long Thành",
+    "genderLabel": "Gender",
+    "genderMale": "Male",
+    "genderFemale": "Female",
+    "birthDateLabel": "Birth Date"
   }
 }

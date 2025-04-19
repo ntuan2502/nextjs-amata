@@ -2,6 +2,10 @@ import { useTranslations } from "next-intl";
 
 export function useAppTranslations() {
   return {
+    tAccount: useTranslations("account"),
+    tProfile: useTranslations("account.profile"),
+    tSessions: useTranslations("account.sessions"),
+    tChangePassword: useTranslations("account.changePassword"),
     tLogin: useTranslations("auth.login"),
     tRegister: useTranslations("auth.register"),
     tForgotPassword: useTranslations("auth.forgotPassword"),
