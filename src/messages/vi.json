@@ -1,4 +1,18 @@
 {
+  "account": {
+    "profile": {
+      "title": "Hồ sơ",
+      "description": "Quản lý hồ sơ và cài đặt tài khoản của bạn."
+    },
+    "sessions": {
+      "title": "Phiên làm việc",
+      "description": "Quản lý các phiên làm việc và thiết bị đang hoạt động của bạn."
+    },
+    "changePassword": {
+      "title": "Đổi mật khẩu",
+      "description": "Cập nhật mật khẩu của bạn để giữ tài khoản an toàn."
+    }
+  },
   "auth": {
     "forgotPassword": {
       "subtitle": "Nhập địa chỉ email của bạn bên dưới và chúng tôi sẽ gửi hướng dẫn để đặt lại mật khẩu.",
@@ -73,6 +87,12 @@
     "fullnameLabel": "Họ và tên",
     "fullnamePlaceholder": "Nhập họ và tên của bạn",
     "passwordLabel": "Mật khẩu",
-    "passwordPlaceholder": "Nhập mật khẩu của bạn"
+    "passwordPlaceholder": "Nhập mật khẩu của bạn",
+    "officeLabel": "Văn phòng",
+    "officePlaceholder": "ví dụ: AMATA City Long Thành",
+    "genderLabel": "Giới tính",
+    "genderMale": "Nam",
+    "genderFemale": "Nữ",
+    "birthDateLabel": "Ngày sinh"
   }
 }
