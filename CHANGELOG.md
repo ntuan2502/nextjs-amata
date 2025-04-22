@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.2.0...v1.3.0) (2025-04-22)
+
+
+### Features
+
+* **account:** implement profile and sessions management with translations and session handling ([fbd9a33](https://github.com/ntuan2502/nextjs-amata/commit/fbd9a339c2f12a9bcff0e4a0770cf7afc39375fd))
+
 # [1.2.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.1.0...v1.2.0) (2025-04-19)
 
 
