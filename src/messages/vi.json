@@ -5,8 +5,16 @@
       "description": "Quản lý hồ sơ và cài đặt tài khoản của bạn."
     },
     "sessions": {
-      "title": "Phiên làm việc",
-      "description": "Quản lý các phiên làm việc và thiết bị đang hoạt động của bạn."
+      "title": "Phiên hoạt động",
+      "description": "Danh sách các thiết bị đã đăng nhập vào tài khoản của bạn.",
+      "ipAddress": "Địa chỉ IP",
+      "createdAt": "Thời gian tạo",
+      "lastUsedAt": "Lần sử dụng cuối",
+      "lastRefreshedAt": "Làm mới lần cuối",
+      "status": "Trạng thái",
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động",
+      "currentSession": "Thiết bị này"
     },
     "changePassword": {
       "title": "Đổi mật khẩu",

@@ -26,16 +26,17 @@ import {
   Server,
   TagUser,
 } from "../icons";
-import { AUTH_ROUTES, HOME_ROUTE } from "@/constants/routes";
+import { ACCOUNT_ROUTES, AUTH_ROUTES, HOME_ROUTE } from "@/constants/routes";
 import { ThemeSwitcher } from "../theme/ThemeSwitcher";
 import LanguageSwitcher from "../language/LanguageSwitcher";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { useAuth } from "@/contexts/auth/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function NavbarComponent() {
   const { tCta } = useAppTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const router = useRouter();
   const { user, logout } = useAuth();
 
   const avatarInitial = user?.name ? user.name.charAt(0).toUpperCase() : "?";
@@ -195,8 +196,8 @@ export default function NavbarComponent() {
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownItem
-                key="profile"
-                textValue="profile"
+                key="info"
+                textValue="info"
                 className="h-14 gap-2"
               >
                 <p className="font-semibold">Signed in as</p>
@@ -206,8 +207,12 @@ export default function NavbarComponent() {
                 {user.name}
               </DropdownItem>
 
-              <DropdownItem key="settings" textValue="settings">
-                My Settings
+              <DropdownItem
+                key="profile"
+                textValue="profile"
+                onPress={() => router.push(ACCOUNT_ROUTES.PROFILE)}
+              >
+                Profile
               </DropdownItem>
               <DropdownItem key="team_settings" textValue="team_settings">
                 Team Settings

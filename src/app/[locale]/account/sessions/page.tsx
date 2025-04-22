@@ -1,14 +1,13 @@
-"use client";
+import SessionsComponent from "@/components/account/Sessions";
+import { getUserFromCookies } from "@/libs/auth/getUserFromCookies";
+import { redirect } from "next/navigation";
 
-import { useAppTranslations } from "@/hooks/useAppTranslations";
+export default async function SessionPage () {
+  const name = await getUserFromCookies();
 
-export default function SessionsPage() {
-  const { tSessions } = useAppTranslations();
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-2">{tSessions("title")}</h2>
-      <p className="text-sm mb-4">{tSessions("description")}</p>
-      {/* Form profile ở đây */}
-    </div>
-  );
+  if (!name) {
+    return redirect("/auth/login");
+  }
+
+  return <SessionsComponent />;
 }

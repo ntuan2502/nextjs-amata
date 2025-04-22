@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axiosInstance from "@/libs/axiosInstance";
 
 import { ENV } from "@/config";
 import { AuthContext, AuthContextType } from "./AuthContext";
@@ -25,16 +25,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const login: AuthContextType["login"] = async (payload) => {
-    const res = await axios.post<{
+    const res = await axiosInstance.post<{
       user: User;
-      access_token: string;
-      refresh_token: string;
+      accessToken: string;
+      refreshToken: string;
     }>(`${ENV.API_URL}/auth/login`, payload);
 
-    const { user, access_token, refresh_token } = res.data;
+    const { user, accessToken, refreshToken } = res.data;
 
-    Cookies.set("access_token", access_token, { path: "/" });
-    Cookies.set("refresh_token", refresh_token, { path: "/" });
+    Cookies.set("accessToken", accessToken, { path: "/" });
+    Cookies.set("refreshToken", refreshToken, { path: "/" });
     Cookies.set("user", JSON.stringify(user), { path: "/" });
 
     setUser(user);
@@ -42,8 +42,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout: AuthContextType["logout"] = () => {
-    Cookies.remove("access_token");
-    Cookies.remove("refresh_token");
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
     Cookies.remove("user");
     setUser(null);
     router.push("/auth/login");

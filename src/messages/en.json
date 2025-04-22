@@ -5,8 +5,16 @@
       "description": "Manage your profile and account settings."
     },
     "sessions": {
-      "title": "Sessions",
-      "description": "Manage your active sessions and devices."
+      "title": "Active Sessions",
+      "description": "List of devices that have logged into your account.",
+      "ipAddress": "IP Address",
+      "createdAt": "Created At",
+      "lastUsedAt": "Last Used",
+      "lastRefreshedAt": "Last Refreshed",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "currentSession": "This device"
     },
     "changePassword": {
       "title": "Change Password",
