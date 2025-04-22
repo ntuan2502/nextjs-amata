@@ -1,0 +1,114 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useAppTranslations } from "@/hooks/useAppTranslations";
+import { format } from "date-fns";
+import Cookies from "js-cookie";
+import { ENV } from "@/config";
+import axiosInstance from "@/libs/axiosInstance";
+
+type Session = {
+  id: number;
+  accessToken: string;
+  refreshToken: string;
+  refreshTokenExpiresAt: string;
+  isActive: boolean;
+  createdAt: string;
+  lastUsedAt: string;
+  lastRefreshedAt: string | null;
+  ipAddress: string;
+};
+
+export default function SessionsComponent() {
+  const { tSessions } = useAppTranslations();
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [currentAccessToken, setCurrentAccessToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const accessToken = Cookies.get("accessToken");
+    if (!accessToken) {
+      console.warn("No access token found");
+      return;
+    }
+
+    setCurrentAccessToken(accessToken);
+    const fetchSessions = async () => {
+      try {
+        const res = await axiosInstance.get(`${ENV.API_URL}/auth/sessions`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setSessions(res.data);
+      } catch (err) {
+        console.error("Failed to fetch sessions", err);
+      }
+    };
+
+    fetchSessions();
+  }, []);
+
+  return (
+    <div>
+      <h2 className="text-2xl font-bold mb-2">{tSessions("title")}</h2>
+      <p className="text-sm mb-4">{tSessions("description")}</p>
+
+      <div className="space-y-4">
+        {sessions?.map((session) => {
+          const isCurrent = session.accessToken === currentAccessToken;
+
+          return (
+            <div
+              key={session.id}
+              className={`border p-4 rounded-md ${
+                isCurrent ? "border-blue-500 bg-blue-50" : "border-gray-300"
+              }`}
+            >
+              <div className="flex justify-between items-center mb-2">
+                <div className="font-semibold">
+                  {tSessions("ipAddress")}: {session.ipAddress}
+                </div>
+                {isCurrent && (
+                  <span className="text-xs text-blue-600 font-medium">
+                    {tSessions("currentSession")}
+                  </span>
+                )}
+              </div>
+              <div className="text-sm text-gray-700">
+                <div>
+                  {tSessions("createdAt")}:{" "}
+                  {format(new Date(session.createdAt), "yyyy-MM-dd HH:mm:ss")}
+                </div>
+                <div>
+                  {tSessions("lastUsedAt")}:{" "}
+                  {format(new Date(session.lastUsedAt), "yyyy-MM-dd HH:mm:ss")}
+                </div>
+                <div>
+                  {tSessions("lastRefreshedAt")}:{" "}
+                  {session.lastRefreshedAt
+                    ? format(
+                        new Date(session.lastRefreshedAt),
+                        "yyyy-MM-dd HH:mm:ss"
+                      )
+                    : "-"}
+                </div>
+                <div>
+                  {tSessions("status")}:{" "}
+                  <span
+                    className={`font-medium ${
+                      session.isActive ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {session.isActive
+                      ? tSessions("active")
+                      : tSessions("inactive")}
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
