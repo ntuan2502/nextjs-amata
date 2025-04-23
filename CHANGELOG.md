@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.3.0...v1.4.0) (2025-04-23)
+
+
+### Features
+
+* **sessions:** add logout functionality and improve session fetching logic ([f181c7e](https://github.com/ntuan2502/nextjs-amata/commit/f181c7eba53fd3ea9a10c36e12e4796a2703335b))
+
 # [1.3.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.2.0...v1.3.0) (2025-04-22)
 
 
