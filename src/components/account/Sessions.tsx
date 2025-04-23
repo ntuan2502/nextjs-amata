@@ -6,6 +6,9 @@ import { format } from "date-fns";
 import Cookies from "js-cookie";
 import { ENV } from "@/config";
 import axiosInstance from "@/libs/axiosInstance";
+import { Button } from "@heroui/react";
+import axios from "axios";
+import { useAuth } from "@/contexts/auth";
 
 type Session = {
   id: number;
@@ -20,9 +23,13 @@ type Session = {
 };
 
 export default function SessionsComponent() {
+  const { user } = useAuth();
   const { tSessions } = useAppTranslations();
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [currentAccessToken, setCurrentAccessToken] = useState<string | null>(null);
+  const [currentAccessToken, setCurrentAccessToken] = useState<string | null>(
+    null
+  );
+  const [random, setRandom] = useState(0);
 
   useEffect(() => {
     const accessToken = Cookies.get("accessToken");
@@ -32,21 +39,25 @@ export default function SessionsComponent() {
     }
 
     setCurrentAccessToken(accessToken);
-    const fetchSessions = async () => {
-      try {
-        const res = await axiosInstance.get(`${ENV.API_URL}/auth/sessions`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        setSessions(res.data);
-      } catch (err) {
-        console.error("Failed to fetch sessions", err);
-      }
-    };
-
     fetchSessions();
-  }, []);
+  }, [random]);
+
+  const fetchSessions = async () => {
+    try {
+      const res = await axiosInstance.get(`${ENV.API_URL}/auth/sessions`);
+      setSessions(res.data);
+    } catch (err) {
+      console.error("Failed to fetch sessions", err);
+    }
+  };
+
+  async function logoutSession(accessToken: string) {
+    setRandom(Math.random());
+    return await axios.post(`${ENV.API_URL}/auth/logout-session`, {
+      userId: user?.id,
+      accessToken: accessToken,
+    });
+  }
 
   return (
     <div>
@@ -68,11 +79,21 @@ export default function SessionsComponent() {
                 <div className="font-semibold">
                   {tSessions("ipAddress")}: {session.ipAddress}
                 </div>
-                {isCurrent && (
-                  <span className="text-xs text-blue-600 font-medium">
-                    {tSessions("currentSession")}
-                  </span>
-                )}
+                <div className="flex items-center gap-2">
+                  {isCurrent && (
+                    <span className="text-xs text-blue-600 font-medium">
+                      {tSessions("currentSession")}
+                    </span>
+                  )}
+                  {session.isActive && (
+                    <Button
+                      color="danger"
+                      onPress={() => logoutSession(session.accessToken)}
+                    >
+                      Logout
+                    </Button>
+                  )}
+                </div>
               </div>
               <div className="text-sm text-gray-700">
                 <div>
