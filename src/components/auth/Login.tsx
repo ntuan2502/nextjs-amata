@@ -79,7 +79,14 @@ export default function LoginComponent() {
           <p className="text-xl font-medium">{tLogin("title")}</p>
           <p className="text-small text-default-500">{tLogin("subtitle")}</p>
         </div>
-        <Form className="flex flex-col gap-3" validationBehavior="native">
+        <Form
+          className="flex flex-col gap-3"
+          validationBehavior="native"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+        >
           <Input
             autoFocus
             isRequired
@@ -126,7 +133,7 @@ export default function LoginComponent() {
               {tLogin("forgot")}
             </Link>
           </div>
-          <Button className="w-full" color="primary" onPress={handleSubmit}>
+          <Button className="w-full" color="primary" type="submit">
             {tLogin("submit")}
           </Button>
         </Form>

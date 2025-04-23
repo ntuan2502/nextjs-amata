@@ -41,7 +41,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     router.push("/");
   };
 
-  const logout: AuthContextType["logout"] = () => {
+  const logout: AuthContextType["logout"] = async () => {
+    await axiosInstance.post<{
+      accessToken: string;
+    }>(`${ENV.API_URL}/auth/logout`);
+
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     Cookies.remove("user");
