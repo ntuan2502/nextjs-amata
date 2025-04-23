@@ -20,6 +20,7 @@ type Session = {
   lastUsedAt: string;
   lastRefreshedAt: string | null;
   ipAddress: string;
+  userAgent:  string;
 };
 
 export default function SessionsComponent() {
@@ -124,6 +125,9 @@ export default function SessionsComponent() {
                       ? tSessions("active")
                       : tSessions("inactive")}
                   </span>
+                </div>
+                <div>
+                  UserAgent: {session.userAgent}
                 </div>
               </div>
             </div>
