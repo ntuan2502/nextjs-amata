@@ -85,7 +85,12 @@
     "fullnameRequired": "Fullname is required.",
     "passwordInvalid": "Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character.",
     "passwordRequired": "Password is required.",
-    "passwordsDoNotMatch": "Passwords do not match."
+    "passwordsDoNotMatch": "Passwords do not match.",
+    "newPasswordInvalid": "New password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character.",
+    "oldPasswordRequired": "Old password is required.",
+    "newPasswordRequired": "New password is required.",
+    "confirmNewPasswordRequired": "Confirm new password is required.",
+    "confirmNewPasswordsDoNotMatch": "Confirm new password do not match."
   },
   "labels": {
     "confirmPasswordLabel": "Confirm Password",
@@ -101,6 +106,12 @@
     "genderLabel": "Gender",
     "genderMale": "Male",
     "genderFemale": "Female",
-    "birthDateLabel": "Birth Date"
+    "birthDateLabel": "Birth Date",
+    "oldPasswordLabel": "Old Password",
+    "oldPasswordPlaceholder": "Enter your old password",
+    "newPasswordLabel": "New Password",
+    "newPasswordPlaceholder": "Enter your new password",
+    "confirmNewPasswordLabel": "Confirm New Password",
+    "confirmNewPasswordPlaceholder": "Confirm your new password"
   }
 }

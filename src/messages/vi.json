@@ -85,7 +85,12 @@
     "fullnameRequired": "Họ và tên là bắt buộc.",
     "passwordInvalid": "Mật khẩu phải có ít nhất 8 ký tự và bao gồm ít nhất một chữ cái thường, một chữ cái hoa, một số và một ký tự đặc biệt.",
     "passwordRequired": "Mật khẩu là bắt buộc.",
-    "passwordsDoNotMatch": "Mật khẩu không khớp."
+    "passwordsDoNotMatch": "Mật khẩu không khớp.",
+    "newPasswordInvalid": "Mật khẩu mới phải có ít nhất 8 ký tự và bao gồm ít nhất một chữ cái thường, một chữ cái hoa, một số và một ký tự đặc biệt.",
+    "oldPasswordRequired": "Mật khẩu cũ là bắt buộc.",
+    "newPasswordRequired": "Mật khẩu mới là bắt buộc.",
+    "confirmNewPasswordRequired": "Xác nhận mật khẩu mới là bắt buộc.",
+    "confirmNewPasswordsDoNotMatch": "Xác nhận mật khẩu mới không khớp."
   },
   "labels": {
     "confirmPasswordLabel": "Xác nhận mật khẩu",
@@ -101,6 +106,12 @@
     "genderLabel": "Giới tính",
     "genderMale": "Nam",
     "genderFemale": "Nữ",
-    "birthDateLabel": "Ngày sinh"
+    "birthDateLabel": "Ngày sinh",
+    "oldPasswordLabel": "Mật khẩu cũ",
+    "oldPasswordPlaceholder": "Nhập mật khẩu cũ của bạn",
+    "newPasswordLabel": "Mật khẩu mới",
+    "newPasswordPlaceholder": "Nhập mật khẩu mới của bạn",
+    "confirmNewPasswordLabel": "Xác nhận mật khẩu mới",
+    "confirmNewPasswordPlaceholder": "Xác nhận mật khẩu mới của bạn"
   }
 }

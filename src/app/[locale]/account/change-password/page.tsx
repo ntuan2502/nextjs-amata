@@ -1,15 +1,13 @@
-"use client";
+import ChangePasswordComponent from "@/components/account/ChangePassword";
+import { getUserFromCookies } from "@/libs/auth/getUserFromCookies";
+import { redirect } from "next/navigation";
 
-import { useAppTranslations } from "@/hooks/useAppTranslations";
+export default async function ChangePasswordPage() {
+  const name = await getUserFromCookies();
 
-export default function ChangePasswordPage() {
-  const { tChangePassword } = useAppTranslations();
+  if (!name) {
+    return redirect("/auth/login");
+  }
 
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-2">{tChangePassword("title")}</h2>
-      <p className="text-sm mb-4">{tChangePassword("description")}</p>
-      {/* Form profile ở đây */}
-    </div>
-  );
+  return <ChangePasswordComponent />;
 }
