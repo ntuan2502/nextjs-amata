@@ -11,7 +11,6 @@ import SocialLogin from "@/components/auth/SocialLogin";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { useAuth } from "@/contexts/auth/useAuth";
 import { AUTH_ROUTES } from "@/constants/routes";
-import { handleAxiosError } from "@/libs/handleAxiosFeedback";
 
 export default function LoginComponent() {
   const { tLogin, tCta, tLabels, tErrors } = useAppTranslations();
@@ -53,18 +52,14 @@ export default function LoginComponent() {
     return { hasError, newErrors };
   }
 
-  async function handleSubmit() {
+  function handleSubmit() {
     const { hasError, newErrors } = validateForm();
     setErrors(newErrors);
 
     if (hasError) return;
 
-    try {
-      const payload: LoginPayload = { email, password };
-      await login(payload);
-    } catch (err) {
-      handleAxiosError(err);
-    }
+    const payload: LoginPayload = { email, password };
+    login(payload);
   }
 
   return (

@@ -94,10 +94,11 @@ export default function ChangePasswordComponent() {
           newPassword,
         }
       );
-      handleAxiosSuccess(res);
       setOldPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
+
+      handleAxiosSuccess(res);
     } catch (err) {
       handleAxiosError(err);
     }

@@ -3,7 +3,7 @@ import { LoginPayload, User } from "@/types/auth";
 
 export type AuthContextType = {
   user: User | null;
-  login: (payload: LoginPayload) => Promise<void>;
+  login: (payload: LoginPayload) => void;
   logout: () => void;
 };
 

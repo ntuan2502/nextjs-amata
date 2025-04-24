@@ -162,7 +162,7 @@ export default function NavbarComponent() {
       <NavbarContent justify="end">
         {!user ? (
           <>
-            <NavbarItem className="hidden lg:flex">
+            <NavbarItem className="">
               <Link href={AUTH_ROUTES.LOGIN}>{tCta("signIn")}</Link>
             </NavbarItem>
             <NavbarItem>

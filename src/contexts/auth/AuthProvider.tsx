@@ -8,6 +8,10 @@ import axiosInstance from "@/libs/axiosInstance";
 import { ENV } from "@/config";
 import { AuthContext, AuthContextType } from "./AuthContext";
 import { User } from "@/types/auth";
+import {
+  handleAxiosError,
+  handleAxiosSuccess,
+} from "@/libs/handleAxiosFeedback";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -25,32 +29,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const login: AuthContextType["login"] = async (payload) => {
-    const res = await axiosInstance.post<{
-      user: User;
-      accessToken: string;
-      refreshToken: string;
-    }>(`${ENV.API_URL}/auth/login`, payload);
+    try {
+      const res = await axiosInstance.post(
+        `${ENV.API_URL}/auth/login`,
+        payload
+      );
 
-    const { user, accessToken, refreshToken } = res.data;
+      const { user, accessToken, refreshToken } = res.data.data;
 
-    Cookies.set("accessToken", accessToken, { path: "/" });
-    Cookies.set("refreshToken", refreshToken, { path: "/" });
-    Cookies.set("user", JSON.stringify(user), { path: "/" });
+      Cookies.set("accessToken", accessToken, { path: "/" });
+      Cookies.set("refreshToken", refreshToken, { path: "/" });
+      Cookies.set("user", JSON.stringify(user), { path: "/" });
 
-    setUser(user);
-    router.push("/");
+      setUser(user);
+      router.push("/");
+
+      handleAxiosSuccess(res);
+    } catch (err) {
+      handleAxiosError(err);
+    }
   };
 
   const logout: AuthContextType["logout"] = async () => {
-    await axiosInstance.post<{
-      accessToken: string;
-    }>(`${ENV.API_URL}/auth/logout`);
+    try {
+      const res = await axiosInstance.post(`${ENV.API_URL}/auth/logout`);
 
-    Cookies.remove("accessToken");
-    Cookies.remove("refreshToken");
-    Cookies.remove("user");
-    setUser(null);
-    router.push("/auth/login");
+      Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
+      Cookies.remove("user");
+      setUser(null);
+      router.push("/auth/login");
+
+      handleAxiosSuccess(res);
+    } catch (err) {
+      handleAxiosError(err);
+    }
   };
 
   return (
