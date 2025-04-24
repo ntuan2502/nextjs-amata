@@ -1,3 +1,14 @@
+# [1.5.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.4.0...v1.5.0) (2025-04-24)
+
+
+### Features
+
+* **auth:** enhance user context management with sync and update functionality ([e40cfdb](https://github.com/ntuan2502/nextjs-amata/commit/e40cfdb41c311cacfc49ab4a7d49d4d33a06997c))
+* **auth:** refactor login and logout functions for improved error handling and success feedback ([0c8c6fa](https://github.com/ntuan2502/nextjs-amata/commit/0c8c6fa97520d65fabc1cd5e5788b92a729a3971))
+* **change-password:** implement change password functionality with validation and feedback ([ff97cdd](https://github.com/ntuan2502/nextjs-amata/commit/ff97cdd117782c5f2753f1538aa6b22b462d2ba7))
+* **profile:** implement profile fetching and update functionality with error handling ([f3e0b49](https://github.com/ntuan2502/nextjs-amata/commit/f3e0b49be9b1fc68bbad41d2f82b27ebb22e3cb0))
+* **sessions:** display user agent in session details ([d09b7a7](https://github.com/ntuan2502/nextjs-amata/commit/d09b7a771493d6279155273a5a9890a1abee31d2))
+
 # [1.4.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.3.0...v1.4.0) (2025-04-23)
 
 
