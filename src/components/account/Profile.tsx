@@ -20,8 +20,10 @@ import {
   handleAxiosSuccess,
 } from "@/libs/handleAxiosFeedback";
 import { ENV } from "@/config";
+import { useAuth } from "@/contexts/auth";
 
 export default function ProfileComponent() {
+  const { updateUserInContext } = useAuth();
   const defaultDate = today(getLocalTimeZone());
   const [value, setValue] = useState(defaultDate);
   const now = today(getLocalTimeZone());
@@ -41,7 +43,6 @@ export default function ProfileComponent() {
     try {
       const res = await axiosInstance.get(`${ENV.API_URL}/auth/profile`);
       const user = res.data.data.user;
-      console.log(res.data.data.user);
 
       const isoString = user.dob; // "1997-02-25T00:00:00.000Z"
       const dateOnly = isoString.split("T")[0]; // "1997-02-25"
@@ -98,6 +99,7 @@ export default function ProfileComponent() {
         dob: value.toDate("UTC").toISOString(),
       });
       handleAxiosSuccess(res);
+      updateUserInContext(res.data.data.user);
     } catch (err) {
       handleAxiosError(err);
     }

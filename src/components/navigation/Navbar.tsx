@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -31,28 +31,16 @@ import { ThemeSwitcher } from "../theme/ThemeSwitcher";
 import LanguageSwitcher from "../language/LanguageSwitcher";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { useAuth } from "@/contexts/auth/useAuth";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function NavbarComponent() {
   const { tCta } = useAppTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const { user, logout } = useAuth();
 
   const avatarInitial = user?.name ? user.name.charAt(0).toUpperCase() : "?";
-
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
-  ];
 
   const icons = {
     chevron: <ChevronDown fill="currentColor" size={16} />,
@@ -65,6 +53,11 @@ export default function NavbarComponent() {
     server: <Server className="text-success" fill="currentColor" size={30} />,
     user: <TagUser className="text-danger" fill="currentColor" size={30} />,
   };
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+    console.log(pathname);
+  }, [pathname]);
 
   return (
     <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
@@ -147,7 +140,7 @@ export default function NavbarComponent() {
             </DropdownMenu>
           </Dropdown>
         </NavbarItem>
-        <NavbarItem isActive>
+        {/* <NavbarItem isActive>
           <Link aria-current="page" href="#">
             Customers
           </Link>
@@ -156,7 +149,7 @@ export default function NavbarComponent() {
           <Link color="foreground" href="#">
             Integrations
           </Link>
-        </NavbarItem>
+        </NavbarItem> */}
       </NavbarContent>
 
       <NavbarContent justify="end">
@@ -195,11 +188,7 @@ export default function NavbarComponent() {
               </Avatar>
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem
-                key="info"
-                textValue="info"
-                className="h-14 gap-2"
-              >
+              <DropdownItem key="info" textValue="info" className="h-14 gap-2">
                 <p className="font-semibold">Signed in as</p>
                 <p className="font-semibold">{user.email}</p>
               </DropdownItem>
@@ -214,7 +203,7 @@ export default function NavbarComponent() {
               >
                 Profile
               </DropdownItem>
-              <DropdownItem key="team_settings" textValue="team_settings">
+              {/* <DropdownItem key="team_settings" textValue="team_settings">
                 Team Settings
               </DropdownItem>
               <DropdownItem key="analytics" textValue="analytics">
@@ -231,7 +220,7 @@ export default function NavbarComponent() {
                 textValue="help_and_feedback"
               >
                 Help & Feedback
-              </DropdownItem>
+              </DropdownItem> */}
               <DropdownItem
                 key="logout"
                 color="danger"
@@ -253,24 +242,27 @@ export default function NavbarComponent() {
       </NavbarContent>
 
       <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              className="w-full"
-              color={
-                index === 2
-                  ? "warning"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
+        <NavbarMenuItem key="profile">
+          <Link
+            className="w-full"
+            color="foreground"
+            href={ACCOUNT_ROUTES.PROFILE}
+            size="lg"
+          >
+            Profile
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem key="logout">
+          <Link
+            className="w-full"
+            color="danger"
+            href="#"
+            size="lg"
+            onPress={logout}
+          >
+            Logout
+          </Link>
+        </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>
   );

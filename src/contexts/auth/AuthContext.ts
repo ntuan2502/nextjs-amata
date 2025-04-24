@@ -3,8 +3,10 @@ import { LoginPayload, User } from "@/types/auth";
 
 export type AuthContextType = {
   user: User | null;
-  login: (payload: LoginPayload) => void;
-  logout: () => void;
+  login: (payload: LoginPayload) => Promise<void>;
+  logout: () => Promise<void>;
+  syncUser: () => Promise<void>;
+  updateUserInContext: (user: User) => void;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(

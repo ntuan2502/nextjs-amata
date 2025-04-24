@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/libs/axiosInstance";
@@ -17,16 +17,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const userData = Cookies.get("user");
-    if (userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch {
-        setUser(null);
-      }
+  const updateUserInContext = (updatedUser: User) => {
+    Cookies.set("user", JSON.stringify(updatedUser), { path: "/" });
+    setUser(updatedUser);
+  };
+
+  // 👉 Hàm sync từ API
+  const syncUser = useCallback(async () => {
+    try {
+      const res = await axiosInstance.get(`${ENV.API_URL}/auth/profile`);
+      const user = res.data.data.user;
+
+      Cookies.set("user", JSON.stringify(user), { path: "/" });
+      setUser(user);
+    } catch (err) {
+      handleAxiosError(err);
     }
   }, []);
+
+  // ✅ Gọi sync khi app load lần đầu (nếu có accessToken)
+  useEffect(() => {
+    const accessToken = Cookies.get("accessToken");
+    if (accessToken) {
+      syncUser();
+    }
+  }, [syncUser]);
 
   const login: AuthContextType["login"] = async (payload) => {
     try {
@@ -67,7 +82,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, syncUser, updateUserInContext }}
+    >
       {children}
     </AuthContext.Provider>
   );
