@@ -3,6 +3,9 @@ export type AuthFieldErrors = {
   password?: string;
   fullname?: string;
   confirmPassword?: string;
+  oldPassword?: string;
+  newPassword?: string;
+  confirmNewPassword?: string;
   [key: string]: string | undefined;
 };
 

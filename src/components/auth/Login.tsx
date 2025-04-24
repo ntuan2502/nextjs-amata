@@ -5,13 +5,11 @@ import { Button, Input, Checkbox, Link, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { AcmeIcon } from "@/components/icons";
 import { isValidEmail } from "@/utils/validators";
-import { toast } from "react-toastify";
 import { AuthFieldErrors, LoginPayload } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
 import SocialLogin from "@/components/auth/SocialLogin";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { useAuth } from "@/contexts/auth/useAuth";
-import { AxiosError } from "axios";
 import { AUTH_ROUTES } from "@/constants/routes";
 
 export default function LoginComponent() {
@@ -54,21 +52,14 @@ export default function LoginComponent() {
     return { hasError, newErrors };
   }
 
-  async function handleSubmit() {
+  function handleSubmit() {
     const { hasError, newErrors } = validateForm();
     setErrors(newErrors);
 
     if (hasError) return;
 
-    try {
-      const payload: LoginPayload = { email, password };
-      await login(payload);
-    } catch (err) {
-      const error = err as AxiosError<{ message: string | string[] }>;
-      const errorMessage =
-        error.response?.data?.message || "Đăng nhập thất bại!";
-      toast.error(Array.isArray(errorMessage) ? errorMessage[0] : errorMessage);
-    }
+    const payload: LoginPayload = { email, password };
+    login(payload);
   }
 
   return (

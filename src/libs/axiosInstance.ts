@@ -1,4 +1,3 @@
-// lib/axiosInstance.ts
 import axios from "axios";
 import Cookies from "js-cookie";
 import { ENV } from "@/config";
@@ -19,16 +18,16 @@ const axiosInstance = axios.create({
   baseURL: ENV.API_URL,
 });
 
-// Request interceptor: đính accessToken nếu có
 axiosInstance.interceptors.request.use((config) => {
   const accessToken = Cookies.get("accessToken");
+
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
+
   return config;
 });
 
-// Response interceptor: xử lý lỗi 401
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {

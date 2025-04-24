@@ -9,29 +9,53 @@ import {
   Radio,
   RadioGroup,
 } from "@heroui/react";
-import { getLocalTimeZone, today } from "@internationalized/date";
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { useFormField } from "@/hooks/useFormField";
 import { AuthFieldErrors } from "@/types/auth";
 import { isValidEmail } from "@/utils/validators";
-import { toast } from "react-toastify";
+import axiosInstance from "@/libs/axiosInstance";
+import {
+  handleAxiosError,
+  handleAxiosSuccess,
+} from "@/libs/handleAxiosFeedback";
+import { ENV } from "@/config";
 import { useAuth } from "@/contexts/auth";
 
 export default function ProfileComponent() {
+  const { updateUserInContext } = useAuth();
   const defaultDate = today(getLocalTimeZone());
   const [value, setValue] = useState(defaultDate);
   const now = today(getLocalTimeZone());
   const { tProfile, tCta, tLabels, tErrors } = useAppTranslations();
-  const { user } = useAuth();
 
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
+  const [gender, setGender] = useState("male");
+  const [office, setOffice] = useState("");
   const [errors, setErrors] = useState<AuthFieldErrors>({});
 
   useEffect(() => {
-    setFullname(user?.name || "");
-    setEmail(user?.email || " ");
-  }, [user]);
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const res = await axiosInstance.get(`${ENV.API_URL}/auth/profile`);
+      const user = res.data.data.user;
+
+      const isoString = user.dob; // "1997-02-25T00:00:00.000Z"
+      const dateOnly = isoString.split("T")[0]; // "1997-02-25"
+
+      setEmail(user.email);
+      setFullname(user.name);
+      setGender(user.gender);
+      setOffice(user.office.name);
+      setValue(parseDate(dateOnly));
+    } catch (err) {
+      handleAxiosError(err);
+    }
+  };
 
   const fullnameProps = useFormField(
     "fullname",
@@ -62,13 +86,23 @@ export default function ProfileComponent() {
     return { hasError, newErrors };
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const { hasError, newErrors } = validateForm();
     setErrors(newErrors);
 
     if (hasError) return;
 
-    toast.success("OK");
+    try {
+      const res = await axiosInstance.post(`${ENV.API_URL}/auth/profile`, {
+        name: fullname,
+        gender,
+        dob: value.toDate("UTC").toISOString(),
+      });
+      handleAxiosSuccess(res);
+      updateUserInContext(res.data.data.user);
+    } catch (err) {
+      handleAxiosError(err);
+    }
   }
 
   return (
@@ -77,13 +111,12 @@ export default function ProfileComponent() {
       <p className="text-sm mb-4">{tProfile("description")}</p>
 
       <Input
-        autoFocus
         isRequired
+        isReadOnly
         label={tLabels("emailLabel")}
         name="email"
         placeholder={tLabels("emailPlaceholder")}
         type="email"
-        variant="bordered"
         {...emailProps}
       />
       <Input
@@ -96,19 +129,23 @@ export default function ProfileComponent() {
         {...fullnameProps}
       />
       <Input
+        isRequired
+        isReadOnly
         label={tLabels("officeLabel")}
         placeholder={tLabels("officePlaceholder")}
         type="text"
-        value="AMATA City Long Thành"
+        value={office}
       />
 
       <RadioGroup
         label={tLabels("genderLabel")}
+        value={gender}
+        onValueChange={setGender}
         defaultValue="male"
         orientation="horizontal"
       >
         <Radio value="male">{tLabels("genderMale")}</Radio>
-        <Radio value="felame">{tLabels("genderFemale")}</Radio>
+        <Radio value="female">{tLabels("genderFemale")}</Radio>
       </RadioGroup>
 
       <DatePicker

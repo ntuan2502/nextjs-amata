@@ -9,6 +9,10 @@ import axiosInstance from "@/libs/axiosInstance";
 import { Button } from "@heroui/react";
 import axios from "axios";
 import { useAuth } from "@/contexts/auth";
+import {
+  handleAxiosError,
+  handleAxiosSuccess,
+} from "@/libs/handleAxiosFeedback";
 
 type Session = {
   id: number;
@@ -20,6 +24,7 @@ type Session = {
   lastUsedAt: string;
   lastRefreshedAt: string | null;
   ipAddress: string;
+  userAgent: string;
 };
 
 export default function SessionsComponent() {
@@ -45,18 +50,23 @@ export default function SessionsComponent() {
   const fetchSessions = async () => {
     try {
       const res = await axiosInstance.get(`${ENV.API_URL}/auth/sessions`);
-      setSessions(res.data);
+      setSessions(res.data.data.sessions);
     } catch (err) {
-      console.error("Failed to fetch sessions", err);
+      handleAxiosError(err);
     }
   };
 
   async function logoutSession(accessToken: string) {
     setRandom(Math.random());
-    return await axios.post(`${ENV.API_URL}/auth/logout-session`, {
-      userId: user?.id,
-      accessToken: accessToken,
-    });
+    try {
+      const res = await axios.post(`${ENV.API_URL}/auth/logout-session`, {
+        userId: user?.id,
+        accessToken: accessToken,
+      });
+      handleAxiosSuccess(res);
+    } catch (err) {
+      handleAxiosError(err);
+    }
   }
 
   return (
@@ -125,6 +135,7 @@ export default function SessionsComponent() {
                       : tSessions("inactive")}
                   </span>
                 </div>
+                <div>UserAgent: {session.userAgent}</div>
               </div>
             </div>
           );
