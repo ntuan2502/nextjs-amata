@@ -9,7 +9,10 @@ import axiosInstance from "@/libs/axiosInstance";
 import { Button } from "@heroui/react";
 import axios from "axios";
 import { useAuth } from "@/contexts/auth";
-import { handleAxiosError } from "@/libs/handleAxiosFeedback";
+import {
+  handleAxiosError,
+  handleAxiosSuccess,
+} from "@/libs/handleAxiosFeedback";
 
 type Session = {
   id: number;
@@ -47,7 +50,7 @@ export default function SessionsComponent() {
   const fetchSessions = async () => {
     try {
       const res = await axiosInstance.get(`${ENV.API_URL}/auth/sessions`);
-      setSessions(res.data);
+      setSessions(res.data.data.sessions);
     } catch (err) {
       handleAxiosError(err);
     }
@@ -55,10 +58,15 @@ export default function SessionsComponent() {
 
   async function logoutSession(accessToken: string) {
     setRandom(Math.random());
-    return await axios.post(`${ENV.API_URL}/auth/logout-session`, {
-      userId: user?.id,
-      accessToken: accessToken,
-    });
+    try {
+      const res = await axios.post(`${ENV.API_URL}/auth/logout-session`, {
+        userId: user?.id,
+        accessToken: accessToken,
+      });
+      handleAxiosSuccess(res);
+    } catch (err) {
+      handleAxiosError(err);
+    }
   }
 
   return (
