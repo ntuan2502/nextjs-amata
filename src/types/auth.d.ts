@@ -6,6 +6,9 @@ export type AuthFieldErrors = {
   oldPassword?: string;
   newPassword?: string;
   confirmNewPassword?: string;
+  phone?: string;
+  address?: string;
+  avatar?: string;
   [key: string]: string | undefined;
 };
 
@@ -25,4 +28,8 @@ export type User = {
   id: number;
   email: string;
   name: string;
+  dob?: string;
+  phone?: string;
+  address?: string;
+  avatar?: string;
 };

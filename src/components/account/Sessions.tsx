@@ -29,7 +29,7 @@ type Session = {
 
 export default function SessionsComponent() {
   const { user } = useAuth();
-  const { tSessions } = useAppTranslations();
+  const { tSessions, tCta } = useAppTranslations();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [currentAccessToken, setCurrentAccessToken] = useState<string | null>(
     null
@@ -82,7 +82,7 @@ export default function SessionsComponent() {
             <div
               key={session.id}
               className={`border p-4 rounded-md ${
-                isCurrent ? "border-blue-500 bg-blue-50" : "border-gray-300"
+                isCurrent ? "border-blue-500" : "border-gray-300"
               }`}
             >
               <div className="flex justify-between items-center mb-2">
@@ -91,21 +91,21 @@ export default function SessionsComponent() {
                 </div>
                 <div className="flex items-center gap-2">
                   {isCurrent && (
-                    <span className="text-xs text-blue-600 font-medium">
+                    <span className="text-xs font-bold">
                       {tSessions("currentSession")}
                     </span>
                   )}
-                  {session.isActive && (
+                  {session.isActive && !isCurrent && (
                     <Button
                       color="danger"
                       onPress={() => logoutSession(session.accessToken)}
                     >
-                      Logout
+                      {tCta("logout")}
                     </Button>
                   )}
                 </div>
               </div>
-              <div className="text-sm text-gray-700">
+              <div className="text-sm">
                 <div>
                   {tSessions("createdAt")}:{" "}
                   {format(new Date(session.createdAt), "yyyy-MM-dd HH:mm:ss")}

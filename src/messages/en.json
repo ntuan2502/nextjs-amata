@@ -76,7 +76,9 @@
     "signUp": "Sign Up",
     "submit": "Submit",
     "update": "Update",
-    "view": "View"
+    "view": "View",
+    "profile": "Profile",
+    "logout": "Logout"
   },
   "errors": {
     "confirmPasswordRequired": "Please confirm your password.",
@@ -112,6 +114,14 @@
     "newPasswordLabel": "New Password",
     "newPasswordPlaceholder": "Enter your new password",
     "confirmNewPasswordLabel": "Confirm New Password",
-    "confirmNewPasswordPlaceholder": "Confirm your new password"
+    "confirmNewPasswordPlaceholder": "Confirm your new password",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "Enter your phone number",
+    "addressLabel": "Address",
+    "addressPlaceholder": "Enter your address",
+    "avatarLabel": "Avatar",
+    "avatarPlaceholder": "e.g. https://example.com/avatar.png",
+    "departmentLabel": "Department",
+    "departmentPlaceholder": "e.g. IT Department"
   }
 }

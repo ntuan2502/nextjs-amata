@@ -167,25 +167,28 @@ export default function NavbarComponent() {
         ) : (
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
-              {/* <Avatar
-                isBordered
-                as="button"
-                className="transition-transform"
-                color="secondary"
-                name="Jason Hughes"
-                size="sm"
-                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-              /> */}
-              <Avatar
-                isBordered
-                as="button"
-                className="transition-transform"
-                color="secondary"
-                name={avatarInitial}
-                size="sm"
-              >
-                {avatarInitial}
-              </Avatar>
+              {user.avatar ? (
+                <Avatar
+                  isBordered
+                  as="button"
+                  className="transition-transform"
+                  color="secondary"
+                  name="Jason Hughes"
+                  size="sm"
+                  src={user.avatar}
+                />
+              ) : (
+                <Avatar
+                  isBordered
+                  as="button"
+                  className="transition-transform"
+                  color="secondary"
+                  name={avatarInitial}
+                  size="sm"
+                >
+                  {avatarInitial}
+                </Avatar>
+              )}
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownItem key="info" textValue="info" className="h-14 gap-2">
@@ -201,7 +204,7 @@ export default function NavbarComponent() {
                 textValue="profile"
                 onPress={() => router.push(ACCOUNT_ROUTES.PROFILE)}
               >
-                Profile
+                {tCta("profile")}
               </DropdownItem>
               {/* <DropdownItem key="team_settings" textValue="team_settings">
                 Team Settings
@@ -227,7 +230,7 @@ export default function NavbarComponent() {
                 textValue="logout"
                 onPress={logout}
               >
-                Log Out
+                {tCta("logout")}
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -249,7 +252,7 @@ export default function NavbarComponent() {
             href={ACCOUNT_ROUTES.PROFILE}
             size="lg"
           >
-            Profile
+            {tCta("profile")}
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem key="logout">
@@ -260,7 +263,7 @@ export default function NavbarComponent() {
             size="lg"
             onPress={logout}
           >
-            Logout
+            {tCta("logout")}
           </Link>
         </NavbarMenuItem>
       </NavbarMenu>
