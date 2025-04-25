@@ -1,3 +1,11 @@
+# [1.6.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.5.0...v1.6.0) (2025-04-25)
+
+
+### Features
+
+* **profile:** add department field to profile and update translations ([7151b09](https://github.com/ntuan2502/nextjs-amata/commit/7151b09b9a509bfa393a397d05d8cf7914675436))
+* **profile:** enhance profile management with new fields and i18n support ([c707b6e](https://github.com/ntuan2502/nextjs-amata/commit/c707b6eb85086dda5dfe8b1122ca811c3208c9b1))
+
 # [1.5.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.4.0...v1.5.0) (2025-04-24)
 
 
