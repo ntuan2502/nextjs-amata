@@ -76,7 +76,9 @@
     "signUp": "Đăng ký",
     "submit": "Gửi",
     "update": "Cập nhật",
-    "view": "Xem"
+    "view": "Xem",
+    "profile": "Hồ sơ",
+    "logout": "Đăng xuất"
   },
   "errors": {
     "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu.",
@@ -118,6 +120,8 @@
     "addressLabel": "Địa chỉ",
     "addressPlaceholder": "Nhập địa chỉ của bạn",
     "avatarLabel": "Ảnh đại diện",
-    "avatarPlaceholder": "ví dụ: https://example.com/avatar.png"
+    "avatarPlaceholder": "ví dụ: https://example.com/avatar.png",
+    "departmentLabel": "Phòng ban",
+    "departmentPlaceholder": "ví dụ: Phòng IT"
   }
 }

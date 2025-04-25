@@ -29,7 +29,7 @@ type Session = {
 
 export default function SessionsComponent() {
   const { user } = useAuth();
-  const { tSessions } = useAppTranslations();
+  const { tSessions, tCta } = useAppTranslations();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [currentAccessToken, setCurrentAccessToken] = useState<string | null>(
     null
@@ -91,16 +91,16 @@ export default function SessionsComponent() {
                 </div>
                 <div className="flex items-center gap-2">
                   {isCurrent && (
-                    <span className="text-xs font-medium">
+                    <span className="text-xs font-bold">
                       {tSessions("currentSession")}
                     </span>
                   )}
-                  {session.isActive && (
+                  {session.isActive && !isCurrent && (
                     <Button
                       color="danger"
                       onPress={() => logoutSession(session.accessToken)}
                     >
-                      Logout
+                      {tCta("logout")}
                     </Button>
                   )}
                 </div>

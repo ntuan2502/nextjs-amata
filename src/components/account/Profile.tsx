@@ -33,6 +33,7 @@ export default function ProfileComponent() {
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("male");
   const [office, setOffice] = useState("");
+  const [department, setDepartment] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -59,6 +60,7 @@ export default function ProfileComponent() {
       setAddress(user.address);
       setAvatar(user.avatar);
       setOffice(user.office.name);
+      setDepartment(user.department.name);
     } catch (err) {
       handleAxiosError(err);
     }
@@ -147,6 +149,15 @@ export default function ProfileComponent() {
         value={office}
       />
 
+      <Input
+        isRequired
+        isReadOnly
+        label={tLabels("departmentLabel")}
+        placeholder={tLabels("departmentPlaceholder")}
+        type="text"
+        value={department}
+      />
+
       <RadioGroup
         label={tLabels("genderLabel")}
         value={gender}
@@ -192,6 +203,7 @@ export default function ProfileComponent() {
         label={tLabels("phoneLabel")}
         placeholder={tLabels("phonePlaceholder")}
         type="text"
+        variant="bordered"
         value={phone}
         onValueChange={setPhone}
       />
@@ -199,6 +211,7 @@ export default function ProfileComponent() {
         label={tLabels("addressLabel")}
         placeholder={tLabels("addressPlaceholder")}
         type="text"
+        variant="bordered"
         value={address}
         onValueChange={setAddress}
       />
@@ -206,6 +219,7 @@ export default function ProfileComponent() {
         label={tLabels("avatarLabel")}
         placeholder={tLabels("avatarPlaceholder")}
         type="text"
+        variant="bordered"
         value={avatar}
         onValueChange={setAvatar}
       />

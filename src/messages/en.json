@@ -76,7 +76,9 @@
     "signUp": "Sign Up",
     "submit": "Submit",
     "update": "Update",
-    "view": "View"
+    "view": "View",
+    "profile": "Profile",
+    "logout": "Logout"
   },
   "errors": {
     "confirmPasswordRequired": "Please confirm your password.",
@@ -118,6 +120,8 @@
     "addressLabel": "Address",
     "addressPlaceholder": "Enter your address",
     "avatarLabel": "Avatar",
-    "avatarPlaceholder": "e.g. https://example.com/avatar.png"
+    "avatarPlaceholder": "e.g. https://example.com/avatar.png",
+    "departmentLabel": "Department",
+    "departmentPlaceholder": "e.g. IT Department"
   }
 }
