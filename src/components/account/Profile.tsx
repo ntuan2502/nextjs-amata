@@ -33,6 +33,9 @@ export default function ProfileComponent() {
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("male");
   const [office, setOffice] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [errors, setErrors] = useState<AuthFieldErrors>({});
 
   useEffect(() => {
@@ -43,15 +46,19 @@ export default function ProfileComponent() {
     try {
       const res = await axiosInstance.get(`${ENV.API_URL}/auth/profile`);
       const user = res.data.data.user;
-
-      const isoString = user.dob; // "1997-02-25T00:00:00.000Z"
-      const dateOnly = isoString.split("T")[0]; // "1997-02-25"
+      if (user.dob) {
+        const isoString = user.dob; // "1997-02-25T00:00:00.000Z"
+        const dateOnly = isoString.split("T")[0]; // "1997-02-25"
+        setValue(parseDate(dateOnly));
+      }
 
       setEmail(user.email);
       setFullname(user.name);
       setGender(user.gender);
+      setPhone(user.phone);
+      setAddress(user.address);
+      setAvatar(user.avatar);
       setOffice(user.office.name);
-      setValue(parseDate(dateOnly));
     } catch (err) {
       handleAxiosError(err);
     }
@@ -96,6 +103,9 @@ export default function ProfileComponent() {
       const res = await axiosInstance.post(`${ENV.API_URL}/auth/profile`, {
         name: fullname,
         gender,
+        phone,
+        address,
+        avatar,
         dob: value.toDate("UTC").toISOString(),
       });
       handleAxiosSuccess(res);
@@ -177,6 +187,27 @@ export default function ProfileComponent() {
             <Button onPress={() => setValue(now)}>Today</Button>{" "}
           </ButtonGroup>
         }
+      />
+      <Input
+        label={tLabels("phoneLabel")}
+        placeholder={tLabels("phonePlaceholder")}
+        type="text"
+        value={phone}
+        onValueChange={setPhone}
+      />
+      <Input
+        label={tLabels("addressLabel")}
+        placeholder={tLabels("addressPlaceholder")}
+        type="text"
+        value={address}
+        onValueChange={setAddress}
+      />
+      <Input
+        label={tLabels("avatarLabel")}
+        placeholder={tLabels("avatarPlaceholder")}
+        type="text"
+        value={avatar}
+        onValueChange={setAvatar}
       />
 
       <div className="pt-4">

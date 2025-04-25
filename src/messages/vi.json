@@ -112,6 +112,12 @@
     "newPasswordLabel": "Mật khẩu mới",
     "newPasswordPlaceholder": "Nhập mật khẩu mới của bạn",
     "confirmNewPasswordLabel": "Xác nhận mật khẩu mới",
-    "confirmNewPasswordPlaceholder": "Xác nhận mật khẩu mới của bạn"
+    "confirmNewPasswordPlaceholder": "Xác nhận mật khẩu mới của bạn",
+    "phoneLabel": "Số điện thoại",
+    "phonePlaceholder": "Nhập số điện thoại của bạn",
+    "addressLabel": "Địa chỉ",
+    "addressPlaceholder": "Nhập địa chỉ của bạn",
+    "avatarLabel": "Ảnh đại diện",
+    "avatarPlaceholder": "ví dụ: https://example.com/avatar.png"
   }
 }
