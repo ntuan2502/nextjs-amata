@@ -21,6 +21,49 @@
       "description": "Cập nhật mật khẩu của bạn để giữ tài khoản an toàn."
     }
   },
+  "admin": {
+    "dashboard": "Bảng điều khiển",
+    "name": "Tên",
+    "actions": "Hành động",
+    "information": "Thông tin",
+    "no_data": "Không có dữ liệu",
+    "users": {
+      "title": "Người dùng",
+      "description": "Quản lý người dùng và quyền của họ.",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "office": "Văn phòng",
+      "department": "Phòng ban",
+      "gender": "Giới tính",
+      "dob": "Ngày sinh",
+      "address": "Địa chỉ",
+      "avatar": "Ảnh đại diện"
+    },
+    "offices": {
+      "title": "Văn phòng",
+      "description": "Quản lý các địa điểm văn phòng.",
+      "internationalName": "Tên quốc tế",
+      "shortName": "Tên viết tắt",
+      "taxCode": "Mã số thuế",
+      "address": "Địa chỉ"
+    },
+    "departments": {
+      "title": "Phòng ban",
+      "description": "Quản lý các phòng ban trong tổ chức của bạn."
+    },
+    "deviceTypes": {
+      "title": "Loại thiết bị",
+      "description": "Quản lý các loại thiết bị khác nhau."
+    },
+    "deviceModels": {
+      "title": "Mẫu thiết bị",
+      "description": "Quản lý các mẫu thiết bị."
+    },
+    "assets": {
+      "title": "Tài sản",
+      "description": "Quản lý tài sản và chi tiết của chúng."
+    }
+  },
   "auth": {
     "forgotPassword": {
       "subtitle": "Nhập địa chỉ email của bạn bên dưới và chúng tôi sẽ gửi hướng dẫn để đặt lại mật khẩu.",
@@ -62,6 +105,7 @@
   "cta": {
     "back": "Quay lại",
     "cancel": "Hủy",
+    "close": "Đóng",
     "confirm": "Xác nhận",
     "continue": "Tiếp tục",
     "create": "Tạo mới",
@@ -122,6 +166,7 @@
     "avatarLabel": "Ảnh đại diện",
     "avatarPlaceholder": "ví dụ: https://example.com/avatar.png",
     "departmentLabel": "Phòng ban",
-    "departmentPlaceholder": "ví dụ: Phòng IT"
+    "departmentPlaceholder": "ví dụ: Phòng IT",
+    "loading": "Đang tải..."
   }
 }

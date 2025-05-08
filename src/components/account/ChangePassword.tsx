@@ -130,7 +130,6 @@ export default function ChangePasswordComponent() {
         name="oldPassword"
         placeholder={tLabels("oldPasswordPlaceholder")}
         type={isOldVisible ? "text" : "password"}
-        variant="bordered"
         {...oldPasswordProps}
       />
       <Input
@@ -154,7 +153,6 @@ export default function ChangePasswordComponent() {
         name="newPassword"
         placeholder={tLabels("newPasswordPlaceholder")}
         type={isNewVisible ? "text" : "password"}
-        variant="bordered"
         {...newPasswordProps}
       />
       <Input
@@ -178,7 +176,6 @@ export default function ChangePasswordComponent() {
         name="confirmNewPassword"
         placeholder={tLabels("confirmNewPasswordPlaceholder")}
         type={isConfirmNewVisible ? "text" : "password"}
-        variant="bordered"
         {...confirmNewPasswordProps}
       />
 

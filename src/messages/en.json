@@ -21,6 +21,49 @@
       "description": "Update your password to keep your account secure."
     }
   },
+  "admin": {
+    "dashboard": "Dashboard",
+    "name": "Name",
+    "actions": "Actions",
+    "information": "Information",
+    "no_data": "No data available",
+    "users": {
+      "title": "Users",
+      "description": "Manage users and their permissions.",
+      "email": "Email",
+      "phone": "Phone",
+      "office": "Office",
+      "department": "Department",
+      "gender": "Gender",
+      "dob": "Date of Birth",
+      "address": "Address",
+      "avatar": "Avatar"
+    },
+    "offices": {
+      "title": "Offices",
+      "description": "Manage office locations.",
+      "internationalName": "International name",
+      "shortName": "Short name",
+      "taxCode": "Tax code",
+      "address": "Address"
+    },
+    "departments": {
+      "title": "Departments",
+      "description": "Manage departments within your organization."
+    },
+    "deviceTypes": {
+      "title": "Device Types",
+      "description": "Manage different types of devices."
+    },
+    "deviceModels": {
+      "title": "Device Models",
+      "description": "Manage models of devices."
+    },
+    "assets": {
+      "title": "Assets",
+      "description": "Manage assets and their details."
+    }
+  },
   "auth": {
     "forgotPassword": {
       "subtitle": "Enter your email address below and we will send you instructions to reset your password.",
@@ -62,6 +105,7 @@
   "cta": {
     "back": "Back",
     "cancel": "Cancel",
+    "close": "Close",
     "confirm": "Confirm",
     "continue": "Continue",
     "create": "Create",
@@ -122,6 +166,7 @@
     "avatarLabel": "Avatar",
     "avatarPlaceholder": "e.g. https://example.com/avatar.png",
     "departmentLabel": "Department",
-    "departmentPlaceholder": "e.g. IT Department"
+    "departmentPlaceholder": "e.g. IT Department",
+    "loading": "Loading..."
   }
 }

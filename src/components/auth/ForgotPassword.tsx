@@ -61,7 +61,6 @@ export default function ForgotPasswordComponent() {
             name="email"
             placeholder={tLabels("emailPlaceholder")}
             type="email"
-            variant="bordered"
             {...emailProps}
           />
           <Button className="w-full" color="primary" onPress={handleSubmit}>

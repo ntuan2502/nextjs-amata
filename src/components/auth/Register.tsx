@@ -144,7 +144,6 @@ export default function RegisterComponent() {
             name="fullname"
             placeholder={tLabels("fullnamePlaceholder")}
             type="text"
-            variant="bordered"
             {...fullnameProps}
           />
           <Input
@@ -153,7 +152,6 @@ export default function RegisterComponent() {
             name="email"
             placeholder={tLabels("emailPlaceholder")}
             type="email"
-            variant="bordered"
             {...emailProps}
           />
           <Input
@@ -177,7 +175,6 @@ export default function RegisterComponent() {
             name="password"
             placeholder={tLabels("passwordPlaceholder")}
             type={isVisible ? "text" : "password"}
-            variant="bordered"
             {...passwordProps}
           />
           <Input
@@ -201,7 +198,6 @@ export default function RegisterComponent() {
             name="confirmPassword"
             placeholder={tLabels("confirmPasswordPlaceholder")}
             type={isConfirmVisible ? "text" : "password"}
-            variant="bordered"
             {...confirmPasswordProps}
           />
           <div className="flex items-center">
