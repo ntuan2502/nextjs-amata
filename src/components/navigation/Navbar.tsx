@@ -56,7 +56,6 @@ export default function NavbarComponent() {
 
   useEffect(() => {
     setIsMenuOpen(false);
-    console.log(pathname);
   }, [pathname]);
 
   return (

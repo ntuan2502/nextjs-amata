@@ -85,7 +85,6 @@ export default function LoginComponent() {
             name="email"
             placeholder={tLabels("emailPlaceholder")}
             type="email"
-            variant="bordered"
             {...emailProps}
           />
           <Input
@@ -109,7 +108,6 @@ export default function LoginComponent() {
             name="password"
             placeholder={tLabels("passwordPlaceholder")}
             type={isVisible ? "text" : "password"}
-            variant="bordered"
             {...passwordProps}
           />
           <div className="flex w-full items-center justify-between px-1 py-2">

@@ -110,7 +110,6 @@ export default function ResetPasswordComponent() {
             name="password"
             placeholder={tLabels("passwordPlaceholder")}
             type={isVisible ? "text" : "password"}
-            variant="bordered"
             {...passwordProps}
           />
           <Input
@@ -134,7 +133,6 @@ export default function ResetPasswordComponent() {
             name="confirmPassword"
             placeholder={tLabels("confirmPasswordPlaceholder")}
             type={isConfirmVisible ? "text" : "password"}
-            variant="bordered"
             {...confirmPasswordProps}
           />
           <Button color="primary" onPress={handleSubmit}>

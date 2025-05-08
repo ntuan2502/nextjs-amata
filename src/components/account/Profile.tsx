@@ -137,7 +137,6 @@ export default function ProfileComponent() {
         name="fullname"
         placeholder={tLabels("fullnamePlaceholder")}
         type="text"
-        variant="bordered"
         {...fullnameProps}
       />
       <Input
@@ -172,7 +171,6 @@ export default function ProfileComponent() {
       <DatePicker
         showMonthAndYearPickers
         label={tLabels("birthDateLabel")}
-        variant="bordered"
         firstDayOfWeek="mon"
         maxValue={today(getLocalTimeZone())}
         value={value}
@@ -193,7 +191,6 @@ export default function ProfileComponent() {
             className="px-3 pb-2 pt-3 bg-content1 [&>button]:text-default-500 [&>button]:border-default-200/60"
             radius="full"
             size="sm"
-            variant="bordered"
           >
             <Button onPress={() => setValue(now)}>Today</Button>{" "}
           </ButtonGroup>
@@ -203,7 +200,6 @@ export default function ProfileComponent() {
         label={tLabels("phoneLabel")}
         placeholder={tLabels("phonePlaceholder")}
         type="text"
-        variant="bordered"
         value={phone}
         onValueChange={setPhone}
       />
@@ -211,7 +207,6 @@ export default function ProfileComponent() {
         label={tLabels("addressLabel")}
         placeholder={tLabels("addressPlaceholder")}
         type="text"
-        variant="bordered"
         value={address}
         onValueChange={setAddress}
       />
@@ -219,7 +214,6 @@ export default function ProfileComponent() {
         label={tLabels("avatarLabel")}
         placeholder={tLabels("avatarPlaceholder")}
         type="text"
-        variant="bordered"
         value={avatar}
         onValueChange={setAvatar}
       />
