@@ -102,6 +102,24 @@
       "or": "HOẶC"
     }
   },
+  "asset": {
+    "code": "Mã",
+    "user": "Người dùng",
+    "office": "Văn phòng",
+    "department": "Phòng ban",
+    "deviceType": "Loại thiết bị",
+    "deviceModel": "Mẫu thiết bị",
+    "serialNumber": "Số serial",
+    "os": "Hệ điều hành",
+    "cpu": "CPU",
+    "ram": "RAM",
+    "storage": "Bộ nhớ",
+    "status": "Trạng thái",
+    "purchaseDate": "Ngày mua",
+    "warrantyDuration": "Thời gian bảo hành",
+    "year": "Năm",
+    "years": "Năm"
+  },
   "cta": {
     "back": "Quay lại",
     "cancel": "Hủy",
@@ -167,6 +185,8 @@
     "avatarPlaceholder": "ví dụ: https://example.com/avatar.png",
     "departmentLabel": "Phòng ban",
     "departmentPlaceholder": "ví dụ: Phòng IT",
-    "loading": "Đang tải..."
+    "loading": "Đang tải...",
+    "search": "Tìm kiếm",
+    "entriesFound": "mục được tìm thấy"
   }
 }

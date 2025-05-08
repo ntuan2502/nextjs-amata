@@ -33,6 +33,27 @@ export type User = {
   department?: Department;
 };
 
+export type Asset = {
+  id: number;
+  internalCode: string;
+  serialNumber: string;
+  purchaseDate: string;
+  warrantyDuration: string;
+  status: string;
+  user?: User;
+  office?: Office;
+  department?: Department;
+  deviceType?: DeviceType;
+  deviceModel?: DeviceModel;
+  customProperties?: {
+    cpu?: string;
+    ram?: string;
+    osType?: string;
+    hardDrive?: string;
+    macAddress?: string;
+  };
+};
+
 export type ParamsWithId = {
   params: Promise<{
     id: string;

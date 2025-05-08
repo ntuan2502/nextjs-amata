@@ -102,6 +102,24 @@
       "or": "OR"
     }
   },
+  "asset": {
+    "code": "Code",
+    "user": "User",
+    "office": "Office",
+    "department": "Department",
+    "deviceType": "Device Type",
+    "deviceModel": "Device Model",
+    "serialNumber": "Serial Number",
+    "os": "Operating System",
+    "cpu": "CPU",
+    "ram": "RAM",
+    "storage": "Storage",
+    "status": "Status",
+    "purchaseDate": "Purchase Date",
+    "warrantyDuration": "Warranty Duration",
+    "year": "Year",
+    "years": "Years"
+  },
   "cta": {
     "back": "Back",
     "cancel": "Cancel",
@@ -167,6 +185,8 @@
     "avatarPlaceholder": "e.g. https://example.com/avatar.png",
     "departmentLabel": "Department",
     "departmentPlaceholder": "e.g. IT Department",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "search": "Search",
+    "entriesFound": "entries found"
   }
 }
