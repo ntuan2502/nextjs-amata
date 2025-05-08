@@ -164,7 +164,7 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
       <RadioGroup
         label={tLabels("genderLabel")}
         value={formData.gender}
-        onValueChange={(val) => setFormData((prev) => ({ ...prev, name: val }))}
+        onValueChange={(val) => setFormData((prev) => ({ ...prev, gender: val }))}
         defaultValue="male"
         orientation="horizontal"
       >
