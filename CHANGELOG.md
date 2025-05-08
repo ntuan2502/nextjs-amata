@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.6.0...v1.7.0) (2025-05-08)
+
+
+### Features
+
+* **admin:** add user and office management components with UI and translation support ([5cfb3a2](https://github.com/ntuan2502/nextjs-amata/commit/5cfb3a2008846a46c8c380072abc889dfb5806d3))
+
 # [1.6.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.5.0...v1.6.0) (2025-04-25)
 
 
