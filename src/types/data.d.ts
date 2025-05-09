@@ -1,3 +1,5 @@
+import { ButtonProps } from "@heroui/react";
+
 export type Office = {
   id: number;
   name: string;
@@ -58,4 +60,17 @@ export type ParamsWithId = {
   params: Promise<{
     id: string;
   }>;
+};
+
+export type ChartData = {
+  name: string;
+  value: number;
+  [key: string]: string | number;
+};
+
+export type CircleChartProps = {
+  title: string;
+  color: ButtonProps["color"];
+  chartData: ChartData[];
+  total: number;
 };

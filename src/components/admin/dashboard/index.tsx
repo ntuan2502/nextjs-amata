@@ -8,7 +8,7 @@ import {
   PolarAngleAxis,
 } from "recharts";
 import { Breadcrumbs, BreadcrumbItem, Card, cn } from "@heroui/react";
-import type { ButtonProps, CardProps } from "@heroui/react";
+import type { CardProps } from "@heroui/react";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { forwardRef, useCallback, useEffect, useState } from "react";
@@ -17,6 +17,7 @@ import axiosInstance from "@/libs/axiosInstance";
 import { handleAxiosError } from "@/libs/handleAxiosFeedback";
 import {
   Asset,
+  CircleChartProps,
   Department,
   DeviceModel,
   DeviceType,
@@ -24,19 +25,6 @@ import {
 } from "@/types/data";
 import { User } from "@/types/auth";
 import LoadingComponent from "@/components/ui/Loading";
-
-type ChartData = {
-  name: string;
-  value: number;
-  [key: string]: string | number;
-};
-
-type CircleChartProps = {
-  title: string;
-  color: ButtonProps["color"];
-  chartData: ChartData[];
-  total: number;
-};
 
 export default function DashboardAdminComponent() {
   const { tAdmin } = useAppTranslations();
