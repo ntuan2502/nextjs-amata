@@ -21,7 +21,10 @@ import {
 } from "@heroui/react";
 import axiosInstance from "@/libs/axiosInstance";
 import { ENV } from "@/config";
-import { handleAxiosError } from "@/libs/handleAxiosFeedback";
+import {
+  handleAxiosError,
+  handleAxiosSuccess,
+} from "@/libs/handleAxiosFeedback";
 import { EyeIcon } from "@/components/icons/EyeIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
@@ -32,8 +35,9 @@ import { useAppTranslations } from "@/hooks/useAppTranslations";
 import LoadingComponent from "@/components/ui/Loading";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
-export default function OfficeAdminComponent() {
+export default function OfficesAdminComponent() {
   const { tAdmin, tCta } = useAppTranslations();
   const pathname = usePathname();
   const [page, setPage] = useState(1);
@@ -62,6 +66,35 @@ export default function OfficeAdminComponent() {
     return offices.slice(start, end);
   }, [page, offices]);
 
+  const handleDelete = async (item: Office) => {
+    Swal.fire({
+      title: `Are you sure to delete ${item.name}`,
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axiosInstance.delete(
+            `${ENV.API_URL}/offices/${item.id}`
+          );
+          handleAxiosSuccess(res);
+          await fetchOffice();
+        } catch (err) {
+          handleAxiosError(err);
+        }
+        Swal.fire({
+          title: "Deleted!",
+          text: `${item.name} has been deleted.`,
+          icon: "success",
+        });
+      }
+    });
+  };
+
   if (offices.length === 0) {
     return <LoadingComponent />;
   }
@@ -77,6 +110,9 @@ export default function OfficeAdminComponent() {
             {tAdmin("offices.title")}
           </BreadcrumbItem>
         </Breadcrumbs>
+        <Button color="primary" as={Link} href={`${ADMIN_ROUTES.OFFICES}/add`}>
+          {tCta("add")}
+        </Button>
       </div>
 
       <Table
@@ -134,7 +170,12 @@ export default function OfficeAdminComponent() {
                     </Link>
                   </Tooltip>
                   <Tooltip content={tCta("delete")} color="danger">
-                    <Button isIconOnly variant="light" color="danger">
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      color="danger"
+                      onPress={() => handleDelete(item)}
+                    >
                       <DeleteIcon />
                     </Button>
                   </Tooltip>

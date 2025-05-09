@@ -48,7 +48,7 @@ export default function EditDepartmentAdminComponent({ id }: { id: string }) {
     }
   };
 
-  if (!formData) {
+  if (!formData.id) {
     return <LoadingComponent />;
   }
 

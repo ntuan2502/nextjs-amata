@@ -33,7 +33,7 @@ import LoadingComponent from "@/components/ui/Loading";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import Link from "next/link";
 
-export default function UserAdminComponent() {
+export default function UsersAdminComponent() {
   const { tAdmin, tCta } = useAppTranslations();
   const pathname = usePathname();
   const [page, setPage] = useState(1);

@@ -11,6 +11,11 @@ const languages = [
     value: "en",
     icon: "twemoji:flag-united-kingdom",
   },
+  // {
+  //   label: "ภาษาไทย",
+  //   value: "th",
+  //   icon: "twemoji:flag-thailand",
+  // },
   {
     label: "Tiếng Việt",
     value: "vi",

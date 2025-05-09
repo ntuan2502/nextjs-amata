@@ -33,7 +33,7 @@ import LoadingComponent from "@/components/ui/Loading";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import Link from "next/link";
 
-export default function DeviceTypeAdminComponent() {
+export default function DeviceTypesAdminComponent() {
   const { tAdmin, tCta } = useAppTranslations();
   const pathname = usePathname();
   const [page, setPage] = useState(1);

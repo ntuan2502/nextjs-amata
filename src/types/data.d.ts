@@ -1,4 +1,5 @@
 import { ButtonProps } from "@heroui/react";
+import { AssetStatus } from "./enum";
 
 export type Office = {
   id: number;
@@ -41,7 +42,7 @@ export type Asset = {
   serialNumber: string;
   purchaseDate: string;
   warrantyDuration: string;
-  status: string;
+  status: AssetStatus;
   user?: User;
   office?: Office;
   department?: Department;

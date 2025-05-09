@@ -55,7 +55,7 @@ export default function EditOfficeAdminComponent({ id }: { id: string }) {
     }
   };
 
-  if (!formData) {
+  if (!formData.id) {
     return <LoadingComponent />;
   }
 
