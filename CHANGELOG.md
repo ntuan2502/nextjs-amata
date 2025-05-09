@@ -1,3 +1,16 @@
+# [1.8.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.7.0...v1.8.0) (2025-05-09)
+
+
+### Bug Fixes
+
+* **admin:** correct gender field update in EditUserAdminComponent ([efb6220](https://github.com/ntuan2502/nextjs-amata/commit/efb6220043a7477075584bbdaa774822c75643ad))
+
+
+### Features
+
+* **asset:** add asset management functionality with Excel export and translations ([b4f199f](https://github.com/ntuan2502/nextjs-amata/commit/b4f199f858b17feb8210adfa633f26259fb4745d))
+* **dashboard:** add admin dashboard with Recharts visualizations and loading states ([1e45d75](https://github.com/ntuan2502/nextjs-amata/commit/1e45d75aa0106dbc3a3d426315cf5d7525cffae7))
+
 # [1.7.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.6.0...v1.7.0) (2025-05-08)
 
 
