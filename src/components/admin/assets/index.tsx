@@ -14,6 +14,15 @@ import {
   CardBody,
   Input,
   Button,
+  Breadcrumbs,
+  BreadcrumbItem,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  Tooltip,
 } from "@heroui/react";
 import axiosInstance from "@/libs/axiosInstance";
 import { ENV } from "@/config";
@@ -22,12 +31,17 @@ import { rowsPerPage } from "@/constants/config";
 import { Asset, Office } from "@/types/data";
 import LoadingComponent from "@/components/ui/Loading";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import * as XLSX from "xlsx";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { ADMIN_ROUTES } from "@/constants/routes";
+import { EyeIcon } from "@/components/icons/EyeIcon";
+import Link from "next/link";
+import { EditIcon } from "@/components/icons/EditIcon";
+import { DeleteIcon } from "@/components/icons/DeleteIcon";
 
-export default function AssetPCComponent() {
-  const { tAsset, tCta, tLabels } = useAppTranslations();
+export default function AssetsAdminComponent() {
+  const { tAdmin, tAsset, tCta, tLabels } = useAppTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -35,8 +49,12 @@ export default function AssetPCComponent() {
   const querySearch = searchParams.get("search") || "";
   const queryPage = parseInt(searchParams.get("page") || "1", 10);
 
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const pathname = usePathname();
+
   const [page, setPage] = useState(queryPage);
   const [assets, setAssets] = useState<Asset[]>([]);
+  const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
   const [filteredAssets, setFilteredAssets] = useState<Asset[]>([]);
   const [offices, setOffices] = useState<Office[]>([]);
   const [tabSelected, setTabSelected] = useState<string>(queryOffice);
@@ -112,7 +130,6 @@ export default function AssetPCComponent() {
       "Asset Code": asset.internalCode,
       User: asset.user?.name || "-",
       Office: asset.office?.shortName || "-",
-      Department: asset.department?.name || "-",
       "Device Type": asset.deviceType?.name || "-",
       "Device Model": asset.deviceModel?.name || "-",
       "Serial Number": asset.serialNumber,
@@ -179,34 +196,132 @@ export default function AssetPCComponent() {
 
   return (
     <div className="p-6 space-y-6 w-full">
-      <Tabs
-        aria-label="Options"
-        selectedKey={tabSelected}
-        onSelectionChange={(key) => handleTabChange(String(key))}
-      >
-        {[...offices.map((o) => o.shortName), "ITAM"].map((key) => (
-          <Tab key={key} title={key}>
-            <Card>
-              <CardBody>
-                <AssetTable
-                  items={items}
-                  page={page}
-                  pages={pages}
-                  onPageChange={handlePageChange}
-                  searchQuery={searchQuery}
-                  setSearchQuery={setSearchQuery}
-                  handleSearchSubmit={handleSearchSubmit}
-                  filteredLength={filteredAssets.length}
-                  exportToExcel={exportToExcel}
-                  tAsset={tAsset}
-                  tCta={tCta}
-                  tLabels={tLabels}
-                />
-              </CardBody>
-            </Card>
-          </Tab>
-        ))}
-      </Tabs>
+      <div className="flex justify-between items-center">
+        <Breadcrumbs>
+          <BreadcrumbItem href={ADMIN_ROUTES.DASHBOARD}>
+            {tAdmin("dashboard")}
+          </BreadcrumbItem>
+          <BreadcrumbItem href={ADMIN_ROUTES.ASSETS}>
+            {tAdmin("assets.title")}
+          </BreadcrumbItem>
+        </Breadcrumbs>
+      </div>
+
+      <div>
+        <Tabs
+          aria-label="Options"
+          selectedKey={tabSelected}
+          onSelectionChange={(key) => handleTabChange(String(key))}
+        >
+          {[...offices.map((o) => o.shortName), "ITAM"].map((key) => (
+            <Tab key={key} title={key}>
+              <Card>
+                <CardBody>
+                  <AssetTable
+                    items={items}
+                    page={page}
+                    pages={pages}
+                    onPageChange={handlePageChange}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    setSelectedAsset={setSelectedAsset}
+                    handleSearchSubmit={handleSearchSubmit}
+                    filteredLength={filteredAssets.length}
+                    exportToExcel={exportToExcel}
+                    tAsset={tAsset}
+                    tCta={tCta}
+                    tLabels={tLabels}
+                    tAdmin={tAdmin}
+                    onOpen={onOpen}
+                    pathname={pathname}
+                  />
+                </CardBody>
+              </Card>
+            </Tab>
+          ))}
+        </Tabs>
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl">
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader>{tAdmin("information")}</ModalHeader>
+                <ModalBody className="space-y-2">
+                  {selectedAsset ? (
+                    <>
+                      <p>
+                        <strong>{tAsset("code")}:</strong>{" "}
+                        {selectedAsset.internalCode}
+                      </p>
+                      <p>
+                        <strong>{tAsset("user")}:</strong>{" "}
+                        {selectedAsset.user?.name}
+                      </p>
+                      <p>
+                        <strong>{tAsset("office")}:</strong>{" "}
+                        {selectedAsset.office?.shortName}
+                      </p>
+                      <p>
+                        <strong>{tAsset("deviceType")}:</strong>{" "}
+                        {selectedAsset.deviceType?.name}
+                      </p>
+                      <p>
+                        <strong>{tAsset("deviceModel")}:</strong>{" "}
+                        {selectedAsset.deviceModel?.name}
+                      </p>
+                      <p>
+                        <strong>{tAsset("serialNumber")}:</strong>{" "}
+                        {selectedAsset.serialNumber}
+                      </p>
+                      <p>
+                        <strong>{tAsset("os")}:</strong>{" "}
+                        {selectedAsset.customProperties?.osType}
+                      </p>
+                      <p>
+                        <strong>{tAsset("cpu")}:</strong>{" "}
+                        {selectedAsset.customProperties?.cpu}
+                      </p>
+                      <p>
+                        <strong>{tAsset("ram")}:</strong>{" "}
+                        {selectedAsset.customProperties?.ram}
+                      </p>
+                      <p>
+                        <strong>{tAsset("storage")}:</strong>{" "}
+                        {selectedAsset.customProperties?.hardDrive}
+                      </p>
+                      <p>
+                        <strong>{tAsset("status")}:</strong>{" "}
+                        {selectedAsset.status}
+                      </p>
+                      <p>
+                        <strong>{tAsset("purchaseDate")}:</strong>{" "}
+                        {
+                          new Date(selectedAsset.purchaseDate)
+                            .toISOString()
+                            .split("T")[0]
+                        }
+                      </p>
+                      <p>
+                        <strong>{tAsset("warrantyDuration")}:</strong>{" "}
+                        {selectedAsset.warrantyDuration}{" "}
+                        {parseInt(selectedAsset.warrantyDuration) > 1
+                          ? tAsset("years")
+                          : tAsset("year")}
+                      </p>
+                    </>
+                  ) : (
+                    <p>{tAdmin("no_data")}</p>
+                  )}
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    {tCta("close")}
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      </div>
     </div>
   );
 }
@@ -218,12 +333,16 @@ interface AssetTableProps {
   onPageChange: (page: number) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  setSelectedAsset: (query: Asset) => void;
   handleSearchSubmit: () => void;
   filteredLength: number;
   exportToExcel: () => void;
   tAsset: (key: string) => string;
   tCta: (key: string) => string;
   tLabels: (key: string) => string;
+  tAdmin: (key: string) => string;
+  onOpen: () => void;
+  pathname: string;
 }
 
 export const AssetTable = ({
@@ -233,12 +352,16 @@ export const AssetTable = ({
   onPageChange,
   searchQuery,
   setSearchQuery,
+  setSelectedAsset,
   handleSearchSubmit,
   filteredLength,
   exportToExcel,
   tAsset,
   tCta,
   tLabels,
+  tAdmin,
+  onOpen,
+  pathname,
 }: AssetTableProps) => (
   <Table
     aria-label="Asset Table"
@@ -279,7 +402,9 @@ export const AssetTable = ({
             {tCta("submit")}
           </Button>
         </div>
-        <p>{filteredLength} {tLabels("entriesFound")}</p>
+        <p>
+          {filteredLength} {tLabels("entriesFound")}
+        </p>
         <Button
           className="p-4 rounded-full text-white"
           color="success"
@@ -299,7 +424,6 @@ export const AssetTable = ({
       <TableColumn>{tAsset("code")}</TableColumn>
       <TableColumn>{tAsset("user")}</TableColumn>
       <TableColumn>{tAsset("office")}</TableColumn>
-      <TableColumn>{tAsset("department")}</TableColumn>
       <TableColumn>{tAsset("deviceType")}</TableColumn>
       <TableColumn>{tAsset("deviceModel")}</TableColumn>
       <TableColumn>{tAsset("serialNumber")}</TableColumn>
@@ -310,6 +434,7 @@ export const AssetTable = ({
       <TableColumn>{tAsset("status")}</TableColumn>
       <TableColumn>{tAsset("purchaseDate")}</TableColumn>
       <TableColumn>{tAsset("warrantyDuration")}</TableColumn>
+      <TableColumn>{tAdmin("actions")}</TableColumn>
     </TableHeader>
     <TableBody items={items}>
       {(item) => (
@@ -317,7 +442,6 @@ export const AssetTable = ({
           <TableCell>{item.internalCode}</TableCell>
           <TableCell>{item.user?.name || "-"}</TableCell>
           <TableCell>{item.office?.shortName || "-"}</TableCell>
-          <TableCell>{item.department?.name || "-"}</TableCell>
           <TableCell>{item.deviceType?.name || "-"}</TableCell>
           <TableCell>{item.deviceModel?.name || "-"}</TableCell>
           <TableCell>{item.serialNumber}</TableCell>
@@ -334,6 +458,32 @@ export const AssetTable = ({
             {parseInt(item.warrantyDuration) > 1
               ? tAsset("years")
               : tAsset("year")}
+          </TableCell>
+          <TableCell>
+            <div className="flex gap-2 items-center">
+              <Tooltip content={tCta("view")}>
+                <Button
+                  isIconOnly
+                  variant="light"
+                  onPress={() => {
+                    setSelectedAsset(item);
+                    onOpen();
+                  }}
+                >
+                  <EyeIcon />
+                </Button>
+              </Tooltip>
+              <Tooltip content={tCta("edit")}>
+                <Link href={`${pathname}/${item.id}`}>
+                  <EditIcon />
+                </Link>
+              </Tooltip>
+              <Tooltip content={tCta("delete")} color="danger">
+                <Button isIconOnly variant="light" color="danger">
+                  <DeleteIcon />
+                </Button>
+              </Tooltip>
+            </div>
           </TableCell>
         </TableRow>
       )}

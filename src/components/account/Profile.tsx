@@ -26,7 +26,6 @@ export default function ProfileComponent() {
   const { updateUserInContext } = useAuth();
   const defaultDate = today(getLocalTimeZone());
   const [value, setValue] = useState(defaultDate);
-  const now = today(getLocalTimeZone());
   const { tProfile, tCta, tLabels, tErrors } = useAppTranslations();
 
   const [fullname, setFullname] = useState("");
@@ -192,7 +191,7 @@ export default function ProfileComponent() {
             radius="full"
             size="sm"
           >
-            <Button onPress={() => setValue(now)}>Today</Button>{" "}
+            <Button onPress={() => setValue(defaultDate)}>Today</Button>{" "}
           </ButtonGroup>
         }
       />

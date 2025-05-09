@@ -21,11 +21,16 @@ import {
   Radio,
   RadioGroup,
 } from "@heroui/react";
-import { CalendarDate, parseDate } from "@internationalized/date";
+import {
+  CalendarDate,
+  getLocalTimeZone,
+  parseDate,
+  today,
+} from "@internationalized/date";
 import { useCallback, useEffect, useState } from "react";
 
 export default function EditUserAdminComponent({ id }: { id: string }) {
-  const defaultDate = parseDate("2024-04-04");
+  const defaultDate = today(getLocalTimeZone());
   const [time, setTime] = useState<CalendarDate | null>(defaultDate);
   const { tAdmin, tCta, tLabels } = useAppTranslations();
   const [formData, setFormData] = useState<Partial<User>>({});
@@ -104,7 +109,7 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
     }
   };
 
-  if (!formData || !formData.office || !formData.department) {
+  if (!formData.id) {
     return <LoadingComponent />;
   }
 
@@ -164,7 +169,9 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
       <RadioGroup
         label={tLabels("genderLabel")}
         value={formData.gender}
-        onValueChange={(val) => setFormData((prev) => ({ ...prev, name: val }))}
+        onValueChange={(val) =>
+          setFormData((prev) => ({ ...prev, gender: val }))
+        }
         defaultValue="male"
         orientation="horizontal"
       >
