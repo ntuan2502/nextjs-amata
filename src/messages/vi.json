@@ -99,6 +99,7 @@
     "socialLogin": {
       "github": "Tiếp tục với Github",
       "google": "Tiếp tục với Google",
+      "microsoft": "Tiếp tục với Microsoft",
       "or": "HOẶC"
     }
   },

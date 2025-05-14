@@ -151,6 +151,18 @@ export default function AssetsAdminComponent() {
     XLSX.writeFile(wb, fileName);
   };
 
+  const handoverAsset = async (asset: Asset) => {
+    try {
+      const res = await axiosInstance.post(`${ENV.API_URL}/assets/handover`, {
+        assetId: asset.id,
+      });
+      const fullUrl = `${ENV.API_URL}${res.data.data.downloadUrl}`;
+      window.open(fullUrl, "_blank");
+    } catch (err) {
+      handleAxiosError(err);
+    }
+  };
+
   useEffect(() => {
     fetchOffice();
   }, [fetchOffice]);
@@ -234,6 +246,7 @@ export default function AssetsAdminComponent() {
                     tAdmin={tAdmin}
                     onOpen={onOpen}
                     pathname={pathname}
+                    handoverAsset={handoverAsset}
                   />
                 </CardBody>
               </Card>
@@ -343,6 +356,7 @@ interface AssetTableProps {
   tAdmin: (key: string) => string;
   onOpen: () => void;
   pathname: string;
+  handoverAsset: (query: Asset) => void;
 }
 
 export const AssetTable = ({
@@ -362,6 +376,7 @@ export const AssetTable = ({
   tAdmin,
   onOpen,
   pathname,
+  handoverAsset,
 }: AssetTableProps) => (
   <Table
     aria-label="Asset Table"
@@ -461,6 +476,17 @@ export const AssetTable = ({
           </TableCell>
           <TableCell>
             <div className="flex gap-2 items-center">
+              <Tooltip content="Handover asset">
+                <Button
+                  isIconOnly
+                  variant="light"
+                  onPress={() => {
+                    handoverAsset(item);
+                  }}
+                >
+                  <EyeIcon />
+                </Button>
+              </Tooltip>
               <Tooltip content={tCta("view")}>
                 <Button
                   isIconOnly

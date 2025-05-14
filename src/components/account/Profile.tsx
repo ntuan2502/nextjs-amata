@@ -21,6 +21,8 @@ import {
 } from "@/libs/handleAxiosFeedback";
 import { ENV } from "@/config";
 import { useAuth } from "@/contexts/auth";
+import { Gender } from "@/types/enum";
+import { User } from "@/types/data";
 
 export default function ProfileComponent() {
   const { updateUserInContext } = useAuth();
@@ -30,7 +32,7 @@ export default function ProfileComponent() {
 
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
-  const [gender, setGender] = useState("male");
+  const [gender, setGender] = useState(Gender.MALE);
   const [office, setOffice] = useState("");
   const [department, setDepartment] = useState("");
   const [phone, setPhone] = useState("");
@@ -45,21 +47,21 @@ export default function ProfileComponent() {
   const fetchProfile = async () => {
     try {
       const res = await axiosInstance.get(`${ENV.API_URL}/auth/profile`);
-      const user = res.data.data.user;
+      const user: User = res.data.data.user;
       if (user.dob) {
         const isoString = user.dob; // "1997-02-25T00:00:00.000Z"
-        const dateOnly = isoString.split("T")[0]; // "1997-02-25"
+        const dateOnly = isoString.toString().split("T")[0]; // "1997-02-25"
         setValue(parseDate(dateOnly));
       }
 
       setEmail(user.email);
-      setFullname(user.name);
-      setGender(user.gender);
-      setPhone(user.phone);
-      setAddress(user.address);
-      setAvatar(user.avatar);
-      setOffice(user.office.name);
-      setDepartment(user.department.name);
+      setFullname(user.name || "");
+      setGender(user.gender || Gender.MALE);
+      setPhone(user.phone || "");
+      setAddress(user.address || "");
+      setAvatar(user.avatar || "");
+      setOffice(user.office?.name || "");
+      setDepartment(user.department?.name || "");
     } catch (err) {
       handleAxiosError(err);
     }
@@ -123,7 +125,7 @@ export default function ProfileComponent() {
 
       <Input
         isRequired
-        isReadOnly
+        isDisabled
         label={tLabels("emailLabel")}
         name="email"
         placeholder={tLabels("emailPlaceholder")}
@@ -140,7 +142,7 @@ export default function ProfileComponent() {
       />
       <Input
         isRequired
-        isReadOnly
+        isDisabled
         label={tLabels("officeLabel")}
         placeholder={tLabels("officePlaceholder")}
         type="text"
@@ -149,7 +151,7 @@ export default function ProfileComponent() {
 
       <Input
         isRequired
-        isReadOnly
+        isDisabled
         label={tLabels("departmentLabel")}
         placeholder={tLabels("departmentPlaceholder")}
         type="text"
@@ -159,12 +161,12 @@ export default function ProfileComponent() {
       <RadioGroup
         label={tLabels("genderLabel")}
         value={gender}
-        onValueChange={setGender}
-        defaultValue="male"
+        onValueChange={(val) => setGender(val as Gender)}
+        defaultValue={Gender.MALE}
         orientation="horizontal"
       >
-        <Radio value="male">{tLabels("genderMale")}</Radio>
-        <Radio value="female">{tLabels("genderFemale")}</Radio>
+        <Radio value={Gender.MALE}>{tLabels("genderMale")}</Radio>
+        <Radio value={Gender.FEMALE}>{tLabels("genderFemale")}</Radio>
       </RadioGroup>
 
       <DatePicker

@@ -1,16 +1,26 @@
-export enum AssetStatus {
-  AVAILABLE = "available",
-  DONATION = "donation",
-  IN_USING = "in using",
-  LIQUIDATION = "liquidation",
-  LOST = "lost",
-  WAITING_FOR_DISPOSAL = "waiting for disposal",
+export enum TransactionType {
+  TRANSFER = "TRANSFER",
+  REPAIR = "REPAIR",
+  MAINTENANCE = "MAINTENANCE",
+  RETURN = "RETURN",
+  OTHER = "OTHER",
 }
 
-export enum WarrantyDuration {
-  ONE_YEAR = "1",
-  TWO_YEARS = "2",
-  THREE_YEARS = "3",
-  FOUR_YEARS = "4",
-  FIVE_YEARS = "5",
+export enum TransactionStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+}
+
+export enum WarrantyYear {
+  ONE = "ONE",
+  TWO = "TWO",
+  THREE = "THREE",
+  FOUR = "FOUR",
+  FIVE = "FIVE",
+}
+
+export enum Gender {
+  MALE = "MALE",
+  FEMALE = "FEMALE",
 }
