@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button, Input, Checkbox, Link, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { AcmeIcon } from "@/components/icons";
 import { isValidEmail } from "@/utils/validators";
 import { AuthFieldErrors, LoginPayload } from "@/types/auth";
 import { useFormField } from "@/hooks/useFormField";
@@ -11,6 +10,7 @@ import SocialLogin from "@/components/auth/SocialLogin";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { useAuth } from "@/contexts/auth/useAuth";
 import { AUTH_ROUTES } from "@/constants/routes";
+import Image from "next/image";
 
 export default function LoginComponent() {
   const { tLogin, tCta, tLabels, tErrors } = useAppTranslations();
@@ -66,7 +66,7 @@ export default function LoginComponent() {
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
         <div className="flex flex-col items-center pb-6">
-          <AcmeIcon size={60} />
+          <Image src="/logo.svg" alt="Logo" width={150} height={150} />
           <p className="text-xl font-medium">{tLogin("title")}</p>
           <p className="text-small text-default-500">{tLogin("subtitle")}</p>
         </div>

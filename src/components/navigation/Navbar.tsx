@@ -9,32 +9,36 @@ import {
   NavbarContent,
   NavbarItem,
   Link,
-  Button,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
   Avatar,
 } from "@heroui/react";
+// import {
+//   Activity,
+//   ChevronDown,
+//   Flash,
+//   Lock,
+//   Scale,
+//   Server,
+//   TagUser,
+// } from "../icons";
 import {
-  AcmeIcon,
-  Activity,
-  ChevronDown,
-  Flash,
-  Lock,
-  Scale,
-  Server,
-  TagUser,
-} from "../icons";
-import { ACCOUNT_ROUTES, AUTH_ROUTES, HOME_ROUTE } from "@/constants/routes";
+  ACCOUNT_ROUTES,
+  ADMIN_ROUTES,
+  AUTH_ROUTES,
+  HOME_ROUTE,
+} from "@/constants/routes";
 import { ThemeSwitcher } from "../theme/ThemeSwitcher";
 import LanguageSwitcher from "../language/LanguageSwitcher";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { useAuth } from "@/contexts/auth/useAuth";
 import { useRouter, usePathname } from "next/navigation";
+import Image from "next/image";
 
 export default function NavbarComponent() {
-  const { tCta } = useAppTranslations();
+  const { tCta, tAdmin } = useAppTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -42,17 +46,17 @@ export default function NavbarComponent() {
 
   const avatarInitial = user?.name ? user.name.charAt(0).toUpperCase() : "?";
 
-  const icons = {
-    chevron: <ChevronDown fill="currentColor" size={16} />,
-    scale: <Scale className="text-warning" fill="currentColor" size={30} />,
-    lock: <Lock className="text-success" fill="currentColor" size={30} />,
-    activity: (
-      <Activity className="text-secondary" fill="currentColor" size={30} />
-    ),
-    flash: <Flash className="text-primary" fill="currentColor" size={30} />,
-    server: <Server className="text-success" fill="currentColor" size={30} />,
-    user: <TagUser className="text-danger" fill="currentColor" size={30} />,
-  };
+  // const icons = {
+  //   chevron: <ChevronDown fill="currentColor" size={16} />,
+  //   scale: <Scale className="text-warning" fill="currentColor" size={30} />,
+  //   lock: <Lock className="text-success" fill="currentColor" size={30} />,
+  //   activity: (
+  //     <Activity className="text-secondary" fill="currentColor" size={30} />
+  //   ),
+  //   flash: <Flash className="text-primary" fill="currentColor" size={30} />,
+  //   server: <Server className="text-success" fill="currentColor" size={30} />,
+  //   user: <TagUser className="text-danger" fill="currentColor" size={30} />,
+  // };
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -69,8 +73,7 @@ export default function NavbarComponent() {
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
           <Link href={HOME_ROUTE}>
-            <AcmeIcon />
-            <p className="font-bold text-inherit">ACME</p>
+            <Image src="/logo.svg" alt="Logo" width={100} height={100} />
           </Link>
         </NavbarBrand>
       </NavbarContent>
@@ -78,11 +81,10 @@ export default function NavbarComponent() {
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
           <Link href={HOME_ROUTE}>
-            <AcmeIcon />
-            <p className="font-bold text-inherit">ACME</p>
+            <Image src="/logo.svg" alt="Logo" width={100} height={100} />
           </Link>
         </NavbarBrand>
-        <NavbarItem>
+        {/* <NavbarItem>
           <Dropdown>
             <DropdownTrigger>
               <Button
@@ -138,7 +140,7 @@ export default function NavbarComponent() {
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
-        </NavbarItem>
+        </NavbarItem> */}
         {/* <NavbarItem isActive>
           <Link aria-current="page" href="#">
             Customers
@@ -190,12 +192,10 @@ export default function NavbarComponent() {
               )}
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="info" textValue="info" className="h-14 gap-2">
+              <DropdownItem key="info" textValue="info" className="h-fit gap-2">
                 <p className="font-semibold">Signed in as</p>
                 <p className="font-semibold">{user.email}</p>
-              </DropdownItem>
-              <DropdownItem key="username" textValue="username">
-                {user.name}
+                <p className="">{user.name}</p>
               </DropdownItem>
 
               <DropdownItem
@@ -205,24 +205,14 @@ export default function NavbarComponent() {
               >
                 {tCta("profile")}
               </DropdownItem>
-              {/* <DropdownItem key="team_settings" textValue="team_settings">
-                Team Settings
-              </DropdownItem>
-              <DropdownItem key="analytics" textValue="analytics">
-                Analytics
-              </DropdownItem>
-              <DropdownItem key="system" textValue="system">
-                System
-              </DropdownItem>
-              <DropdownItem key="configurations" textValue="configurations">
-                Configurations
-              </DropdownItem>
               <DropdownItem
-                key="help_and_feedback"
-                textValue="help_and_feedback"
+                key="admin"
+                textValue="admin"
+                onPress={() => router.push(ADMIN_ROUTES.DASHBOARD)}
               >
-                Help & Feedback
-              </DropdownItem> */}
+                {tAdmin("dashboard")}
+              </DropdownItem>
+
               <DropdownItem
                 key="logout"
                 color="danger"
@@ -252,6 +242,16 @@ export default function NavbarComponent() {
             size="lg"
           >
             {tCta("profile")}
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem key="dashboard">
+          <Link
+            className="w-full"
+            color="foreground"
+            href={ADMIN_ROUTES.DASHBOARD}
+            size="lg"
+          >
+            {tAdmin("dashboard")}
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem key="logout">

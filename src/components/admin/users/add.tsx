@@ -1,6 +1,5 @@
 "use client";
 
-import LoadingComponent from "@/components/ui/Loading";
 import { ENV } from "@/config";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
@@ -22,37 +21,20 @@ import {
   Radio,
   RadioGroup,
 } from "@heroui/react";
-import {
-  CalendarDate,
-  getLocalTimeZone,
-  parseDate,
-  today,
-} from "@internationalized/date";
-import dayjs from "dayjs";
-import { useCallback, useEffect, useState } from "react";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function EditUserAdminComponent({ id }: { id: string }) {
+export default function AddUserAdminComponent() {
+  const router = useRouter();
   const defaultDate = today(getLocalTimeZone());
   const [time, setTime] = useState<CalendarDate | null>(defaultDate);
   const { tAdmin, tCta, tLabels } = useAppTranslations();
-  const [formData, setFormData] = useState<Partial<User>>({});
+  const [formData, setFormData] = useState<Partial<User>>({
+    gender: Gender.MALE,
+  });
   const [offices, setOffices] = useState<Office[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
-
-  const fetchUser = useCallback(async () => {
-    try {
-      const res = await axiosInstance.get(
-        `${ENV.API_URL}/users/${id}?include=office, department`
-      );
-      const data: User = res.data.data.user;
-      setFormData(data);
-      if (data.dob) {
-        setTime(parseDate(dayjs(data.dob).format("YYYY-MM-DD")));
-      }
-    } catch (err) {
-      handleAxiosError(err);
-    }
-  }, [id]);
 
   const fetchOffices = async () => {
     try {
@@ -77,10 +59,9 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
   };
 
   useEffect(() => {
-    fetchUser();
     fetchOffices();
     fetchDepartments();
-  }, [fetchUser]);
+  }, []);
 
   const fields = [
     { name: "email", label: tAdmin("users.email") },
@@ -94,7 +75,7 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
     const { email, name, phone, address, avatar, gender, office, department } =
       formData;
     try {
-      const res = await axiosInstance.patch(`${ENV.API_URL}/users/${id}`, {
+      const res = await axiosInstance.post(`${ENV.API_URL}/users/`, {
         email,
         name,
         phone,
@@ -106,14 +87,11 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
         dob: time?.toDate("UTC").toISOString(),
       });
       handleAxiosSuccess(res);
+      router.push(ADMIN_ROUTES.USERS);
     } catch (err) {
       handleAxiosError(err);
     }
   };
-
-  if (!formData.id) {
-    return <LoadingComponent />;
-  }
 
   return (
     <div className="p-6 space-y-6 w-full">
@@ -125,8 +103,8 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
           <BreadcrumbItem href={ADMIN_ROUTES.USERS}>
             {tAdmin("users.title")}
           </BreadcrumbItem>
-          <BreadcrumbItem href={`${ADMIN_ROUTES.USERS}/${id}`}>
-            {formData.name}
+          <BreadcrumbItem href={`${ADMIN_ROUTES.USERS}/add`}>
+            {tCta("add")}
           </BreadcrumbItem>
         </Breadcrumbs>
       </div>
@@ -147,8 +125,6 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
         value={time}
         onChange={setTime}
         calendarProps={{
-          // focusedValue: time,
-          // onFocusChange: setTime,
           nextButtonProps: {
             variant: "bordered",
           },
@@ -156,17 +132,6 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
             variant: "bordered",
           },
         }}
-        // CalendarTopContent={
-        //   <ButtonGroup
-        //     fullWidth
-        //     className="px-3 pb-2 pt-3 bg-content1 [&>button]:text-default-500 [&>button]:border-default-200/60"
-        //     radius="full"
-        //     size="sm"
-        //
-        //   >
-        //     <Button onPress={() => setTime(defaultDate)}>Today</Button>{" "}
-        //   </ButtonGroup>
-        // }
       />
       <RadioGroup
         label={tLabels("genderLabel")}

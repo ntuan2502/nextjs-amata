@@ -17,6 +17,7 @@ import axiosInstance from "@/libs/axiosInstance";
 import { handleAxiosError } from "@/libs/handleAxiosFeedback";
 import {
   Asset,
+  AssetTransaction,
   CircleChartProps,
   Department,
   DeviceModel,
@@ -34,6 +35,9 @@ export default function DashboardAdminComponent() {
   const [offices, setOffices] = useState<Office[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [assets, setAssets] = useState<Asset[]>([]);
+  const [assetTransactions, setAssetTransactions] = useState<
+    AssetTransaction[]
+  >([]);
   const [chartData, setChartData] = useState<CircleChartProps[]>([]);
 
   const updateChartData = useCallback(() => {
@@ -110,6 +114,18 @@ export default function DashboardAdminComponent() {
           },
         ],
       },
+      {
+        title: tAdmin("assetTransactions.title"),
+        color: "default",
+        total: assetTransactions.length,
+        chartData: [
+          {
+            name: tAdmin("assetTransactions.title"),
+            value: assetTransactions.length,
+            fill: "hsl(var(--heroui-primary))",
+          },
+        ],
+      },
     ]);
   }, [
     tAdmin,
@@ -119,6 +135,7 @@ export default function DashboardAdminComponent() {
     deviceModels.length,
     users.length,
     assets.length,
+    assetTransactions.length,
   ]);
 
   useEffect(() => {
@@ -128,6 +145,7 @@ export default function DashboardAdminComponent() {
     fetchOffices();
     fetchUsers();
     fetchAssets();
+    fetchAssetTransactions();
   }, []);
 
   useEffect(() => {
@@ -188,13 +206,23 @@ export default function DashboardAdminComponent() {
     }
   };
 
+  const fetchAssetTransactions = async () => {
+    try {
+      const res = await axiosInstance.get(`${ENV.API_URL}/asset-transactions`);
+      setAssetTransactions(res.data.data.assetTransactions);
+    } catch (err) {
+      handleAxiosError(err);
+    }
+  };
+
   if (
     departments.length === 0 ||
     offices.length === 0 ||
     deviceModels.length === 0 ||
     deviceTypes.length === 0 ||
     users.length === 0 ||
-    assets.length === 0
+    assets.length === 0 ||
+    assetTransactions.length === 0
   ) {
     return <LoadingComponent />;
   }

@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import FooterComponent from "@/components/footer";
+// import FooterComponent from "@/components/footer";
 
 export default async function RootLayout({
   children,
@@ -29,7 +29,7 @@ export default async function RootLayout({
             <ToastContainer />
             <NavbarComponent />
             {children}
-            <FooterComponent />
+            {/* <FooterComponent /> */}
           </Providers>
         </NextIntlClientProvider>
       </body>

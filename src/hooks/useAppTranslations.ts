@@ -4,6 +4,7 @@ export function useAppTranslations() {
   return {
     tAdmin: useTranslations("admin"),
     tAsset: useTranslations("asset"),
+    tAssetTransaction: useTranslations("assetTransaction"),
     tAccount: useTranslations("account"),
     tProfile: useTranslations("account.profile"),
     tSessions: useTranslations("account.sessions"),
@@ -16,5 +17,6 @@ export function useAppTranslations() {
     tCta: useTranslations("cta"),
     tLabels: useTranslations("labels"),
     tErrors: useTranslations("errors"),
+    tSwal: useTranslations("ui.swal"),
   };
 }

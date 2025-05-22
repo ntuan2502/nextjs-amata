@@ -415,7 +415,7 @@ export default function FooterComponent() {
             </p>
 
             <p className="mt-4 text-sm text-gray-500 sm:order-first sm:mt-0 dark:text-gray-400">
-              &copy; {new Date().getFullYear()} Company Name
+              &copy; {new Date().getFullYear()} AMATA
             </p>
           </div>
         </div>

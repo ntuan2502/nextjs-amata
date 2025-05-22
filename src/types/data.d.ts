@@ -1,5 +1,11 @@
 import { ButtonProps } from "@heroui/react";
-import { Gender, WarrantyYear } from "./enum";
+import {
+  Gender,
+  TransactionRole,
+  TransactionStatus,
+  TransactionType,
+  Warranty,
+} from "./enum";
 
 export type Office = {
   id: string;
@@ -41,7 +47,7 @@ export type Asset = {
   internalCode: string;
   serialNumber: string;
   purchaseDate: string;
-  WarrantyYears: WarrantyYear;
+  warranty: Warranty;
   deviceType?: DeviceType;
   deviceModel?: DeviceModel;
   customProperties?: {
@@ -51,6 +57,28 @@ export type Asset = {
     hardDrive?: string;
     macAddress?: string;
   };
+};
+
+export type AssetTransaction = {
+  id: string;
+  note?: string;
+
+  signature?: string;
+  signedAt?: Date;
+
+  role?: TransactionRole;
+  type?: TransactionType;
+  status?: TransactionStatus;
+
+  user?: User;
+  fromUser?: User;
+  toUser?: User;
+  
+  asset?: Asset;
+  department?: Department;
+  office?: Office;
+
+  handoverFilePath?: string;
 };
 
 export type ParamsWithId = {

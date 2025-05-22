@@ -1,6 +1,5 @@
 "use client";
 
-import LoadingComponent from "@/components/ui/Loading";
 import { ENV } from "@/config";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
@@ -20,15 +19,12 @@ import {
   DatePicker,
   Input,
 } from "@heroui/react";
-import {
-  CalendarDate,
-  getLocalTimeZone,
-  parseDate,
-  today,
-} from "@internationalized/date";
-import { useCallback, useEffect, useState } from "react";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function EditAssetAdminComponent({ id }: { id: string }) {
+export default function AddAssetAdminComponent() {
+  const router = useRouter();
   const defaultDate = today(getLocalTimeZone());
   const [time, setTime] = useState<CalendarDate | null>(defaultDate);
 
@@ -36,21 +32,6 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
   const [formData, setFormData] = useState<Partial<Asset>>({});
   const [deviceTypes, setDeviceTypes] = useState<DeviceType[]>([]);
   const [deviceModels, setDeviceModels] = useState<DeviceModel[]>([]);
-
-  const fetchAsset = useCallback(async () => {
-    try {
-      const res = await axiosInstance.get(
-        `${ENV.API_URL}/assets/${id}?include=deviceType, deviceModel`
-      );
-      const data: Asset = res.data.data.asset;
-      setFormData(data);
-      if (data.purchaseDate) {
-        setTime(parseDate(data.purchaseDate.toString().split("T")[0]));
-      }
-    } catch (err) {
-      handleAxiosError(err);
-    }
-  }, [id]);
 
   const fetchDeviceTypes = async () => {
     try {
@@ -75,10 +56,9 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
   };
 
   useEffect(() => {
-    fetchAsset();
     fetchDeviceTypes();
     fetchDeviceModels();
-  }, [fetchAsset]);
+  }, []);
 
   const fields = [
     { name: "internalCode", label: tAsset("code") },
@@ -95,7 +75,7 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
       customProperties,
     } = formData;
     try {
-      const res = await axiosInstance.patch(`${ENV.API_URL}/assets/${id}`, {
+      const res = await axiosInstance.post(`${ENV.API_URL}/assets`, {
         internalCode,
         serialNumber,
         deviceTypeId: deviceType?.id,
@@ -111,14 +91,11 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
         warranty,
       });
       handleAxiosSuccess(res);
+      router.push(ADMIN_ROUTES.ASSETS);
     } catch (err) {
       handleAxiosError(err);
     }
   };
-
-  if (!formData.internalCode) {
-    return <LoadingComponent />;
-  }
 
   return (
     <div className="p-6 space-y-6 w-full">
@@ -130,8 +107,8 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
           <BreadcrumbItem href={ADMIN_ROUTES.ASSETS}>
             {tAdmin("assets.title")}
           </BreadcrumbItem>
-          <BreadcrumbItem href={`${ADMIN_ROUTES.ASSETS}/${id}`}>
-            {formData.internalCode}
+          <BreadcrumbItem href={`${ADMIN_ROUTES.ASSETS}/add`}>
+            {tCta("add")}
           </BreadcrumbItem>
         </Breadcrumbs>
       </div>

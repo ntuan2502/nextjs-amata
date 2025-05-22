@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -8,199 +8,113 @@ import {
   TableRow,
   TableCell,
   Pagination,
-  Tabs,
-  Tab,
-  Card,
-  CardBody,
-  Input,
-  Button,
-  Breadcrumbs,
-  BreadcrumbItem,
+  useDisclosure,
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  useDisclosure,
+  Button,
   Tooltip,
+  Breadcrumbs,
+  BreadcrumbItem,
 } from "@heroui/react";
 import axiosInstance from "@/libs/axiosInstance";
 import { ENV } from "@/config";
-import { handleAxiosError } from "@/libs/handleAxiosFeedback";
-import { rowsPerPage } from "@/constants/config";
-import { Asset, Office } from "@/types/data";
-import LoadingComponent from "@/components/ui/Loading";
-import { useAppTranslations } from "@/hooks/useAppTranslations";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import * as XLSX from "xlsx";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { ADMIN_ROUTES } from "@/constants/routes";
+import {
+  handleAxiosError,
+  handleAxiosSuccess,
+} from "@/libs/handleAxiosFeedback";
 import { EyeIcon } from "@/components/icons/EyeIcon";
-import Link from "next/link";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
+import { usePathname } from "next/navigation";
+import { Asset, AssetTransaction } from "@/types/data";
+import { rowsPerPage } from "@/constants/config";
+import { useAppTranslations } from "@/hooks/useAppTranslations";
+import LoadingComponent from "@/components/ui/Loading";
+import { ADMIN_ROUTES } from "@/constants/routes";
+import Link from "next/link";
+import dayjs from "dayjs";
+import { wordToNumber } from "@/utils/function";
+import Swal from "sweetalert2";
+import { Icon } from "@iconify/react";
 
 export default function AssetsAdminComponent() {
-  const { tAdmin, tAsset, tCta, tLabels } = useAppTranslations();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const queryOffice = searchParams.get("office") || "";
-  const querySearch = searchParams.get("search") || "";
-  const queryPage = parseInt(searchParams.get("page") || "1", 10);
-
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { tAdmin, tCta, tAsset, tAssetTransaction, tSwal } =
+    useAppTranslations();
   const pathname = usePathname();
-
-  const [page, setPage] = useState(queryPage);
+  const [page, setPage] = useState(1);
   const [assets, setAssets] = useState<Asset[]>([]);
+  const [assetTransactions, setAssetTransactions] = useState<
+    AssetTransaction[]
+  >([]);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
-  const [filteredAssets, setFilteredAssets] = useState<Asset[]>([]);
-  const [offices, setOffices] = useState<Office[]>([]);
-  const [tabSelected, setTabSelected] = useState<string>(queryOffice);
-  const [searchQuery, setSearchQuery] = useState<string>(querySearch);
 
-  const officeFetched = useRef(false);
+  useEffect(() => {
+    fetchAssets();
+  }, []);
 
-  const handleTabChange = useCallback(
-    (key: string) => {
-      setTabSelected(key);
-      setPage(1);
-      const params = new URLSearchParams(searchParams);
-      params.set("office", key);
-      params.delete("page");
-      router.push(`?${params.toString()}`);
-    },
-    [searchParams, router]
-  );
-
-  const fetchOffice = useCallback(async () => {
-    if (officeFetched.current) return;
-    officeFetched.current = true;
-
+  const fetchAssets = async () => {
     try {
-      const res = await axiosInstance.get(`${ENV.API_URL}/offices`);
-      const data: Office[] = res.data.data.offices;
-      setOffices(data);
-      if (!queryOffice && data.length > 0) {
-        handleTabChange(data[0].shortName || "");
-      }
-    } catch (err) {
-      handleAxiosError(err);
-    }
-  }, [queryOffice, handleTabChange]);
-
-  const fetchAsset = async (tab: string) => {
-    const filterField = tab === "ITAM" ? "user.name" : "office.shortName";
-    const url = `${ENV.API_URL}/assets?include=user,office,department,deviceType,deviceModel&filter=${filterField}=${tab}`;
-
-    try {
-      const res = await axiosInstance.get(url);
-      const assets = res.data.data.assets;
-      setAssets(assets);
-      setFilteredAssets(assets);
-    } catch (err) {
-      handleAxiosError(err);
-    }
-  };
-
-  const filterAssets = useCallback(
-    (query: string) => {
-      const q = query.toLowerCase();
-      const filtered = assets.filter(
-        (item) =>
-          item.internalCode?.toLowerCase().includes(q) ||
-          item.user?.name?.toLowerCase().includes(q) ||
-          item.deviceType?.name?.toLowerCase().includes(q) ||
-          item.deviceModel?.name?.toLowerCase().includes(q) ||
-          item.serialNumber?.toLowerCase().includes(q) ||
-          item.customProperties?.osType?.toLowerCase().includes(q) ||
-          item.customProperties?.cpu?.toLowerCase().includes(q) ||
-          item.status?.toLowerCase().includes(q) ||
-          item.warrantyDuration?.toLowerCase().includes(q)
+      const res = await axiosInstance.get(
+        `${ENV.API_URL}/assets?include=deviceType,deviceModel`
       );
-      setFilteredAssets(filtered);
-      setPage(1);
-    },
-    [assets]
-  );
-
-  const exportToExcel = () => {
-    const dataForExport = filteredAssets.map((asset) => ({
-      "Asset Code": asset.internalCode,
-      User: asset.user?.name || "-",
-      Office: asset.office?.shortName || "-",
-      "Device Type": asset.deviceType?.name || "-",
-      "Device Model": asset.deviceModel?.name || "-",
-      "Serial Number": asset.serialNumber,
-      OS: asset.customProperties?.osType || "-",
-      CPU: asset.customProperties?.cpu || "-",
-      RAM: asset.customProperties?.ram || "-",
-      Storage: asset.customProperties?.hardDrive || "-",
-      Status: asset.status,
-      "Purchase Date": new Date(asset.purchaseDate).toISOString().split("T")[0],
-      "Warranty Duration": asset.warrantyDuration,
-    }));
-
-    const ws = XLSX.utils.json_to_sheet(dataForExport);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Assets");
-
-    const fileName = `assets_data_${tabSelected || "all_offices"}.xlsx`;
-
-    XLSX.writeFile(wb, fileName);
-  };
-
-  const handoverAsset = async (asset: Asset) => {
-    try {
-      const res = await axiosInstance.post(`${ENV.API_URL}/assets/handover`, {
-        assetId: asset.id,
-      });
-      const fullUrl = `${ENV.API_URL}${res.data.data.downloadUrl}`;
-      window.open(fullUrl, "_blank");
+      setAssets(res.data.data.assets);
     } catch (err) {
       handleAxiosError(err);
     }
   };
 
-  useEffect(() => {
-    fetchOffice();
-  }, [fetchOffice]);
-
-  useEffect(() => {
-    if (tabSelected) {
-      fetchAsset(tabSelected);
+  const fetchAssetTransactions = async (assetId: string) => {
+    try {
+      const res = await axiosInstance.get(
+        `${ENV.API_URL}/asset-transactions?include=asset,user,office,department&filter=assetId=${assetId}`
+      );
+      setAssetTransactions(res.data.data.assetTransactions);
+    } catch (err) {
+      handleAxiosError(err);
     }
-  }, [tabSelected]);
-
-  useEffect(() => {
-    if (querySearch && assets.length > 0) {
-      filterAssets(querySearch);
-    }
-  }, [querySearch, assets, filterAssets]);
-
-  const handleSearchSubmit = () => {
-    filterAssets(searchQuery);
-    const params = new URLSearchParams(searchParams);
-    params.set("search", searchQuery);
-    params.delete("page");
-    router.push(`?${params.toString()}`);
   };
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-    const params = new URLSearchParams(searchParams);
-    params.set("page", newPage.toString());
-    router.push(`?${params.toString()}`);
-  };
-
-  const pages = Math.max(Math.ceil(filteredAssets.length / rowsPerPage), 1);
+  const pages = Math.max(Math.ceil(assets.length / rowsPerPage), 1);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return filteredAssets.slice(start, end);
-  }, [page, filteredAssets]);
+    return assets.slice(start, end);
+  }, [page, assets]);
+
+  const handleDelete = async (item: Asset) => {
+    Swal.fire({
+      title: `${tSwal("title")} ${item.internalCode}?`,
+      text: tSwal("text"),
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: tSwal("confirmButtonText"),
+      cancelButtonText: tSwal("cancelButtonText"),
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axiosInstance.delete(
+            `${ENV.API_URL}/assets/${item.id}`
+          );
+          handleAxiosSuccess(res);
+          await fetchAssets();
+        } catch (err) {
+          handleAxiosError(err);
+        }
+        Swal.fire({
+          title: tSwal("confirmed.title"),
+          text: `${item.internalCode} ${tSwal("confirmed.text")}`,
+          icon: "success",
+        });
+      }
+    });
+  };
 
   if (assets.length === 0) {
     return <LoadingComponent />;
@@ -217,302 +131,249 @@ export default function AssetsAdminComponent() {
             {tAdmin("assets.title")}
           </BreadcrumbItem>
         </Breadcrumbs>
+        <Button color="primary" as={Link} href={`${ADMIN_ROUTES.ASSETS}/add`}>
+          {tCta("add")}
+        </Button>
       </div>
 
-      <div>
-        <Tabs
-          aria-label="Options"
-          selectedKey={tabSelected}
-          onSelectionChange={(key) => handleTabChange(String(key))}
-        >
-          {[...offices.map((o) => o.shortName), "ITAM"].map((key) => (
-            <Tab key={key} title={key}>
-              <Card>
-                <CardBody>
-                  <AssetTable
-                    items={items}
-                    page={page}
-                    pages={pages}
-                    onPageChange={handlePageChange}
-                    searchQuery={searchQuery}
-                    setSearchQuery={setSearchQuery}
-                    setSelectedAsset={setSelectedAsset}
-                    handleSearchSubmit={handleSearchSubmit}
-                    filteredLength={filteredAssets.length}
-                    exportToExcel={exportToExcel}
-                    tAsset={tAsset}
-                    tCta={tCta}
-                    tLabels={tLabels}
-                    tAdmin={tAdmin}
-                    onOpen={onOpen}
-                    pathname={pathname}
-                    handoverAsset={handoverAsset}
-                  />
-                </CardBody>
-              </Card>
-            </Tab>
-          ))}
-        </Tabs>
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl">
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader>{tAdmin("information")}</ModalHeader>
-                <ModalBody className="space-y-2">
-                  {selectedAsset ? (
-                    <>
-                      <p>
-                        <strong>{tAsset("code")}:</strong>{" "}
-                        {selectedAsset.internalCode}
-                      </p>
-                      <p>
-                        <strong>{tAsset("user")}:</strong>{" "}
-                        {selectedAsset.user?.name}
-                      </p>
-                      <p>
-                        <strong>{tAsset("office")}:</strong>{" "}
-                        {selectedAsset.office?.shortName}
-                      </p>
-                      <p>
-                        <strong>{tAsset("deviceType")}:</strong>{" "}
-                        {selectedAsset.deviceType?.name}
-                      </p>
-                      <p>
-                        <strong>{tAsset("deviceModel")}:</strong>{" "}
-                        {selectedAsset.deviceModel?.name}
-                      </p>
-                      <p>
-                        <strong>{tAsset("serialNumber")}:</strong>{" "}
-                        {selectedAsset.serialNumber}
-                      </p>
-                      <p>
-                        <strong>{tAsset("os")}:</strong>{" "}
-                        {selectedAsset.customProperties?.osType}
-                      </p>
-                      <p>
-                        <strong>{tAsset("cpu")}:</strong>{" "}
-                        {selectedAsset.customProperties?.cpu}
-                      </p>
-                      <p>
-                        <strong>{tAsset("ram")}:</strong>{" "}
-                        {selectedAsset.customProperties?.ram}
-                      </p>
-                      <p>
-                        <strong>{tAsset("storage")}:</strong>{" "}
-                        {selectedAsset.customProperties?.hardDrive}
-                      </p>
-                      <p>
-                        <strong>{tAsset("status")}:</strong>{" "}
-                        {selectedAsset.status}
-                      </p>
-                      <p>
-                        <strong>{tAsset("purchaseDate")}:</strong>{" "}
-                        {
-                          new Date(selectedAsset.purchaseDate)
-                            .toISOString()
-                            .split("T")[0]
-                        }
-                      </p>
-                      <p>
-                        <strong>{tAsset("warrantyDuration")}:</strong>{" "}
-                        {selectedAsset.warrantyDuration}{" "}
-                        {parseInt(selectedAsset.warrantyDuration) > 1
-                          ? tAsset("years")
-                          : tAsset("year")}
-                      </p>
-                    </>
-                  ) : (
-                    <p>{tAdmin("no_data")}</p>
-                  )}
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="danger" variant="light" onPress={onClose}>
-                    {tCta("close")}
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-      </div>
+      <Table
+        aria-label={tAdmin("assets.title")}
+        bottomContent={
+          <div className="flex justify-center mt-4">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              color="secondary"
+              page={page}
+              total={pages}
+              onChange={(page) => setPage(page)}
+              siblings={2}
+            />
+          </div>
+        }
+        className="w-full"
+        classNames={{ wrapper: "min-h-[222px] w-full" }}
+      >
+        <TableHeader>
+          <TableColumn>{tAsset("code")}</TableColumn>
+          <TableColumn>{tAsset("deviceType")}</TableColumn>
+          <TableColumn>{tAsset("deviceModel")}</TableColumn>
+          <TableColumn>{tAsset("serialNumber")}</TableColumn>
+          <TableColumn>{tAsset("cpu")}</TableColumn>
+          <TableColumn>{tAsset("ram")}</TableColumn>
+          <TableColumn>{tAsset("storage")}</TableColumn>
+          <TableColumn>{tAsset("os")}</TableColumn>
+          <TableColumn>{tAsset("purchaseDate")}</TableColumn>
+          <TableColumn>{tAsset("warranty")}</TableColumn>
+          <TableColumn>{tAsset("endOfWarranty")}</TableColumn>
+          <TableColumn>{tAdmin("actions")}</TableColumn>
+        </TableHeader>
+        <TableBody items={items}>
+          {(item) => (
+            <TableRow
+              key={item.id}
+              className={
+                dayjs(item.purchaseDate)
+                  .add(wordToNumber(item.warranty) || 3, "year")
+                  .format("YYYY-MM-DD") <= dayjs().format("YYYY-MM-DD")
+                  ? "bg-red-200"
+                  : ""
+              }
+            >
+              <TableCell>{item.internalCode}</TableCell>
+              <TableCell>{item.deviceType?.name || "-"}</TableCell>
+              <TableCell>{item.deviceModel?.name || "-"}</TableCell>
+              <TableCell>{item.serialNumber}</TableCell>
+              <TableCell>{item.customProperties?.cpu || "-"}</TableCell>
+              <TableCell>{item.customProperties?.ram || "-"}</TableCell>
+              <TableCell>{item.customProperties?.hardDrive || "-"}</TableCell>
+              <TableCell>{item.customProperties?.osType || "-"}</TableCell>
+              <TableCell>
+                {dayjs(item.purchaseDate).format("YYYY-MM-DD")}
+              </TableCell>
+              <TableCell>{wordToNumber(item.warranty)}</TableCell>
+              <TableCell>
+                {dayjs(item.purchaseDate)
+                  .add(wordToNumber(item.warranty) || 3, "year")
+                  .format("YYYY-MM-DD")}
+              </TableCell>
+              <TableCell>
+                <div className="flex gap-2 items-center">
+                  <Tooltip content={tCta("createRequest")}>
+                    <Link href={`${pathname}/${item.id}/create-request`}>
+                      <Icon
+                        className="pointer-events-none text-2xl text-default-400"
+                        icon="fa6-solid:code-merge"
+                      />
+                    </Link>
+                  </Tooltip>
+                  <Tooltip content={tCta("view")}>
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      onPress={() => {
+                        setSelectedAsset(item);
+                        fetchAssetTransactions(item.id);
+                        onOpen();
+                      }}
+                    >
+                      <EyeIcon />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content={tCta("edit")}>
+                    <Link href={`${pathname}/${item.id}`}>
+                      <EditIcon />
+                    </Link>
+                  </Tooltip>
+                  <Tooltip content={tCta("delete")} color="danger">
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      color="danger"
+                      onPress={() => handleDelete(item)}
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  </Tooltip>
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        scrollBehavior="inside"
+        size="5xl"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>{tAdmin("information")}</ModalHeader>
+              <ModalBody className="space-y-2">
+                {selectedAsset ? (
+                  <>
+                    <p>
+                      <strong>{tAsset("code")}:</strong>{" "}
+                      {selectedAsset.internalCode}
+                    </p>
+                    <p>
+                      <strong>{tAsset("deviceType")}:</strong>{" "}
+                      {selectedAsset.deviceType?.name}
+                    </p>
+                    <p>
+                      <strong>{tAsset("deviceModel")}:</strong>{" "}
+                      {selectedAsset.deviceModel?.name}
+                    </p>
+                    <p>
+                      <strong>{tAsset("serialNumber")}:</strong>{" "}
+                      {selectedAsset.serialNumber}
+                    </p>
+
+                    <p>
+                      <strong>{tAsset("cpu")}:</strong>{" "}
+                      {selectedAsset.customProperties?.cpu}
+                    </p>
+                    <p>
+                      <strong>{tAsset("ram")}:</strong>{" "}
+                      {selectedAsset.customProperties?.ram}
+                    </p>
+                    <p>
+                      <strong>{tAsset("storage")}:</strong>{" "}
+                      {selectedAsset.customProperties?.hardDrive}
+                    </p>
+                    <p>
+                      <strong>{tAsset("os")}:</strong>{" "}
+                      {selectedAsset.customProperties?.osType}
+                    </p>
+                    <p>
+                      <strong>{tAsset("purchaseDate")}:</strong>{" "}
+                      {dayjs(selectedAsset.purchaseDate).format("YYYY-MM-DD")}
+                    </p>
+                    <p>
+                      <strong>{tAsset("warranty")}:</strong>{" "}
+                      {wordToNumber(selectedAsset.warranty)}
+                    </p>
+                    <p>
+                      <strong>{tAsset("endOfWarranty")}:</strong>{" "}
+                      {dayjs(selectedAsset.purchaseDate)
+                        .add(wordToNumber(selectedAsset.warranty) || 3, "year")
+                        .format("YYYY-MM-DD")}
+                    </p>
+                  </>
+                ) : (
+                  <p>{tAdmin("no_data")}</p>
+                )}
+                <Table
+                  aria-label={tAdmin("assetTransactions.title")}
+                  className="w-full"
+                  classNames={{ wrapper: "min-h-[222px] w-full" }}
+                >
+                  <TableHeader>
+                    <TableColumn>
+                      {tAssetTransaction("internalCode")}
+                    </TableColumn>
+                    <TableColumn>{tAssetTransaction("office")}</TableColumn>
+                    <TableColumn>{tAssetTransaction("department")}</TableColumn>
+                    <TableColumn>{tAssetTransaction("user")}</TableColumn>
+                    <TableColumn>{tAssetTransaction("role")}</TableColumn>
+                    <TableColumn>{tAssetTransaction("type")}</TableColumn>
+                    <TableColumn>{tAssetTransaction("status")}</TableColumn>
+                    <TableColumn>{tAssetTransaction("signedAt")}</TableColumn>
+                    <TableColumn>{tAssetTransaction("file")}</TableColumn>
+                  </TableHeader>
+                  <TableBody items={assetTransactions}>
+                    {(item) => (
+                      <TableRow key={item.id}>
+                        <TableCell>{item.asset?.internalCode || "-"}</TableCell>
+                        <TableCell>{item.office?.name || "-"}</TableCell>
+                        <TableCell>{item.department?.name || "-"}</TableCell>
+                        <TableCell>{item.user?.name || "-"}</TableCell>
+                        <TableCell>{item.role || "-"}</TableCell>
+                        <TableCell>{item.type || "-"}</TableCell>
+                        <TableCell>{item.status || "-"}</TableCell>
+                        <TableCell>
+                          {item.signedAt
+                            ? dayjs(item.signedAt).format("HH:mm:ss YYYY-MM-DD")
+                            : "-"}
+                        </TableCell>
+                        <TableCell>
+                          {item.handoverFilePath ? (
+                            <Tooltip content={tCta("view")}>
+                              <Button
+                                isIconOnly
+                                variant="light"
+                                onPress={() => {
+                                  window.open(
+                                    ENV.API_URL + item.handoverFilePath,
+                                    "_blank"
+                                  );
+                                }}
+                              >
+                                <EyeIcon />
+                              </Button>
+                            </Tooltip>
+                          ) : (
+                            "-"
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  {tCta("close")}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
-
-interface AssetTableProps {
-  items: Asset[];
-  page: number;
-  pages: number;
-  onPageChange: (page: number) => void;
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-  setSelectedAsset: (query: Asset) => void;
-  handleSearchSubmit: () => void;
-  filteredLength: number;
-  exportToExcel: () => void;
-  tAsset: (key: string) => string;
-  tCta: (key: string) => string;
-  tLabels: (key: string) => string;
-  tAdmin: (key: string) => string;
-  onOpen: () => void;
-  pathname: string;
-  handoverAsset: (query: Asset) => void;
-}
-
-export const AssetTable = ({
-  items,
-  page,
-  pages,
-  onPageChange,
-  searchQuery,
-  setSearchQuery,
-  setSelectedAsset,
-  handleSearchSubmit,
-  filteredLength,
-  exportToExcel,
-  tAsset,
-  tCta,
-  tLabels,
-  tAdmin,
-  onOpen,
-  pathname,
-  handoverAsset,
-}: AssetTableProps) => (
-  <Table
-    aria-label="Asset Table"
-    bottomContent={
-      <div className="flex w-full justify-center">
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="secondary"
-          page={page}
-          total={pages}
-          onChange={onPageChange}
-          siblings={2}
-        />
-      </div>
-    }
-    classNames={{
-      wrapper: "min-h-[222px]",
-    }}
-    topContent={
-      <div className="flex-row sm:flex w-full justify-between items-center">
-        <div className="flex justify-center items-center">
-          <Input
-            type="text"
-            placeholder={tLabels("search")}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full sm:w-96"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSearchSubmit();
-              }
-            }}
-            autoFocus
-          />
-          <Button color="primary" className="mx-3" onPress={handleSearchSubmit}>
-            {tCta("submit")}
-          </Button>
-        </div>
-        <p>
-          {filteredLength} {tLabels("entriesFound")}
-        </p>
-        <Button
-          className="p-4 rounded-full text-white"
-          color="success"
-          onPress={exportToExcel}
-        >
-          <Icon
-            className="flex-none outline-none [&>path]:stroke-[2]"
-            icon="material-symbols:download"
-            width={20}
-          />
-          .xlsx
-        </Button>
-      </div>
-    }
-  >
-    <TableHeader>
-      <TableColumn>{tAsset("code")}</TableColumn>
-      <TableColumn>{tAsset("user")}</TableColumn>
-      <TableColumn>{tAsset("office")}</TableColumn>
-      <TableColumn>{tAsset("deviceType")}</TableColumn>
-      <TableColumn>{tAsset("deviceModel")}</TableColumn>
-      <TableColumn>{tAsset("serialNumber")}</TableColumn>
-      <TableColumn>{tAsset("os")}</TableColumn>
-      <TableColumn>{tAsset("cpu")}</TableColumn>
-      <TableColumn>{tAsset("ram")}</TableColumn>
-      <TableColumn>{tAsset("storage")}</TableColumn>
-      <TableColumn>{tAsset("status")}</TableColumn>
-      <TableColumn>{tAsset("purchaseDate")}</TableColumn>
-      <TableColumn>{tAsset("warrantyDuration")}</TableColumn>
-      <TableColumn>{tAdmin("actions")}</TableColumn>
-    </TableHeader>
-    <TableBody items={items}>
-      {(item) => (
-        <TableRow key={item.id}>
-          <TableCell>{item.internalCode}</TableCell>
-          <TableCell>{item.user?.name || "-"}</TableCell>
-          <TableCell>{item.office?.shortName || "-"}</TableCell>
-          <TableCell>{item.deviceType?.name || "-"}</TableCell>
-          <TableCell>{item.deviceModel?.name || "-"}</TableCell>
-          <TableCell>{item.serialNumber}</TableCell>
-          <TableCell>{item.customProperties?.osType || "-"}</TableCell>
-          <TableCell>{item.customProperties?.cpu || "-"}</TableCell>
-          <TableCell>{item.customProperties?.ram || "-"}</TableCell>
-          <TableCell>{item.customProperties?.hardDrive || "-"}</TableCell>
-          <TableCell>{item.status}</TableCell>
-          <TableCell>
-            {new Date(item.purchaseDate).toISOString().split("T")[0]}
-          </TableCell>
-          <TableCell>
-            {item.warrantyDuration}{" "}
-            {parseInt(item.warrantyDuration) > 1
-              ? tAsset("years")
-              : tAsset("year")}
-          </TableCell>
-          <TableCell>
-            <div className="flex gap-2 items-center">
-              <Tooltip content="Handover asset">
-                <Button
-                  isIconOnly
-                  variant="light"
-                  onPress={() => {
-                    handoverAsset(item);
-                  }}
-                >
-                  <EyeIcon />
-                </Button>
-              </Tooltip>
-              <Tooltip content={tCta("view")}>
-                <Button
-                  isIconOnly
-                  variant="light"
-                  onPress={() => {
-                    setSelectedAsset(item);
-                    onOpen();
-                  }}
-                >
-                  <EyeIcon />
-                </Button>
-              </Tooltip>
-              <Tooltip content={tCta("edit")}>
-                <Link href={`${pathname}/${item.id}`}>
-                  <EditIcon />
-                </Link>
-              </Tooltip>
-              <Tooltip content={tCta("delete")} color="danger">
-                <Button isIconOnly variant="light" color="danger">
-                  <DeleteIcon />
-                </Button>
-              </Tooltip>
-            </div>
-          </TableCell>
-        </TableRow>
-      )}
-    </TableBody>
-  </Table>
-);

@@ -21,7 +21,10 @@ import {
 } from "@heroui/react";
 import axiosInstance from "@/libs/axiosInstance";
 import { ENV } from "@/config";
-import { handleAxiosError } from "@/libs/handleAxiosFeedback";
+import {
+  handleAxiosError,
+  handleAxiosSuccess,
+} from "@/libs/handleAxiosFeedback";
 import { EyeIcon } from "@/components/icons/EyeIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
@@ -32,9 +35,10 @@ import { useAppTranslations } from "@/hooks/useAppTranslations";
 import LoadingComponent from "@/components/ui/Loading";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 export default function DepartmentsAdminComponent() {
-  const { tAdmin, tCta } = useAppTranslations();
+  const { tAdmin, tCta, tSwal } = useAppTranslations();
   const pathname = usePathname();
   const [page, setPage] = useState(1);
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -63,6 +67,36 @@ export default function DepartmentsAdminComponent() {
     return departments.slice(start, end);
   }, [page, departments]);
 
+  const handleDelete = async (item: Department) => {
+    Swal.fire({
+      title: `${tSwal("title")} ${item.name}?`,
+      text: tSwal("text"),
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: tSwal("confirmButtonText"),
+      cancelButtonText: tSwal("cancelButtonText"),
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axiosInstance.delete(
+            `${ENV.API_URL}/departments/${item.id}`
+          );
+          handleAxiosSuccess(res);
+          await fetchDepartment();
+        } catch (err) {
+          handleAxiosError(err);
+        }
+        Swal.fire({
+          title: tSwal("confirmed.title"),
+          text: `${item.name} ${tSwal("confirmed.text")}`,
+          icon: "success",
+        });
+      }
+    });
+  };
+
   if (departments.length === 0) {
     return <LoadingComponent />;
   }
@@ -78,6 +112,13 @@ export default function DepartmentsAdminComponent() {
             {tAdmin("departments.title")}
           </BreadcrumbItem>
         </Breadcrumbs>
+        <Button
+          color="primary"
+          as={Link}
+          href={`${ADMIN_ROUTES.DEPARTMENTS}/add`}
+        >
+          {tCta("add")}
+        </Button>
       </div>
 
       <Table
@@ -127,7 +168,12 @@ export default function DepartmentsAdminComponent() {
                     </Link>
                   </Tooltip>
                   <Tooltip content={tCta("delete")} color="danger">
-                    <Button isIconOnly variant="light" color="danger">
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      color="danger"
+                      onPress={() => handleDelete(item)}
+                    >
                       <DeleteIcon />
                     </Button>
                   </Tooltip>
@@ -138,7 +184,12 @@ export default function DepartmentsAdminComponent() {
         </TableBody>
       </Table>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        scrollBehavior="inside"
+        size="5xl"
+      >
         <ModalContent>
           {(onClose) => (
             <>

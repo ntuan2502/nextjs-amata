@@ -38,7 +38,7 @@ import Link from "next/link";
 import Swal from "sweetalert2";
 
 export default function OfficesAdminComponent() {
-  const { tAdmin, tCta } = useAppTranslations();
+  const { tAdmin, tCta, tSwal } = useAppTranslations();
   const pathname = usePathname();
   const [page, setPage] = useState(1);
   const [offices, setOffices] = useState<Office[]>([]);
@@ -68,13 +68,14 @@ export default function OfficesAdminComponent() {
 
   const handleDelete = async (item: Office) => {
     Swal.fire({
-      title: `Are you sure to delete ${item.name}`,
-      text: "You won't be able to revert this!",
+      title: `${tSwal("title")} ${item.name}?`,
+      text: tSwal("text"),
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: tSwal("confirmButtonText"),
+      cancelButtonText: tSwal("cancelButtonText"),
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -87,8 +88,8 @@ export default function OfficesAdminComponent() {
           handleAxiosError(err);
         }
         Swal.fire({
-          title: "Deleted!",
-          text: `${item.name} has been deleted.`,
+          title: tSwal("confirmed.title"),
+          text: `${item.name} ${tSwal("confirmed.text")}`,
           icon: "success",
         });
       }
@@ -186,7 +187,12 @@ export default function OfficesAdminComponent() {
         </TableBody>
       </Table>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        scrollBehavior="inside"
+        size="5xl"
+      >
         <ModalContent>
           {(onClose) => (
             <>

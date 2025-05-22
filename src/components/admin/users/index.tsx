@@ -21,7 +21,10 @@ import {
 } from "@heroui/react";
 import axiosInstance from "@/libs/axiosInstance";
 import { ENV } from "@/config";
-import { handleAxiosError } from "@/libs/handleAxiosFeedback";
+import {
+  handleAxiosError,
+  handleAxiosSuccess,
+} from "@/libs/handleAxiosFeedback";
 import { EyeIcon } from "@/components/icons/EyeIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
@@ -32,9 +35,12 @@ import { useAppTranslations } from "@/hooks/useAppTranslations";
 import LoadingComponent from "@/components/ui/Loading";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import Link from "next/link";
+import Swal from "sweetalert2";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import dayjs from "dayjs";
 
 export default function UsersAdminComponent() {
-  const { tAdmin, tCta } = useAppTranslations();
+  const { tAdmin, tCta, tSwal } = useAppTranslations();
   const pathname = usePathname();
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState<User[]>([]);
@@ -64,6 +70,36 @@ export default function UsersAdminComponent() {
     return users.slice(start, end);
   }, [page, users]);
 
+  const handleDelete = async (item: User) => {
+    Swal.fire({
+      title: `${tSwal("title")} ${item.name}?`,
+      text: tSwal("text"),
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: tSwal("confirmButtonText"),
+      cancelButtonText: tSwal("cancelButtonText"),
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axiosInstance.delete(
+            `${ENV.API_URL}/users/${item.id}`
+          );
+          handleAxiosSuccess(res);
+          await fetchUser();
+        } catch (err) {
+          handleAxiosError(err);
+        }
+        Swal.fire({
+          title: tSwal("confirmed.title"),
+          text: `${item.name} ${tSwal("confirmed.text")}`,
+          icon: "success",
+        });
+      }
+    });
+  };
+
   if (users.length === 0) {
     return <LoadingComponent />;
   }
@@ -79,6 +115,9 @@ export default function UsersAdminComponent() {
             {tAdmin("users.title")}
           </BreadcrumbItem>
         </Breadcrumbs>
+        <Button color="primary" as={Link} href={`${ADMIN_ROUTES.USERS}/add`}>
+          {tCta("add")}
+        </Button>
       </div>
 
       <Table
@@ -113,7 +152,17 @@ export default function UsersAdminComponent() {
             <TableRow key={item.id}>
               <TableCell>{item.name || "-"}</TableCell>
               <TableCell>{item.email || "-"}</TableCell>
-              <TableCell>{item.phone || "-"}</TableCell>
+              <TableCell>
+                <div className="flex items-center">
+                  {item.phone || "-"}
+                  <Link href={`https://zalo.me/${item.phone}`} target="_blank">
+                    <Icon
+                      className="cursor-pointer text-2xl text-default-400 px-1 "
+                      icon="simple-icons:zalo"
+                    />
+                  </Link>
+                </div>
+              </TableCell>
               <TableCell>{item.office?.name || "-"}</TableCell>
               <TableCell>{item.department?.name || "-"}</TableCell>
               <TableCell>
@@ -136,7 +185,12 @@ export default function UsersAdminComponent() {
                     </Link>
                   </Tooltip>
                   <Tooltip content={tCta("delete")} color="danger">
-                    <Button isIconOnly variant="light" color="danger">
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      color="danger"
+                      onPress={() => handleDelete(item)}
+                    >
                       <DeleteIcon />
                     </Button>
                   </Tooltip>
@@ -147,7 +201,12 @@ export default function UsersAdminComponent() {
         </TableBody>
       </Table>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        scrollBehavior="inside"
+        size="5xl"
+      >
         <ModalContent>
           {(onClose) => (
             <>
@@ -180,7 +239,7 @@ export default function UsersAdminComponent() {
                     </p>
                     <p>
                       <strong>{tAdmin("users.dob")}:</strong>{" "}
-                      {new Date(selectedUser.dob).toLocaleDateString("vi-VN")}
+                      {dayjs(selectedUser.dob).format("YYYY-MM-DD")}
                     </p>
                     <p>
                       <strong>{tAdmin("users.address")}:</strong>{" "}

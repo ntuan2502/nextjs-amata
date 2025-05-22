@@ -61,7 +61,12 @@
     },
     "assets": {
       "title": "Tài sản",
-      "description": "Quản lý tài sản và chi tiết của chúng."
+      "description": "Quản lý tài sản và chi tiết của chúng.",
+      "createRequest": "Tạo yêu cầu"
+    },
+    "assetTransactions": {
+      "title": "Giao dịch tài sản",
+      "description": "Quản lý các giao dịch tài sản và chi tiết của chúng."
     }
   },
   "auth": {
@@ -115,11 +120,26 @@
     "cpu": "CPU",
     "ram": "RAM",
     "storage": "Bộ nhớ",
+    "osType": "Loại hệ điều hành",
+    "macAddress": "Địa chỉ MAC",
     "status": "Trạng thái",
     "purchaseDate": "Ngày mua",
-    "warrantyDuration": "Thời gian bảo hành",
+    "warranty": "Thời gian bảo hành",
+    "endOfWarranty": "Ngày kết thúc bảo hành",
     "year": "Năm",
     "years": "Năm"
+  },
+  "assetTransaction": {
+    "internalCode": "Mã nội bộ",
+    "user": "Người dùng",
+    "signature": "Chữ ký",
+    "signedAt": "Thời gian ký",
+    "department": "Phòng ban",
+    "office": "Văn phòng",
+    "role": "Vai trò",
+    "type": "Loại",
+    "status": "Trạng thái",
+    "file": "Tập tin"
   },
   "cta": {
     "add": "Thêm",
@@ -142,7 +162,9 @@
     "update": "Cập nhật",
     "view": "Xem",
     "profile": "Hồ sơ",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "createRequest": "Tạo yêu cầu",
+    "confirmRequest": "Xác nhận yêu cầu"
   },
   "errors": {
     "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu.",
@@ -190,5 +212,17 @@
     "loading": "Đang tải...",
     "search": "Tìm kiếm",
     "entriesFound": "mục được tìm thấy"
+  },
+  "ui": {
+    "swal": {
+      "title": "Bạn có chắc chắn muốn xóa",
+      "text": "Bạn sẽ không thể quay lại được!",
+      "confirmButtonText": "Có, xóa nó!",
+      "cancelButtonText": "Không, bỏ qua!",
+      "confirmed": {
+        "title": "Đã xóa!",
+        "text": "đã được xóa."
+      }
+    }
   }
 }

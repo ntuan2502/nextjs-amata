@@ -6,4 +6,5 @@ export const ADMIN_ROUTES = {
   DEVICE_TYPES: "/admin/device-types",
   DEVICE_MODELS: "/admin/device-models",
   ASSETS: "/admin/assets",
+  ASSET_TRANSACTION: "/admin/asset-transactions",
 };
