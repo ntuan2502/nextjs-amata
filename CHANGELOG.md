@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.9.0...v1.10.0) (2025-05-23)
+
+
+### Features
+
+* **auth:** update Microsoft login URL to use environment variable ([40abed7](https://github.com/ntuan2502/nextjs-amata/commit/40abed77d6f7c8c605031803d3ad95011e789e3d))
+
 # [1.9.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.8.0...v1.9.0) (2025-05-23)
 
 
