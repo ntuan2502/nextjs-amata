@@ -31,6 +31,7 @@ import { base64ToFile } from "@/utils/function";
 import { toast } from "react-toastify";
 import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
+import { TransactionType } from "@/types/enum";
 
 export default function CreateRequestAssetAdminComponent({
   id,
@@ -100,10 +101,27 @@ export default function CreateRequestAssetAdminComponent({
     fetchDepartments();
     fetchUsers();
   }, [fetchAsset]);
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      fromUser: {
+        id: user?.id ?? "",
+        email: user?.email ?? "",
+      },
+    }));
+  }, [user]);
 
   const handleSubmit = async () => {
-    const { asset, department, office, fromUser, toUser, signature, note } =
-      formData;
+    const {
+      asset,
+      department,
+      office,
+      fromUser,
+      toUser,
+      signature,
+      note,
+      type,
+    } = formData;
     if (!signature)
       return toast.error("Chưa có chữ ký hoặc chưa xác nhận chữ ký");
     try {
@@ -114,6 +132,7 @@ export default function CreateRequestAssetAdminComponent({
       formDataToSend.append("departmentId", department?.id || "");
       formDataToSend.append("fromUserId", fromUser?.id || "");
       formDataToSend.append("toUserId", toUser?.id || "");
+      formDataToSend.append("type", type || "");
       formDataToSend.append("note", note || "");
 
       if (signature) {
@@ -204,7 +223,7 @@ export default function CreateRequestAssetAdminComponent({
       </Autocomplete>
 
       <Autocomplete
-        selectedKey={user?.id}
+        selectedKey={formData.fromUser?.id}
         defaultItems={users}
         label={tAdmin("users.title")}
         onSelectionChange={(key) => {
@@ -236,6 +255,26 @@ export default function CreateRequestAssetAdminComponent({
         {(item) => (
           <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>
         )}
+      </Autocomplete>
+
+      <Autocomplete
+        label={tAdmin("users.title")}
+        onSelectionChange={(key) => {
+          if (key !== null && typeof key === "string") {
+            const selected =
+              TransactionType[key as keyof typeof TransactionType];
+            if (selected) {
+              setFormData((prev) => ({ ...prev, type: selected }));
+            }
+          }
+        }}
+      >
+        <AutocompleteItem key={TransactionType.TRANSFER}>
+          {TransactionType.TRANSFER}
+        </AutocompleteItem>
+        <AutocompleteItem key={TransactionType.RETURN}>
+          {TransactionType.RETURN}
+        </AutocompleteItem>
       </Autocomplete>
 
       <Textarea

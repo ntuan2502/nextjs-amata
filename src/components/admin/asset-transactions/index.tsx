@@ -141,9 +141,9 @@ export default function AssetTransactionsAdminComponent() {
                       <EyeIcon />
                     </Button>
                   </Tooltip>
-                  {item.role === "TO" && item.status === "PENDING" && (
+                  {item.status === "PENDING" && (
                     <Tooltip content={tCta("confirmRequest")}>
-                      <Link href={`/assets/${item.asset?.id}/confirm-request`}>
+                      <Link href={`/assets/${item.asset?.id}/confirm-request?type=${item.type}`}>
                         <Icon
                           className="pointer-events-none text-2xl"
                           icon="fa6-solid:code-merge"

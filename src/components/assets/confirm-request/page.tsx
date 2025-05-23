@@ -10,6 +10,7 @@ import {
 import { base64ToFile } from "@/utils/function";
 import { Button } from "@heroui/react";
 import axios from "axios";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -18,16 +19,19 @@ export default function ConfirmRequestAssetComponent({ id }: { id: string }) {
   const [isConfirm, setIsConfirm] = useState(false);
   const { tCta } = useAppTranslations();
 
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type");
+
   useEffect(() => {
     async function getConfirmRequest(id: string) {
       const res = await axios.get(
-        `${ENV.API_URL}/asset-transactions/confirm-request/${id}`
+        `${ENV.API_URL}/asset-transactions/confirm-request/${id}?type=${type}`
       );
       if (res.status === 200) setIsConfirm(true);
       else setIsConfirm(false);
     }
     getConfirmRequest(id);
-  }, [id]);
+  }, [id, type]);
 
   const handleSubmit = async () => {
     if (!signature)
@@ -43,7 +47,7 @@ export default function ConfirmRequestAssetComponent({ id }: { id: string }) {
       }
 
       const res = await axios.post(
-        `${ENV.API_URL}/asset-transactions/confirm-request/${id}`,
+        `${ENV.API_URL}/asset-transactions/confirm-request/${id}?type=${type}`,
         formDataToSend,
         {
           headers: {
