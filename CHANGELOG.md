@@ -1,3 +1,12 @@
+# [1.9.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.8.0...v1.9.0) (2025-05-23)
+
+
+### Features
+
+* add confirm request asset component and signature functionality ([d76b805](https://github.com/ntuan2502/nextjs-amata/commit/d76b8054b2f9171354a9b8a7b2bf3ec9f3fd1e05))
+* add transaction type handling in asset request and confirmation components ([78c56ae](https://github.com/ntuan2502/nextjs-amata/commit/78c56ae16e6e94902f4ea895238f12f99d1d7e56))
+* **auth:** implement Microsoft login functionality and update user context ([89ee865](https://github.com/ntuan2502/nextjs-amata/commit/89ee8657c27b466368c7e91293aa58aacf83082b))
+
 # [1.8.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.7.0...v1.8.0) (2025-05-09)
 
 
