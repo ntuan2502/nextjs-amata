@@ -58,9 +58,7 @@ export default function AssetsAdminComponent() {
 
   const fetchAssets = async () => {
     try {
-      const res = await axiosInstance.get(
-        `${ENV.API_URL}/assets?include=deviceType,deviceModel`
-      );
+      const res = await axiosInstance.get(`${ENV.API_URL}/assets`);
       setAssets(res.data.data.assets);
     } catch (err) {
       handleAxiosError(err);
@@ -160,6 +158,9 @@ export default function AssetsAdminComponent() {
           <TableColumn>{tAsset("deviceType")}</TableColumn>
           <TableColumn>{tAsset("deviceModel")}</TableColumn>
           <TableColumn>{tAsset("serialNumber")}</TableColumn>
+          <TableColumn>{tAsset("office")}</TableColumn>
+          <TableColumn>{tAsset("user")}</TableColumn>
+          <TableColumn>{tAsset("department")}</TableColumn>
           <TableColumn>{tAsset("cpu")}</TableColumn>
           <TableColumn>{tAsset("ram")}</TableColumn>
           <TableColumn>{tAsset("storage")}</TableColumn>
@@ -185,6 +186,15 @@ export default function AssetsAdminComponent() {
               <TableCell>{item.deviceType?.name || "-"}</TableCell>
               <TableCell>{item.deviceModel?.name || "-"}</TableCell>
               <TableCell>{item.serialNumber}</TableCell>
+              <TableCell>
+                {item.assetTransactions?.[0]?.user?.office?.name || "-"}
+              </TableCell>
+              <TableCell>
+                {item.assetTransactions?.[0]?.user?.name || "-"}
+              </TableCell>
+              <TableCell>
+                {item.assetTransactions?.[0]?.user?.department?.name || "-"}
+              </TableCell>
               <TableCell>{item.customProperties?.cpu || "-"}</TableCell>
               <TableCell>{item.customProperties?.ram || "-"}</TableCell>
               <TableCell>{item.customProperties?.hardDrive || "-"}</TableCell>
@@ -271,6 +281,21 @@ export default function AssetsAdminComponent() {
                     <p>
                       <strong>{tAsset("serialNumber")}:</strong>{" "}
                       {selectedAsset.serialNumber}
+                    </p>
+                    <p>
+                      <strong>{tAsset("office")}:</strong>{" "}
+                      {selectedAsset.assetTransactions?.[0]?.user?.office?.name}
+                    </p>
+                    <p>
+                      <strong>{tAsset("user")}:</strong>{" "}
+                      {selectedAsset.assetTransactions?.[0]?.user?.name}
+                    </p>
+                    <p>
+                      <strong>{tAsset("department")}:</strong>{" "}
+                      {
+                        selectedAsset.assetTransactions?.[0]?.user?.department
+                          ?.name
+                      }
                     </p>
 
                     <p>

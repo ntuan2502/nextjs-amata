@@ -57,6 +57,7 @@ export type Asset = {
     hardDrive?: string;
     macAddress?: string;
   };
+  assetTransactions?: AssetTransaction[];
 };
 
 export type AssetTransaction = {
@@ -73,7 +74,7 @@ export type AssetTransaction = {
   user?: User;
   fromUser?: User;
   toUser?: User;
-  
+
   asset?: Asset;
   department?: Department;
   office?: Office;
