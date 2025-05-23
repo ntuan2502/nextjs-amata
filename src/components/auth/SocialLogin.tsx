@@ -1,5 +1,6 @@
 "use client";
 
+import { ENV } from "@/config";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { Divider, Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
@@ -21,7 +22,7 @@ export default function SocialLogin() {
           startContent={<Icon icon="logos:microsoft-icon" width={24} />}
           variant="bordered"
           as={Link}
-          href="http://localhost:2999/auth/microsoft"
+          href={`${ENV}/auth/microsoft`}
         >
           {tSocialLogin("microsoft")}
         </Button>
