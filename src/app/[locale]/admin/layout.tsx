@@ -32,6 +32,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       label: tAdmin("assets.title"),
       href: ADMIN_ROUTES.ASSETS,
     },
+    {
+      label: tAdmin("assetTransactions.title"),
+      href: ADMIN_ROUTES.ASSET_TRANSACTION,
+    },
   ];
 
   return (

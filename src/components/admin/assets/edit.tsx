@@ -9,15 +9,8 @@ import {
   handleAxiosError,
   handleAxiosSuccess,
 } from "@/libs/handleAxiosFeedback";
-import {
-  Department,
-  Office,
-  Asset,
-  User,
-  DeviceType,
-  DeviceModel,
-} from "@/types/data";
-import { AssetStatus, WarrantyDuration } from "@/types/enum";
+import { Asset, DeviceType, DeviceModel } from "@/types/data";
+import { Warranty } from "@/types/enum";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -41,16 +34,13 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
 
   const { tAdmin, tCta, tAsset } = useAppTranslations();
   const [formData, setFormData] = useState<Partial<Asset>>({});
-  const [users, setUsers] = useState<User[]>([]);
-  const [offices, setOffices] = useState<Office[]>([]);
-  const [departments, setDepartments] = useState<Department[]>([]);
   const [deviceTypes, setDeviceTypes] = useState<DeviceType[]>([]);
   const [deviceModels, setDeviceModels] = useState<DeviceModel[]>([]);
 
   const fetchAsset = useCallback(async () => {
     try {
       const res = await axiosInstance.get(
-        `${ENV.API_URL}/assets/${id}?include=office, department, user, deviceType, deviceModel`
+        `${ENV.API_URL}/assets/${id}?include=deviceType, deviceModel`
       );
       const data: Asset = res.data.data.asset;
       setFormData(data);
@@ -61,39 +51,6 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
       handleAxiosError(err);
     }
   }, [id]);
-
-  const fetchUsers = async () => {
-    try {
-      const res = await axiosInstance.get(`${ENV.API_URL}/users`);
-      const data: User[] = res.data.data.users;
-
-      setUsers(data);
-    } catch (err) {
-      handleAxiosError(err);
-    }
-  };
-
-  const fetchOffices = async () => {
-    try {
-      const res = await axiosInstance.get(`${ENV.API_URL}/offices`);
-      const data: Office[] = res.data.data.offices;
-
-      setOffices(data);
-    } catch (err) {
-      handleAxiosError(err);
-    }
-  };
-
-  const fetchDepartments = async () => {
-    try {
-      const res = await axiosInstance.get(`${ENV.API_URL}/departments`);
-      const data: Department[] = res.data.data.departments;
-
-      setDepartments(data);
-    } catch (err) {
-      handleAxiosError(err);
-    }
-  };
 
   const fetchDeviceTypes = async () => {
     try {
@@ -119,9 +76,6 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
 
   useEffect(() => {
     fetchAsset();
-    fetchUsers();
-    fetchOffices();
-    fetchDepartments();
     fetchDeviceTypes();
     fetchDeviceModels();
   }, [fetchAsset]);
@@ -135,26 +89,26 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
     const {
       internalCode,
       serialNumber,
-      status,
-      user,
       deviceType,
       deviceModel,
-      office,
-      department,
-      warrantyDuration,
+      warranty,
+      customProperties,
     } = formData;
     try {
       const res = await axiosInstance.patch(`${ENV.API_URL}/assets/${id}`, {
         internalCode,
         serialNumber,
-        status,
-        userId: user?.id,
-        officeId: office?.id,
-        departmentId: department?.id,
         deviceTypeId: deviceType?.id,
         deviceModelId: deviceModel?.id,
         purchaseDate: time?.toDate("UTC").toISOString(),
-        warrantyDuration,
+        customProperties: {
+          cpu: customProperties?.cpu,
+          ram: customProperties?.ram,
+          osType: customProperties?.osType,
+          hardDrive: customProperties?.hardDrive,
+          macAddress: customProperties?.macAddress,
+        },
+        warranty,
       });
       handleAxiosSuccess(res);
     } catch (err) {
@@ -193,93 +147,12 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
       ))}
 
       <Autocomplete
-        selectedKey={formData.status}
-        defaultItems={Object.entries(AssetStatus).map(([, value]) => ({
-          key: value,
-          label: value,
-        }))}
-        label={tAsset("status")}
-        onSelectionChange={(key) => {
-          if (key !== null) {
-            setFormData((prev) => ({
-              ...prev,
-              status: key as AssetStatus,
-            }));
-          }
-        }}
-      >
-        {(item) => (
-          <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
-        )}
-      </Autocomplete>
-
-      <Autocomplete
-        selectedKey={formData.user?.id?.toString()}
-        defaultItems={users}
-        label={tAsset("user")}
-        onSelectionChange={(key) => {
-          if (key !== null) {
-            const selected = users.find((o) => o.id === Number(key));
-            if (selected) {
-              setFormData((prev) => ({ ...prev, user: selected }));
-            }
-          }
-        }}
-      >
-        {(item) => (
-          <AutocompleteItem key={item.id.toString()}>
-            {item.name}
-          </AutocompleteItem>
-        )}
-      </Autocomplete>
-
-      <Autocomplete
-        selectedKey={formData.office?.id?.toString()}
-        defaultItems={offices}
-        label={tAsset("office")}
-        onSelectionChange={(key) => {
-          if (key !== null) {
-            const selected = offices.find((o) => o.id === Number(key));
-            if (selected) {
-              setFormData((prev) => ({ ...prev, office: selected }));
-            }
-          }
-        }}
-      >
-        {(item) => (
-          <AutocompleteItem key={item.id.toString()}>
-            {item.name}
-          </AutocompleteItem>
-        )}
-      </Autocomplete>
-
-      <Autocomplete
-        selectedKey={formData.department?.id?.toString()}
-        defaultItems={departments}
-        label={tAsset("department")}
-        onSelectionChange={(key) => {
-          if (key !== null) {
-            const selected = departments.find((d) => d.id === Number(key));
-            if (selected) {
-              setFormData((prev) => ({ ...prev, department: selected }));
-            }
-          }
-        }}
-      >
-        {(item) => (
-          <AutocompleteItem key={item.id.toString()}>
-            {item.name}
-          </AutocompleteItem>
-        )}
-      </Autocomplete>
-
-      <Autocomplete
         selectedKey={formData.deviceType?.id?.toString()}
         defaultItems={deviceTypes}
         label={tAsset("deviceType")}
         onSelectionChange={(key) => {
           if (key !== null) {
-            const selected = deviceTypes.find((d) => d.id === Number(key));
+            const selected = deviceTypes.find((d) => d.id === key);
             if (selected) {
               setFormData((prev) => ({ ...prev, deviceType: selected }));
             }
@@ -299,7 +172,7 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
         label={tAsset("deviceModel")}
         onSelectionChange={(key) => {
           if (key !== null) {
-            const selected = deviceModels.find((d) => d.id === Number(key));
+            const selected = deviceModels.find((d) => d.id === key);
             if (selected) {
               setFormData((prev) => ({ ...prev, deviceModel: selected }));
             }
@@ -312,6 +185,63 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
           </AutocompleteItem>
         )}
       </Autocomplete>
+
+      <Input
+        key={tAsset("cpu")}
+        label={tAsset("cpu")}
+        value={formData.customProperties?.cpu}
+        onValueChange={(val) =>
+          setFormData((prev) => ({
+            ...prev,
+            customProperties: { ...prev.customProperties, cpu: val },
+          }))
+        }
+      />
+      <Input
+        key={tAsset("ram")}
+        label={tAsset("ram")}
+        value={formData.customProperties?.ram}
+        onValueChange={(val) =>
+          setFormData((prev) => ({
+            ...prev,
+            customProperties: { ...prev.customProperties, ram: val },
+          }))
+        }
+      />
+      <Input
+        key={tAsset("storage")}
+        label={tAsset("storage")}
+        value={formData.customProperties?.hardDrive}
+        onValueChange={(val) =>
+          setFormData((prev) => ({
+            ...prev,
+            customProperties: { ...prev.customProperties, hardDrive: val },
+          }))
+        }
+      />
+
+      <Input
+        key={tAsset("osType")}
+        label={tAsset("osType")}
+        value={formData.customProperties?.osType}
+        onValueChange={(val) =>
+          setFormData((prev) => ({
+            ...prev,
+            customProperties: { ...prev.customProperties, osType: val },
+          }))
+        }
+      />
+      <Input
+        key={tAsset("macAddress")}
+        label={tAsset("macAddress")}
+        value={formData.customProperties?.macAddress}
+        onValueChange={(val) =>
+          setFormData((prev) => ({
+            ...prev,
+            customProperties: { ...prev.customProperties, macAddress: val },
+          }))
+        }
+      />
 
       <DatePicker
         showMonthAndYearPickers
@@ -330,17 +260,17 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
       />
 
       <Autocomplete
-        selectedKey={formData.warrantyDuration?.toString()}
-        defaultItems={Object.entries(WarrantyDuration).map(([, value]) => ({
+        selectedKey={formData.warranty?.toString()}
+        defaultItems={Object.entries(Warranty).map(([, value]) => ({
           key: value,
           label: value,
         }))}
-        label={tAsset("warrantyDuration")}
+        label={tAsset("warranty")}
         onSelectionChange={(key) => {
           if (key !== null) {
             setFormData((prev) => ({
               ...prev,
-              warrantyDuration: key as WarrantyDuration,
+              warranty: key as Warranty,
             }));
           }
         }}

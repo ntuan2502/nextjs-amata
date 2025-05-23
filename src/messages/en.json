@@ -61,7 +61,12 @@
     },
     "assets": {
       "title": "Assets",
-      "description": "Manage assets and their details."
+      "description": "Manage assets and their details.",
+      "createRequest": "Create Request"
+    },
+    "assetTransactions": {
+      "title": "Asset Transactions",
+      "description": "Manage asset transactions and their details."
     }
   },
   "auth": {
@@ -99,6 +104,7 @@
     "socialLogin": {
       "github": "Continue with Github",
       "google": "Continue with Google",
+      "microsoft": "Continue with Microsoft",
       "or": "OR"
     }
   },
@@ -114,11 +120,26 @@
     "cpu": "CPU",
     "ram": "RAM",
     "storage": "Storage",
+    "macAddress": "MAC Address",
+    "osType": "OS Type",
     "status": "Status",
     "purchaseDate": "Purchase Date",
-    "warrantyDuration": "Warranty Duration",
+    "warranty": "Warranty Years",
+    "endOfWarranty": "End of Warranty",
     "year": "Year",
     "years": "Years"
+  },
+  "assetTransaction": {
+    "internalCode": "Internal Code",
+    "user": "User",
+    "signature": "Signature",
+    "signedAt": "Signed At",
+    "department": "Department",
+    "office": "Office",
+    "role": "Role",
+    "type": "Type",
+    "status": "Status",
+    "file": "File"
   },
   "cta": {
     "add": "Add",
@@ -141,7 +162,9 @@
     "update": "Update",
     "view": "View",
     "profile": "Profile",
-    "logout": "Logout"
+    "logout": "Logout",
+    "createRequest": "Create Request",
+    "confirmRequest": "Confirm Request"
   },
   "errors": {
     "confirmPasswordRequired": "Please confirm your password.",
@@ -189,5 +212,17 @@
     "loading": "Loading...",
     "search": "Search",
     "entriesFound": "entries found"
+  },
+  "ui": {
+    "swal": {
+      "title": "Are you sure to delete",
+      "text": "You won't be able to revert this!",
+      "confirmButtonText": "Yes, delete it!",
+      "cancelButtonText": "No, cancel!",
+      "confirmed": {
+        "title": "Deleted!",
+        "text": "has been deleted."
+      }
+    }
   }
 }

@@ -234,9 +234,9 @@ export default function RegisterComponent() {
 
       <Modal
         isOpen={isOpen}
-        scrollBehavior="inside"
-        size="2xl"
         onOpenChange={onOpenChange}
+        scrollBehavior="inside"
+        size="5xl"
       >
         <ModalContent>
           {(onClose) => (

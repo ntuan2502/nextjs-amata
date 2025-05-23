@@ -3,6 +3,7 @@
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import { Divider, Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import Link from "next/link";
 
 export default function SocialLogin() {
   const { tSocialLogin } = useAppTranslations();
@@ -17,6 +18,14 @@ export default function SocialLogin() {
       </div>
       <div className="flex flex-col gap-2">
         <Button
+          startContent={<Icon icon="logos:microsoft-icon" width={24} />}
+          variant="bordered"
+          as={Link}
+          href="http://localhost:2999/auth/microsoft"
+        >
+          {tSocialLogin("microsoft")}
+        </Button>
+        {/* <Button
           startContent={<Icon icon="flat-color-icons:google" width={24} />}
           variant="bordered"
         >
@@ -29,7 +38,7 @@ export default function SocialLogin() {
           variant="bordered"
         >
           {tSocialLogin("github")}
-        </Button>
+        </Button> */}
       </div>
     </>
   );

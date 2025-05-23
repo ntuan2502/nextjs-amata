@@ -25,7 +25,7 @@ export type RegisterFormData = {
 };
 
 export type User = {
-  id: number;
+  id: string;
   email: string;
   name: string;
   dob?: string;

@@ -10,6 +10,7 @@ import {
   handleAxiosSuccess,
 } from "@/libs/handleAxiosFeedback";
 import { Department, Office, User } from "@/types/data";
+import { Gender } from "@/types/enum";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -27,6 +28,7 @@ import {
   parseDate,
   today,
 } from "@internationalized/date";
+import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 
 export default function EditUserAdminComponent({ id }: { id: string }) {
@@ -45,7 +47,7 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
       const data: User = res.data.data.user;
       setFormData(data);
       if (data.dob) {
-        setTime(parseDate(data.dob.toString().split("T")[0]));
+        setTime(parseDate(dayjs(data.dob).format("YYYY-MM-DD")));
       }
     } catch (err) {
       handleAxiosError(err);
@@ -170,21 +172,22 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
         label={tLabels("genderLabel")}
         value={formData.gender}
         onValueChange={(val) =>
-          setFormData((prev) => ({ ...prev, gender: val }))
+          setFormData((prev) => ({ ...prev, gender: val as Gender }))
         }
-        defaultValue="male"
+        defaultValue={Gender.MALE}
         orientation="horizontal"
       >
-        <Radio value="male">{tLabels("genderMale")}</Radio>
-        <Radio value="female">{tLabels("genderFemale")}</Radio>
+        <Radio value={Gender.MALE}>{tLabels("genderMale")}</Radio>
+        <Radio value={Gender.FEMALE}>{tLabels("genderFemale")}</Radio>
       </RadioGroup>
+
       <Autocomplete
         selectedKey={formData.office?.id?.toString()} // Đảm bảo kiểu string
         defaultItems={offices}
         label={tAdmin("users.office")}
         onSelectionChange={(key) => {
           if (key !== null) {
-            const selected = offices.find((o) => o.id === Number(key));
+            const selected = offices.find((o) => o.id === key);
             if (selected) {
               setFormData((prev) => ({ ...prev, office: selected }));
             }
@@ -203,7 +206,7 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
         label={tAdmin("users.department")}
         onSelectionChange={(key) => {
           if (key !== null) {
-            const selected = departments.find((d) => d.id === Number(key));
+            const selected = departments.find((d) => d.id === key);
             if (selected) {
               setFormData((prev) => ({ ...prev, department: selected }));
             }

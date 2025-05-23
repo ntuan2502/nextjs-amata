@@ -65,6 +65,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const loginWithMicrosoft: AuthContextType["loginWithMicrosoft"] = useCallback(
+    async (
+      accessToken: string,
+      refreshToken: string,
+      id: string,
+      email: string,
+      name: string
+    ) => {
+      const user = { id, email, name };
+      Cookies.set("accessToken", accessToken, { path: "/" });
+      Cookies.set("refreshToken", refreshToken, { path: "/" });
+      Cookies.set("user", JSON.stringify(user), { path: "/" });
+
+      setUser(user);
+      router.push("/");
+    },
+    [setUser, router]
+  );
+
   const logout: AuthContextType["logout"] = async () => {
     try {
       const res = await axiosInstance.post(`${ENV.API_URL}/auth/logout`);
@@ -83,7 +102,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, syncUser, updateUserInContext }}
+      value={{
+        user,
+        login,
+        loginWithMicrosoft,
+        logout,
+        syncUser,
+        updateUserInContext,
+      }}
     >
       {children}
     </AuthContext.Provider>

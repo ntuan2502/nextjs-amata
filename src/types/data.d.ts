@@ -1,8 +1,14 @@
 import { ButtonProps } from "@heroui/react";
-import { AssetStatus } from "./enum";
+import {
+  Gender,
+  TransactionRole,
+  TransactionStatus,
+  TransactionType,
+  Warranty,
+} from "./enum";
 
 export type Office = {
-  id: number;
+  id: string;
   name: string;
   internationalName?: string;
   shortName?: string;
@@ -11,25 +17,25 @@ export type Office = {
 };
 
 export type Department = {
-  id: number;
+  id: string;
   name: string;
 };
 export type DeviceModel = {
-  id: number;
+  id: string;
   name: string;
 };
 export type DeviceType = {
-  id: number;
+  id: string;
   name: string;
 };
 
 export type User = {
-  id: number;
-  name: string;
+  id: string;
+  name?: string;
   email: string;
-  phone: string;
-  gender: string;
-  dob: Date;
+  phone?: string;
+  gender?: Gender;
+  dob?: Date;
   address?: string;
   avatar?: string;
   office?: Office;
@@ -37,15 +43,11 @@ export type User = {
 };
 
 export type Asset = {
-  id: number;
+  id: string;
   internalCode: string;
   serialNumber: string;
   purchaseDate: string;
-  warrantyDuration: string;
-  status: AssetStatus;
-  user?: User;
-  office?: Office;
-  department?: Department;
+  warranty: Warranty;
   deviceType?: DeviceType;
   deviceModel?: DeviceModel;
   customProperties?: {
@@ -55,6 +57,28 @@ export type Asset = {
     hardDrive?: string;
     macAddress?: string;
   };
+};
+
+export type AssetTransaction = {
+  id: string;
+  note?: string;
+
+  signature?: string;
+  signedAt?: Date;
+
+  role?: TransactionRole;
+  type?: TransactionType;
+  status?: TransactionStatus;
+
+  user?: User;
+  fromUser?: User;
+  toUser?: User;
+  
+  asset?: Asset;
+  department?: Department;
+  office?: Office;
+
+  handoverFilePath?: string;
 };
 
 export type ParamsWithId = {
