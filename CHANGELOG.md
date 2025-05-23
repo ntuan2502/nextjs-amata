@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.10.1...v1.11.0) (2025-05-23)
+
+
+### Features
+
+* **assets:** enhance asset details by adding office, user, and department information ([bda5bed](https://github.com/ntuan2502/nextjs-amata/commit/bda5bedba93866e13edb13e9d23ac95f7b2bf6ed))
+
 ## [1.10.1](https://github.com/ntuan2502/nextjs-amata/compare/v1.10.0...v1.10.1) (2025-05-23)
 
 
