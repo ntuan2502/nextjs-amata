@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/ntuan2502/nextjs-amata/compare/v1.10.0...v1.10.1) (2025-05-23)
+
+
+### Bug Fixes
+
+* **auth:** correct Microsoft login URL to use API_URL from ENV ([7d6eb5f](https://github.com/ntuan2502/nextjs-amata/commit/7d6eb5fea2546bbc4a288ebd01e5bae731db5bbf))
+
 # [1.10.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.9.0...v1.10.0) (2025-05-23)
 
 
