@@ -22,7 +22,7 @@ export default function SocialLogin() {
           startContent={<Icon icon="logos:microsoft-icon" width={24} />}
           variant="bordered"
           as={Link}
-          href={`${ENV}/auth/microsoft`}
+          href={`${ENV.API_URL}/auth/microsoft`}
         >
           {tSocialLogin("microsoft")}
         </Button>
