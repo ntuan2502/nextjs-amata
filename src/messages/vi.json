@@ -139,7 +139,9 @@
     "role": "Vai trò",
     "type": "Loại",
     "status": "Trạng thái",
-    "file": "Tập tin"
+    "file": "Tập tin",
+    "fromUser": "Người gửi",
+    "toUser": "Người nhận"
   },
   "cta": {
     "add": "Thêm",
