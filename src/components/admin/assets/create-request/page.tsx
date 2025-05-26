@@ -40,7 +40,7 @@ export default function CreateRequestAssetAdminComponent({
 }) {
   const { user } = useAuth();
   const router = useRouter();
-  const { tAdmin, tCta, tAsset } = useAppTranslations();
+  const { tAdmin, tCta, tAsset, tAssetTransaction } = useAppTranslations();
   const [formData, setFormData] = useState<Partial<AssetTransaction>>({});
   const [offices, setOffices] = useState<Office[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -225,7 +225,7 @@ export default function CreateRequestAssetAdminComponent({
       <Autocomplete
         selectedKey={formData.fromUser?.id}
         defaultItems={users}
-        label={tAdmin("users.title")}
+        label={tAssetTransaction("fromUser")}
         onSelectionChange={(key) => {
           if (key !== null) {
             const selected = users.find((d) => d.id === key);
@@ -242,7 +242,7 @@ export default function CreateRequestAssetAdminComponent({
 
       <Autocomplete
         defaultItems={users}
-        label={tAdmin("users.title")}
+        label={tAssetTransaction("toUser")}
         onSelectionChange={(key) => {
           if (key !== null) {
             const selected = users.find((d) => d.id === key);
@@ -258,7 +258,7 @@ export default function CreateRequestAssetAdminComponent({
       </Autocomplete>
 
       <Autocomplete
-        label={tAdmin("users.title")}
+        label={tAssetTransaction("type")}
         onSelectionChange={(key) => {
           if (key !== null && typeof key === "string") {
             const selected =

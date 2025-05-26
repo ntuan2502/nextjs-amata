@@ -18,6 +18,9 @@ import {
   Tooltip,
   Breadcrumbs,
   BreadcrumbItem,
+  Input,
+  Tab,
+  Tabs,
 } from "@heroui/react";
 import axiosInstance from "@/libs/axiosInstance";
 import { ENV } from "@/config";
@@ -29,7 +32,7 @@ import { EyeIcon } from "@/components/icons/EyeIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
 import { usePathname } from "next/navigation";
-import { Asset, AssetTransaction } from "@/types/data";
+import { Asset, AssetTransaction, Office } from "@/types/data";
 import { rowsPerPage } from "@/constants/config";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import LoadingComponent from "@/components/ui/Loading";
@@ -39,23 +42,49 @@ import dayjs from "dayjs";
 import { wordToNumber } from "@/utils/function";
 import Swal from "sweetalert2";
 import { Icon } from "@iconify/react";
+import * as XLSX from "xlsx";
 
 export default function AssetsAdminComponent() {
   const { tAdmin, tCta, tAsset, tAssetTransaction, tSwal } =
     useAppTranslations();
   const pathname = usePathname();
   const [page, setPage] = useState(1);
+  const [offices, setOffices] = useState<Office[]>([]);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [assetTransactions, setAssetTransactions] = useState<
     AssetTransaction[]
   >([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchInput, setSearchInput] = useState("");
+  const [tabSelected, setTabSelected] = useState<string>("");
 
   useEffect(() => {
+    fetchOffices();
     fetchAssets();
   }, []);
 
+  useEffect(() => {
+    if (offices.length > 0 && !tabSelected) {
+      setTabSelected(offices[0].id);
+    }
+    setPage(1);
+  }, [offices, tabSelected]);
+
+  const handleSearchSubmit = () => {
+    setSearchInput(searchQuery);
+    setPage(1);
+  };
+
+  const fetchOffices = async () => {
+    try {
+      const res = await axiosInstance.get(`${ENV.API_URL}/offices`);
+      setOffices(res.data.data.offices);
+    } catch (err) {
+      handleAxiosError(err);
+    }
+  };
   const fetchAssets = async () => {
     try {
       const res = await axiosInstance.get(`${ENV.API_URL}/assets`);
@@ -76,13 +105,81 @@ export default function AssetsAdminComponent() {
     }
   };
 
-  const pages = Math.max(Math.ceil(assets.length / rowsPerPage), 1);
+  const exportToExcel = () => {
+    const officeSeleted = offices.find((o) => o.id === tabSelected);
+    const exportData = filteredAssets.map((item) => ({
+      [tAsset("code")]: item.internalCode || "",
+      [tAsset("deviceType")]: item.deviceType?.name || "",
+      [tAsset("deviceModel")]: item.deviceModel?.name || "",
+      [tAsset("serialNumber")]: item.serialNumber || "",
+      [tAsset("office")]: item.assetTransactions?.[0]?.user?.office?.name || "",
+      [tAsset("user")]: item.assetTransactions?.[0]?.user?.name || "",
+      [tAsset("department")]:
+        item.assetTransactions?.[0]?.user?.department?.name || "",
+      [tAsset("cpu")]: item.customProperties?.cpu || "",
+      [tAsset("ram")]: item.customProperties?.ram || "",
+      [tAsset("storage")]: item.customProperties?.hardDrive || "",
+      [tAsset("os")]: item.customProperties?.osType || "",
+      [tAsset("purchaseDate")]: item.purchaseDate
+        ? dayjs(item.purchaseDate).format("YYYY-MM-DD")
+        : "",
+      [tAsset("warranty")]: wordToNumber(item.warranty),
+      [tAsset("endOfWarranty")]: item.purchaseDate
+        ? dayjs(item.purchaseDate)
+            .add(wordToNumber(item.warranty) || 3, "year")
+            .format("YYYY-MM-DD")
+        : "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Assets");
+
+    XLSX.writeFile(
+      workbook,
+      `AssetsReport_${officeSeleted?.shortName}_${dayjs().format(
+        "YYYYMMDD_HHmmss"
+      )}.xlsx`
+    );
+  };
+
+  const filteredAssets = useMemo(() => {
+    if (!tabSelected) return assets;
+
+    return assets.filter((asset) => {
+      const belongsToSelectedOffice =
+        asset.assetTransactions?.[0]?.user?.office?.id === tabSelected;
+
+      const search = searchInput.toLowerCase();
+
+      const matchesSearch =
+        asset.internalCode?.toLowerCase().includes(search) ||
+        asset.serialNumber?.toLowerCase().includes(search) ||
+        asset.deviceModel?.name?.toLowerCase().includes(search) ||
+        asset.deviceType?.name?.toLowerCase().includes(search) ||
+        asset.assetTransactions?.[0]?.user?.name
+          ?.toLowerCase()
+          .includes(search) ||
+        asset.assetTransactions?.[0]?.user?.department?.name
+          ?.toLowerCase()
+          .includes(search) ||
+        asset.customProperties?.cpu?.toLowerCase().includes(search) ||
+        asset.customProperties?.ram?.toLowerCase().includes(search) ||
+        asset.customProperties?.osType?.toLowerCase().includes(search) ||
+        asset.customProperties?.hardDrive?.toLowerCase().includes(search) ||
+        asset.customProperties?.macAddress?.toLowerCase().includes(search);
+
+      return belongsToSelectedOffice && matchesSearch;
+    });
+  }, [assets, tabSelected, searchInput]);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return assets.slice(start, end);
-  }, [page, assets]);
+    return filteredAssets.slice(start, end);
+  }, [page, filteredAssets]);
+
+  const pages = Math.max(Math.ceil(filteredAssets.length / rowsPerPage), 1);
 
   const handleDelete = async (item: Asset) => {
     Swal.fire({
@@ -119,7 +216,7 @@ export default function AssetsAdminComponent() {
   }
 
   return (
-    <div className="p-6 space-y-6 w-full">
+    <div className="p-6 w-full">
       <div className="flex justify-between items-center">
         <Breadcrumbs>
           <BreadcrumbItem href={ADMIN_ROUTES.DASHBOARD}>
@@ -134,124 +231,36 @@ export default function AssetsAdminComponent() {
         </Button>
       </div>
 
-      <Table
-        aria-label={tAdmin("assets.title")}
-        bottomContent={
-          <div className="flex justify-center mt-4">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              color="secondary"
-              page={page}
-              total={pages}
-              onChange={(page) => setPage(page)}
-              siblings={2}
-            />
-          </div>
-        }
-        className="w-full"
-        classNames={{ wrapper: "min-h-[222px] w-full" }}
+      <Tabs
+        aria-label="Office Tabs"
+        selectedKey={tabSelected}
+        onSelectionChange={(key) => setTabSelected(String(key))}
+        className="flex flex-wrap"
       >
-        <TableHeader>
-          <TableColumn>{tAsset("code")}</TableColumn>
-          <TableColumn>{tAsset("deviceType")}</TableColumn>
-          <TableColumn>{tAsset("deviceModel")}</TableColumn>
-          <TableColumn>{tAsset("serialNumber")}</TableColumn>
-          <TableColumn>{tAsset("office")}</TableColumn>
-          <TableColumn>{tAsset("user")}</TableColumn>
-          <TableColumn>{tAsset("department")}</TableColumn>
-          <TableColumn>{tAsset("cpu")}</TableColumn>
-          <TableColumn>{tAsset("ram")}</TableColumn>
-          <TableColumn>{tAsset("storage")}</TableColumn>
-          <TableColumn>{tAsset("os")}</TableColumn>
-          <TableColumn>{tAsset("purchaseDate")}</TableColumn>
-          <TableColumn>{tAsset("warranty")}</TableColumn>
-          <TableColumn>{tAsset("endOfWarranty")}</TableColumn>
-          <TableColumn>{tAdmin("actions")}</TableColumn>
-        </TableHeader>
-        <TableBody items={items}>
-          {(item) => (
-            <TableRow
-              key={item.id}
-              className={
-                dayjs(item.purchaseDate)
-                  .add(wordToNumber(item.warranty) || 3, "year")
-                  .format("YYYY-MM-DD") <= dayjs().format("YYYY-MM-DD")
-                  ? "bg-red-200"
-                  : ""
-              }
-            >
-              <TableCell>{item.internalCode}</TableCell>
-              <TableCell>{item.deviceType?.name || "-"}</TableCell>
-              <TableCell>{item.deviceModel?.name || "-"}</TableCell>
-              <TableCell>{item.serialNumber}</TableCell>
-              <TableCell>
-                {item.assetTransactions?.[0]?.user?.office?.name || "-"}
-              </TableCell>
-              <TableCell>
-                {item.assetTransactions?.[0]?.user?.name || "-"}
-              </TableCell>
-              <TableCell>
-                {item.assetTransactions?.[0]?.user?.department?.name || "-"}
-              </TableCell>
-              <TableCell>{item.customProperties?.cpu || "-"}</TableCell>
-              <TableCell>{item.customProperties?.ram || "-"}</TableCell>
-              <TableCell>{item.customProperties?.hardDrive || "-"}</TableCell>
-              <TableCell>{item.customProperties?.osType || "-"}</TableCell>
-              <TableCell>
-                {dayjs(item.purchaseDate).format("YYYY-MM-DD")}
-              </TableCell>
-              <TableCell>{wordToNumber(item.warranty)}</TableCell>
-              <TableCell>
-                {dayjs(item.purchaseDate)
-                  .add(wordToNumber(item.warranty) || 3, "year")
-                  .format("YYYY-MM-DD")}
-              </TableCell>
-              <TableCell>
-                <div className="flex gap-2 items-center">
-                  <Tooltip content={tCta("createRequest")}>
-                    <Link href={`${pathname}/${item.id}/create-request`}>
-                      <Icon
-                        className="pointer-events-none text-2xl text-default-400"
-                        icon="fa6-solid:code-merge"
-                      />
-                    </Link>
-                  </Tooltip>
-                  <Tooltip content={tCta("view")}>
-                    <Button
-                      isIconOnly
-                      variant="light"
-                      onPress={() => {
-                        setSelectedAsset(item);
-                        fetchAssetTransactions(item.id);
-                        onOpen();
-                      }}
-                    >
-                      <EyeIcon />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip content={tCta("edit")}>
-                    <Link href={`${pathname}/${item.id}`}>
-                      <EditIcon />
-                    </Link>
-                  </Tooltip>
-                  <Tooltip content={tCta("delete")} color="danger">
-                    <Button
-                      isIconOnly
-                      variant="light"
-                      color="danger"
-                      onPress={() => handleDelete(item)}
-                    >
-                      <DeleteIcon />
-                    </Button>
-                  </Tooltip>
-                </div>
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+        {offices.map((office) => (
+          <Tab key={office.id} title={office.shortName}>
+            <DataTable
+              filteredAssets={filteredAssets}
+              tAdmin={tAdmin}
+              page={page}
+              pages={pages}
+              setPage={setPage}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              handleSearchSubmit={handleSearchSubmit}
+              tAsset={tAsset}
+              items={items}
+              tCta={tCta}
+              pathname={pathname}
+              setSelectedAsset={setSelectedAsset}
+              fetchAssetTransactions={fetchAssetTransactions}
+              onOpen={onOpen}
+              handleDelete={handleDelete}
+              exportToExcel={exportToExcel}
+            />
+          </Tab>
+        ))}
+      </Tabs>
 
       <Modal
         isOpen={isOpen}
@@ -400,5 +409,196 @@ export default function AssetsAdminComponent() {
         </ModalContent>
       </Modal>
     </div>
+  );
+}
+
+interface DataTableProps {
+  filteredAssets: Asset[];
+  tAdmin: (key: string) => string;
+  page: number;
+  pages: number;
+  setPage: (page: number) => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  handleSearchSubmit: () => void;
+  tAsset: (key: string) => string;
+  items: Asset[];
+  tCta: (key: string) => string;
+  pathname: string;
+  setSelectedAsset: (asset: Asset) => void;
+  fetchAssetTransactions: (assetId: string) => void;
+  onOpen: () => void;
+  handleDelete: (item: Asset) => void;
+  exportToExcel: () => void;
+}
+
+function DataTable({
+  filteredAssets,
+  tAdmin,
+  page,
+  pages,
+  setPage,
+  searchQuery,
+  setSearchQuery,
+  handleSearchSubmit,
+  tAsset,
+  items,
+  tCta,
+  pathname,
+  setSelectedAsset,
+  fetchAssetTransactions,
+  onOpen,
+  handleDelete,
+  exportToExcel,
+}: DataTableProps) {
+  return (
+    <Table
+      aria-label={tAdmin("assets.title")}
+      bottomContent={
+        <div className="flex justify-center mt-4">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="secondary"
+            page={page}
+            total={pages}
+            onChange={(page) => setPage(page)}
+            siblings={2}
+          />
+        </div>
+      }
+      topContent={
+        <div className="flex-row sm:flex w-full justify-between items-center">
+          <div className="flex justify-center items-center gap-2">
+            <Input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full sm:w-96"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearchSubmit();
+                }
+              }}
+              autoFocus
+            />
+            <Button color="primary" onPress={handleSearchSubmit}>
+              Submit
+            </Button>
+          </div>
+          <p>{filteredAssets.length} entries found</p>
+          <Button
+            className="p-4 rounded-full text-white"
+            color="success"
+            onPress={exportToExcel}
+          >
+            .xlsx
+          </Button>
+        </div>
+      }
+      className="w-full"
+      classNames={{ wrapper: "min-h-[222px] w-full" }}
+    >
+      <TableHeader>
+        <TableColumn>{tAsset("code")}</TableColumn>
+        <TableColumn>{tAsset("deviceType")}</TableColumn>
+        <TableColumn>{tAsset("deviceModel")}</TableColumn>
+        <TableColumn>{tAsset("serialNumber")}</TableColumn>
+        <TableColumn>{tAsset("office")}</TableColumn>
+        <TableColumn>{tAsset("user")}</TableColumn>
+        <TableColumn>{tAsset("department")}</TableColumn>
+        <TableColumn>{tAsset("cpu")}</TableColumn>
+        <TableColumn>{tAsset("ram")}</TableColumn>
+        <TableColumn>{tAsset("storage")}</TableColumn>
+        <TableColumn>{tAsset("os")}</TableColumn>
+        <TableColumn>{tAsset("purchaseDate")}</TableColumn>
+        <TableColumn>{tAsset("warranty")}</TableColumn>
+        <TableColumn>{tAsset("endOfWarranty")}</TableColumn>
+        <TableColumn>{tAdmin("actions")}</TableColumn>
+      </TableHeader>
+      <TableBody items={items}>
+        {(item) => (
+          <TableRow
+            key={item.id}
+            className={
+              dayjs(item.purchaseDate)
+                .add(wordToNumber(item.warranty) || 3, "year")
+                .format("YYYY-MM-DD") <= dayjs().format("YYYY-MM-DD")
+                ? "bg-red-200"
+                : ""
+            }
+          >
+            <TableCell>{item.internalCode}</TableCell>
+            <TableCell>{item.deviceType?.name || "-"}</TableCell>
+            <TableCell>{item.deviceModel?.name || "-"}</TableCell>
+            <TableCell>{item.serialNumber}</TableCell>
+            <TableCell>
+              {item.assetTransactions?.[0]?.user?.office?.shortName || "-"}
+            </TableCell>
+            <TableCell>
+              {item.assetTransactions?.[0]?.user?.name || "-"}
+            </TableCell>
+            <TableCell>
+              {item.assetTransactions?.[0]?.user?.department?.name || "-"}
+            </TableCell>
+            <TableCell>{item.customProperties?.cpu || "-"}</TableCell>
+            <TableCell>{item.customProperties?.ram || "-"}</TableCell>
+            <TableCell>{item.customProperties?.hardDrive || "-"}</TableCell>
+            <TableCell>{item.customProperties?.osType || "-"}</TableCell>
+            <TableCell>
+              {dayjs(item.purchaseDate).format("YYYY-MM-DD")}
+            </TableCell>
+            <TableCell>{wordToNumber(item.warranty)}</TableCell>
+            <TableCell>
+              {dayjs(item.purchaseDate)
+                .add(wordToNumber(item.warranty) || 3, "year")
+                .format("YYYY-MM-DD")}
+            </TableCell>
+            <TableCell>
+              <div className="flex gap-2 items-center">
+                <Tooltip content={tCta("createRequest")}>
+                  <Link href={`${pathname}/${item.id}/create-request`}>
+                    <Icon
+                      className="pointer-events-none text-2xl text-default-400"
+                      icon="fa6-solid:code-merge"
+                    />
+                  </Link>
+                </Tooltip>
+                <Tooltip content={tCta("view")}>
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    onPress={() => {
+                      setSelectedAsset(item);
+                      fetchAssetTransactions(item.id);
+                      onOpen();
+                    }}
+                  >
+                    <EyeIcon />
+                  </Button>
+                </Tooltip>
+                <Tooltip content={tCta("edit")}>
+                  <Link href={`${pathname}/${item.id}`}>
+                    <EditIcon />
+                  </Link>
+                </Tooltip>
+                <Tooltip content={tCta("delete")} color="danger">
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    color="danger"
+                    onPress={() => handleDelete(item)}
+                  >
+                    <DeleteIcon />
+                  </Button>
+                </Tooltip>
+              </div>
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   );
 }

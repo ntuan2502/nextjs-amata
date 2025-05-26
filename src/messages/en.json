@@ -139,7 +139,9 @@
     "role": "Role",
     "type": "Type",
     "status": "Status",
-    "file": "File"
+    "file": "File",
+    "fromUser": "From User",
+    "toUser": "To User"
   },
   "cta": {
     "add": "Add",
