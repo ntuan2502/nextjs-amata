@@ -31,22 +31,26 @@ import { ADMIN_ROUTES } from "@/constants/routes";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { SearchForm } from "@/components/ui/Search";
 
 export default function AssetTransactionsAdminComponent() {
   const { tAdmin, tCta, tAssetTransaction } = useAppTranslations();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number>(1);
   const [assetTransactions, setAssetTransactions] = useState<
     AssetTransaction[]
   >([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedAssetTransaction, setSelectedAssetTransaction] =
     useState<AssetTransaction | null>(null);
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetchAsset();
+    fetchAssetTransactions();
   }, []);
 
-  const fetchAsset = async () => {
+  const fetchAssetTransactions = async () => {
     try {
       const res = await axiosInstance.get(
         `${ENV.API_URL}/asset-transactions?include=asset, user, department, office`
@@ -54,23 +58,46 @@ export default function AssetTransactionsAdminComponent() {
       setAssetTransactions(res.data.data.assetTransactions);
     } catch (err) {
       handleAxiosError(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const pages = Math.max(Math.ceil(assetTransactions.length / rowsPerPage), 1);
+  const handleSearchSubmit = () => {
+    setSearchQuery(searchInput);
+    setPage(1);
+  };
+
+  const filteredData = useMemo(() => {
+    if (!searchQuery) return assetTransactions;
+    const keyword = searchQuery.toLowerCase();
+    return assetTransactions.filter((item) => {
+      return (
+        item.asset?.internalCode?.toLowerCase().includes(keyword) ||
+        item.office?.name.toLowerCase().includes(keyword) ||
+        item.department?.name.toLowerCase().includes(keyword) ||
+        item.user?.name?.toLowerCase().includes(keyword) ||
+        item.role?.toLowerCase().includes(keyword) ||
+        item.type?.toLowerCase().includes(keyword) ||
+        item.status?.toLowerCase().includes(keyword) ||
+        dayjs(item.createdAt).format("HH:mm:ss YYYY-MM-DD").includes(keyword)
+      );
+    });
+  }, [assetTransactions, searchQuery]);
+
+  const pages = Math.max(Math.ceil(filteredData.length / rowsPerPage), 1);
+  const filteredCount = useMemo(() => filteredData.length, [filteredData]);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return assetTransactions.slice(start, end);
-  }, [page, assetTransactions]);
+    return filteredData.slice(start, end);
+  }, [page, filteredData]);
 
-  if (assetTransactions.length === 0) {
-    return <LoadingComponent />;
-  }
+  if (isLoading) return <LoadingComponent />;
 
   return (
-    <div className="p-6 space-y-6 w-full">
+    <div className="px-6 mt-4 w-full">
       <div className="flex justify-between items-center">
         <Breadcrumbs>
           <BreadcrumbItem href={ADMIN_ROUTES.DASHBOARD}>
@@ -82,10 +109,14 @@ export default function AssetTransactionsAdminComponent() {
         </Breadcrumbs>
       </div>
 
+      <p className="mb-4">
+        {filteredCount} {tAdmin("entriesFound")}
+      </p>
+
       <Table
         aria-label={tAdmin("assetTransactions.title")}
         bottomContent={
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center">
             <Pagination
               isCompact
               showControls
@@ -95,6 +126,15 @@ export default function AssetTransactionsAdminComponent() {
               total={pages}
               onChange={(page) => setPage(page)}
               siblings={2}
+            />
+          </div>
+        }
+        topContent={
+          <div className="flex-row sm:flex w-full justify-between items-center">
+            <SearchForm
+              value={searchInput}
+              onChange={setSearchInput}
+              onSubmit={handleSearchSubmit}
             />
           </div>
         }
@@ -112,7 +152,7 @@ export default function AssetTransactionsAdminComponent() {
           <TableColumn>{tAssetTransaction("signedAt")}</TableColumn>
           <TableColumn>{tAdmin("actions")}</TableColumn>
         </TableHeader>
-        <TableBody items={items}>
+        <TableBody items={items} emptyContent={tAdmin("noData")}>
           {(item) => (
             <TableRow key={item.id}>
               <TableCell>{item.asset?.internalCode || "-"}</TableCell>
@@ -143,7 +183,9 @@ export default function AssetTransactionsAdminComponent() {
                   </Tooltip>
                   {item.status === "PENDING" && (
                     <Tooltip content={tCta("confirmRequest")}>
-                      <Link href={`/assets/${item.asset?.id}/confirm-request?type=${item.type}`}>
+                      <Link
+                        href={`/assets/${item.asset?.id}/confirm-request?type=${item.type}`}
+                      >
                         <Icon
                           className="pointer-events-none text-2xl"
                           icon="fa6-solid:code-merge"
@@ -172,16 +214,6 @@ export default function AssetTransactionsAdminComponent() {
                   ) : (
                     ""
                   )}
-                  {/* <Tooltip content={tCta("edit")}>
-                    <Link href={`${pathname}/${item.id}`}>
-                      <EditIcon />
-                    </Link>
-                  </Tooltip>
-                  <Tooltip content={tCta("delete")} color="danger">
-                    <Button isIconOnly variant="light" color="danger">
-                      <DeleteIcon />
-                    </Button>
-                  </Tooltip> */}
                 </div>
               </TableCell>
             </TableRow>
@@ -228,7 +260,7 @@ export default function AssetTransactionsAdminComponent() {
                     </p>
                   </>
                 ) : (
-                  <p>{tAdmin("no_data")}</p>
+                  <p>{tAdmin("noData")}</p>
                 )}
               </ModalBody>
               <ModalFooter>

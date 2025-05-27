@@ -26,7 +26,8 @@
     "name": "Tên",
     "actions": "Hành động",
     "information": "Thông tin",
-    "no_data": "Không có dữ liệu",
+    "noData": "Không có dữ liệu",
+    "entriesFound": "mục được tìm thấy",
     "users": {
       "title": "Người dùng",
       "description": "Quản lý người dùng và quyền của họ.",

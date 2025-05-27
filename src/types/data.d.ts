@@ -80,6 +80,8 @@ export type AssetTransaction = {
   office?: Office;
 
   handoverFilePath?: string;
+
+  createdAt?: Date;
 };
 
 export type ParamsWithId = {

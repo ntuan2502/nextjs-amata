@@ -18,7 +18,6 @@ import {
   Tooltip,
   Breadcrumbs,
   BreadcrumbItem,
-  Input,
   Tab,
   Tabs,
 } from "@heroui/react";
@@ -43,12 +42,13 @@ import { wordToNumber } from "@/utils/function";
 import Swal from "sweetalert2";
 import { Icon } from "@iconify/react";
 import * as XLSX from "xlsx";
+import { SearchForm } from "@/components/ui/Search";
 
 export default function AssetsAdminComponent() {
   const { tAdmin, tCta, tAsset, tAssetTransaction, tSwal } =
     useAppTranslations();
   const pathname = usePathname();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number>(1);
   const [offices, setOffices] = useState<Office[]>([]);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [assetTransactions, setAssetTransactions] = useState<
@@ -56,9 +56,10 @@ export default function AssetsAdminComponent() {
   >([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchInput, setSearchInput] = useState("");
   const [tabSelected, setTabSelected] = useState<string>("");
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchOffices();
@@ -73,7 +74,7 @@ export default function AssetsAdminComponent() {
   }, [offices, tabSelected]);
 
   const handleSearchSubmit = () => {
-    setSearchInput(searchQuery);
+    setSearchQuery(searchInput);
     setPage(1);
   };
 
@@ -91,6 +92,8 @@ export default function AssetsAdminComponent() {
       setAssets(res.data.data.assets);
     } catch (err) {
       handleAxiosError(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -107,7 +110,7 @@ export default function AssetsAdminComponent() {
 
   const exportToExcel = () => {
     const officeSeleted = offices.find((o) => o.id === tabSelected);
-    const exportData = filteredAssets.map((item) => ({
+    const exportData = filteredData.map((item) => ({
       [tAsset("code")]: item.internalCode || "",
       [tAsset("deviceType")]: item.deviceType?.name || "",
       [tAsset("deviceModel")]: item.deviceModel?.name || "",
@@ -143,43 +146,44 @@ export default function AssetsAdminComponent() {
     );
   };
 
-  const filteredAssets = useMemo(() => {
+  const filteredData = useMemo(() => {
     if (!tabSelected) return assets;
 
-    return assets.filter((asset) => {
+    return assets.filter((item) => {
       const belongsToSelectedOffice =
-        asset.assetTransactions?.[0]?.user?.office?.id === tabSelected;
+        item.assetTransactions?.[0]?.user?.office?.id === tabSelected;
 
-      const search = searchInput.toLowerCase();
+      const keyword = searchQuery.toLowerCase();
 
       const matchesSearch =
-        asset.internalCode?.toLowerCase().includes(search) ||
-        asset.serialNumber?.toLowerCase().includes(search) ||
-        asset.deviceModel?.name?.toLowerCase().includes(search) ||
-        asset.deviceType?.name?.toLowerCase().includes(search) ||
-        asset.assetTransactions?.[0]?.user?.name
+        item.internalCode?.toLowerCase().includes(keyword) ||
+        item.serialNumber?.toLowerCase().includes(keyword) ||
+        item.deviceModel?.name?.toLowerCase().includes(keyword) ||
+        item.deviceType?.name?.toLowerCase().includes(keyword) ||
+        item.assetTransactions?.[0]?.user?.name
           ?.toLowerCase()
-          .includes(search) ||
-        asset.assetTransactions?.[0]?.user?.department?.name
+          .includes(keyword) ||
+        item.assetTransactions?.[0]?.user?.department?.name
           ?.toLowerCase()
-          .includes(search) ||
-        asset.customProperties?.cpu?.toLowerCase().includes(search) ||
-        asset.customProperties?.ram?.toLowerCase().includes(search) ||
-        asset.customProperties?.osType?.toLowerCase().includes(search) ||
-        asset.customProperties?.hardDrive?.toLowerCase().includes(search) ||
-        asset.customProperties?.macAddress?.toLowerCase().includes(search);
+          .includes(keyword) ||
+        item.customProperties?.cpu?.toLowerCase().includes(keyword) ||
+        item.customProperties?.ram?.toLowerCase().includes(keyword) ||
+        item.customProperties?.osType?.toLowerCase().includes(keyword) ||
+        item.customProperties?.hardDrive?.toLowerCase().includes(keyword) ||
+        item.customProperties?.macAddress?.toLowerCase().includes(keyword);
 
       return belongsToSelectedOffice && matchesSearch;
     });
-  }, [assets, tabSelected, searchInput]);
+  }, [assets, tabSelected, searchQuery]);
+
+  const pages = Math.max(Math.ceil(filteredData.length / rowsPerPage), 1);
+  const filteredCount = useMemo(() => filteredData.length, [filteredData]);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return filteredAssets.slice(start, end);
-  }, [page, filteredAssets]);
-
-  const pages = Math.max(Math.ceil(filteredAssets.length / rowsPerPage), 1);
+    return filteredData.slice(start, end);
+  }, [page, filteredData]);
 
   const handleDelete = async (item: Asset) => {
     Swal.fire({
@@ -198,25 +202,24 @@ export default function AssetsAdminComponent() {
             `${ENV.API_URL}/assets/${item.id}`
           );
           handleAxiosSuccess(res);
-          await fetchAssets();
+          setAssets((prev) => prev.filter((o) => o.id !== item.id));
+
+          Swal.fire({
+            title: tSwal("confirmed.title"),
+            text: `${item.internalCode} ${tSwal("confirmed.text")}`,
+            icon: "success",
+          });
         } catch (err) {
           handleAxiosError(err);
         }
-        Swal.fire({
-          title: tSwal("confirmed.title"),
-          text: `${item.internalCode} ${tSwal("confirmed.text")}`,
-          icon: "success",
-        });
       }
     });
   };
 
-  if (assets.length === 0) {
-    return <LoadingComponent />;
-  }
+  if (isLoading) return <LoadingComponent />;
 
   return (
-    <div className="p-6 w-full">
+    <div className="px-6 mt-4 w-full">
       <div className="flex justify-between items-center">
         <Breadcrumbs>
           <BreadcrumbItem href={ADMIN_ROUTES.DASHBOARD}>
@@ -231,6 +234,10 @@ export default function AssetsAdminComponent() {
         </Button>
       </div>
 
+      <p className="mb-4">
+        {filteredCount} {tAdmin("entriesFound")}
+      </p>
+
       <Tabs
         aria-label="Office Tabs"
         selectedKey={tabSelected}
@@ -240,13 +247,12 @@ export default function AssetsAdminComponent() {
         {offices.map((office) => (
           <Tab key={office.id} title={office.shortName}>
             <DataTable
-              filteredAssets={filteredAssets}
               tAdmin={tAdmin}
               page={page}
               pages={pages}
               setPage={setPage}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
+              searchInput={searchInput}
+              setSearchInput={setSearchInput}
               handleSearchSubmit={handleSearchSubmit}
               tAsset={tAsset}
               items={items}
@@ -339,7 +345,7 @@ export default function AssetsAdminComponent() {
                     </p>
                   </>
                 ) : (
-                  <p>{tAdmin("no_data")}</p>
+                  <p>{tAdmin("noData")}</p>
                 )}
                 <Table
                   aria-label={tAdmin("assetTransactions.title")}
@@ -413,13 +419,12 @@ export default function AssetsAdminComponent() {
 }
 
 interface DataTableProps {
-  filteredAssets: Asset[];
   tAdmin: (key: string) => string;
   page: number;
   pages: number;
   setPage: (page: number) => void;
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
+  searchInput: string;
+  setSearchInput: (query: string) => void;
   handleSearchSubmit: () => void;
   tAsset: (key: string) => string;
   items: Asset[];
@@ -433,13 +438,12 @@ interface DataTableProps {
 }
 
 function DataTable({
-  filteredAssets,
   tAdmin,
   page,
   pages,
   setPage,
-  searchQuery,
-  setSearchQuery,
+  searchInput,
+  setSearchInput,
   handleSearchSubmit,
   tAsset,
   items,
@@ -470,25 +474,11 @@ function DataTable({
       }
       topContent={
         <div className="flex-row sm:flex w-full justify-between items-center">
-          <div className="flex justify-center items-center gap-2">
-            <Input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-96"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSearchSubmit();
-                }
-              }}
-              autoFocus
-            />
-            <Button color="primary" onPress={handleSearchSubmit}>
-              Submit
-            </Button>
-          </div>
-          <p>{filteredAssets.length} entries found</p>
+          <SearchForm
+            value={searchInput}
+            onChange={setSearchInput}
+            onSubmit={handleSearchSubmit}
+          />
           <Button
             className="p-4 rounded-full text-white"
             color="success"
@@ -518,7 +508,7 @@ function DataTable({
         <TableColumn>{tAsset("endOfWarranty")}</TableColumn>
         <TableColumn>{tAdmin("actions")}</TableColumn>
       </TableHeader>
-      <TableBody items={items}>
+      <TableBody items={items} emptyContent={tAdmin("noData")}>
         {(item) => (
           <TableRow
             key={item.id}
