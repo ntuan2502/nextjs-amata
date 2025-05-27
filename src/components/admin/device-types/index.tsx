@@ -36,15 +36,19 @@ import LoadingComponent from "@/components/ui/Loading";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import { SearchForm } from "@/components/ui/Search";
 
 export default function DeviceTypesAdminComponent() {
   const { tAdmin, tCta, tSwal } = useAppTranslations();
   const pathname = usePathname();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number>(1);
   const [deviceTypes, setDeviceTypes] = useState<DeviceType[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedDeviceType, setSelectedDeviceType] =
     useState<DeviceType | null>(null);
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchDeviceType();
@@ -56,16 +60,31 @@ export default function DeviceTypesAdminComponent() {
       setDeviceTypes(res.data.data.deviceTypes);
     } catch (err) {
       handleAxiosError(err);
+    } finally {
+      setIsLoading(false);
     }
   };
+  const handleSearchSubmit = () => {
+    setSearchQuery(searchInput);
+    setPage(1);
+  };
 
-  const pages = Math.max(Math.ceil(deviceTypes.length / rowsPerPage), 1);
+  const filteredData = useMemo(() => {
+    if (!searchQuery) return deviceTypes;
+    const keyword = searchQuery.toLowerCase();
+    return deviceTypes.filter((item) => {
+      return item.name?.toLowerCase().includes(keyword);
+    });
+  }, [deviceTypes, searchQuery]);
+
+  const pages = Math.max(Math.ceil(filteredData.length / rowsPerPage), 1);
+  const filteredCount = useMemo(() => filteredData.length, [filteredData]);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return deviceTypes.slice(start, end);
-  }, [page, deviceTypes]);
+    return filteredData.slice(start, end);
+  }, [page, filteredData]);
 
   const handleDelete = async (item: DeviceType) => {
     Swal.fire({
@@ -84,25 +103,24 @@ export default function DeviceTypesAdminComponent() {
             `${ENV.API_URL}/device-types/${item.id}`
           );
           handleAxiosSuccess(res);
-          await fetchDeviceType();
+          setDeviceTypes((prev) => prev.filter((o) => o.id !== item.id));
+
+          Swal.fire({
+            title: tSwal("confirmed.title"),
+            text: `${item.name} ${tSwal("confirmed.text")}`,
+            icon: "success",
+          });
         } catch (err) {
           handleAxiosError(err);
         }
-        Swal.fire({
-          title: tSwal("confirmed.title"),
-          text: `${item.name} ${tSwal("confirmed.text")}`,
-          icon: "success",
-        });
       }
     });
   };
 
-  if (deviceTypes.length === 0) {
-    return <LoadingComponent />;
-  }
+  if (isLoading) return <LoadingComponent />;
 
   return (
-    <div className="p-6 space-y-6 w-full">
+    <div className="px-6 mt-4 w-full">
       <div className="flex justify-between items-center">
         <Breadcrumbs>
           <BreadcrumbItem href={ADMIN_ROUTES.DASHBOARD}>
@@ -121,10 +139,14 @@ export default function DeviceTypesAdminComponent() {
         </Button>
       </div>
 
+      <p className="mb-4">
+        {filteredCount} {tAdmin("entriesFound")}
+      </p>
+
       <Table
         aria-label={tAdmin("deviceTypes.title")}
         bottomContent={
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center">
             <Pagination
               isCompact
               showControls
@@ -137,6 +159,15 @@ export default function DeviceTypesAdminComponent() {
             />
           </div>
         }
+        topContent={
+          <div className="flex-row sm:flex w-full justify-between items-center">
+            <SearchForm
+              value={searchInput}
+              onChange={setSearchInput}
+              onSubmit={handleSearchSubmit}
+            />
+          </div>
+        }
         className="w-full"
         classNames={{ wrapper: "min-h-[222px] w-full" }}
       >
@@ -144,7 +175,7 @@ export default function DeviceTypesAdminComponent() {
           <TableColumn>{tAdmin("name")}</TableColumn>
           <TableColumn>{tAdmin("actions")}</TableColumn>
         </TableHeader>
-        <TableBody items={items}>
+        <TableBody items={items} emptyContent={tAdmin("noData")}>
           {(item) => (
             <TableRow key={item.id}>
               <TableCell>{item.name || "-"}</TableCell>
@@ -203,7 +234,7 @@ export default function DeviceTypesAdminComponent() {
                     </p>
                   </>
                 ) : (
-                  <p>{tAdmin("no_data")}</p>
+                  <p>{tAdmin("noData")}</p>
                 )}
               </ModalBody>
               <ModalFooter>

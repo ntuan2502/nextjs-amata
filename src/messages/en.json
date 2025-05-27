@@ -26,7 +26,8 @@
     "name": "Name",
     "actions": "Actions",
     "information": "Information",
-    "no_data": "No data available",
+    "noData": "No data available",
+    "entriesFound": "entries found",
     "users": {
       "title": "Users",
       "description": "Manage users and their permissions.",

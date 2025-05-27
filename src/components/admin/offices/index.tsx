@@ -36,14 +36,18 @@ import LoadingComponent from "@/components/ui/Loading";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import { SearchForm } from "@/components/ui/Search";
 
 export default function OfficesAdminComponent() {
   const { tAdmin, tCta, tSwal } = useAppTranslations();
   const pathname = usePathname();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number>(1);
   const [offices, setOffices] = useState<Office[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedOffice, setSelectedOffice] = useState<Office | null>(null);
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchOffice();
@@ -55,16 +59,36 @@ export default function OfficesAdminComponent() {
       setOffices(res.data.data.offices);
     } catch (err) {
       handleAxiosError(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const pages = Math.max(Math.ceil(offices.length / rowsPerPage), 1);
+  const handleSearchSubmit = () => {
+    setSearchQuery(searchInput);
+    setPage(1);
+  };
+
+  const filteredData = useMemo(() => {
+    if (!searchQuery) return offices;
+    const keyword = searchQuery.toLowerCase();
+    return offices.filter((item) => {
+      return (
+        item.name?.toLowerCase().includes(keyword) ||
+        item.internationalName?.toLowerCase().includes(keyword) ||
+        item.shortName?.toLowerCase().includes(keyword)
+      );
+    });
+  }, [offices, searchQuery]);
+
+  const pages = Math.max(Math.ceil(filteredData.length / rowsPerPage), 1);
+  const filteredCount = useMemo(() => filteredData.length, [filteredData]);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return offices.slice(start, end);
-  }, [page, offices]);
+    return filteredData.slice(start, end);
+  }, [page, filteredData]);
 
   const handleDelete = async (item: Office) => {
     Swal.fire({
@@ -83,25 +107,24 @@ export default function OfficesAdminComponent() {
             `${ENV.API_URL}/offices/${item.id}`
           );
           handleAxiosSuccess(res);
-          await fetchOffice();
+          setOffices((prev) => prev.filter((o) => o.id !== item.id));
+
+          Swal.fire({
+            title: tSwal("confirmed.title"),
+            text: `${item.name} ${tSwal("confirmed.text")}`,
+            icon: "success",
+          });
         } catch (err) {
           handleAxiosError(err);
         }
-        Swal.fire({
-          title: tSwal("confirmed.title"),
-          text: `${item.name} ${tSwal("confirmed.text")}`,
-          icon: "success",
-        });
       }
     });
   };
 
-  if (offices.length === 0) {
-    return <LoadingComponent />;
-  }
+  if (isLoading) return <LoadingComponent />;
 
   return (
-    <div className="p-6 space-y-6 w-full">
+    <div className="px-6 mt-4 w-full">
       <div className="flex justify-between items-center">
         <Breadcrumbs>
           <BreadcrumbItem href={ADMIN_ROUTES.DASHBOARD}>
@@ -116,10 +139,14 @@ export default function OfficesAdminComponent() {
         </Button>
       </div>
 
+      <p className="mb-4">
+        {filteredCount} {tAdmin("entriesFound")}
+      </p>
+
       <Table
         aria-label={tAdmin("offices.title")}
         bottomContent={
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center">
             <Pagination
               isCompact
               showControls
@@ -127,8 +154,19 @@ export default function OfficesAdminComponent() {
               color="secondary"
               page={page}
               total={pages}
-              onChange={(page) => setPage(page)}
+              onChange={(newPage) => {
+                if (newPage !== page) setPage(newPage);
+              }}
               siblings={2}
+            />
+          </div>
+        }
+        topContent={
+          <div className="flex-row sm:flex w-full justify-between items-center">
+            <SearchForm
+              value={searchInput}
+              onChange={setSearchInput}
+              onSubmit={handleSearchSubmit}
             />
           </div>
         }
@@ -139,18 +177,16 @@ export default function OfficesAdminComponent() {
           <TableColumn>{tAdmin("name")}</TableColumn>
           <TableColumn>{tAdmin("offices.internationalName")}</TableColumn>
           <TableColumn>{tAdmin("offices.shortName")}</TableColumn>
-          {/* <TableColumn>{tAdmin("offices.taxCode")}</TableColumn>
-          <TableColumn>{tAdmin("offices.address")}</TableColumn> */}
+
           <TableColumn>{tAdmin("actions")}</TableColumn>
         </TableHeader>
-        <TableBody items={items}>
+        <TableBody items={items} emptyContent={tAdmin("noData")}>
           {(item) => (
             <TableRow key={item.id}>
               <TableCell>{item.name || "-"}</TableCell>
               <TableCell>{item.internationalName || "-"}</TableCell>
               <TableCell>{item.shortName || "-"}</TableCell>
-              {/* <TableCell>{item.taxCode || "-"}</TableCell>
-              <TableCell>{item.address || "-"}</TableCell> */}
+
               <TableCell>
                 <div className="flex gap-2 items-center">
                   <Tooltip content={tCta("view")}>
@@ -221,7 +257,7 @@ export default function OfficesAdminComponent() {
                     </p>
                   </>
                 ) : (
-                  <p>{tAdmin("no_data")}</p>
+                  <p>{tAdmin("noData")}</p>
                 )}
               </ModalBody>
               <ModalFooter>

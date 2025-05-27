@@ -36,36 +36,57 @@ import LoadingComponent from "@/components/ui/Loading";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import { SearchForm } from "@/components/ui/Search";
 
 export default function DepartmentsAdminComponent() {
   const { tAdmin, tCta, tSwal } = useAppTranslations();
   const pathname = usePathname();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number>(1);
   const [departments, setDepartments] = useState<Department[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedDepartment, setSelectedDepartment] =
     useState<Department | null>(null);
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetchDepartment();
+    fetchDepartments();
   }, []);
 
-  const fetchDepartment = async () => {
+  const fetchDepartments = async () => {
     try {
       const res = await axiosInstance.get(`${ENV.API_URL}/departments`);
       setDepartments(res.data.data.departments);
     } catch (err) {
       handleAxiosError(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const pages = Math.max(Math.ceil(departments.length / rowsPerPage), 1);
+  const handleSearchSubmit = () => {
+    setSearchQuery(searchInput);
+    setPage(1);
+  };
+
+  const filteredData = useMemo(() => {
+    if (!searchQuery) return departments;
+    const keyword = searchQuery.toLowerCase();
+    return departments.filter((item) => {
+      return item.name?.toLowerCase().includes(keyword);
+    });
+  }, [departments, searchQuery]);
+
+  const pages = Math.max(Math.ceil(filteredData.length / rowsPerPage), 1);
+  const filteredCount = useMemo(() => filteredData.length, [filteredData]);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return departments.slice(start, end);
-  }, [page, departments]);
+    return filteredData.slice(start, end);
+  }, [page, filteredData]);
+
 
   const handleDelete = async (item: Department) => {
     Swal.fire({
@@ -84,25 +105,24 @@ export default function DepartmentsAdminComponent() {
             `${ENV.API_URL}/departments/${item.id}`
           );
           handleAxiosSuccess(res);
-          await fetchDepartment();
+          setDepartments((prev) => prev.filter((o) => o.id !== item.id));
+
+          Swal.fire({
+            title: tSwal("confirmed.title"),
+            text: `${item.name} ${tSwal("confirmed.text")}`,
+            icon: "success",
+          });
         } catch (err) {
           handleAxiosError(err);
         }
-        Swal.fire({
-          title: tSwal("confirmed.title"),
-          text: `${item.name} ${tSwal("confirmed.text")}`,
-          icon: "success",
-        });
       }
     });
   };
 
-  if (departments.length === 0) {
-    return <LoadingComponent />;
-  }
+  if (isLoading) return <LoadingComponent />;
 
   return (
-    <div className="p-6 space-y-6 w-full">
+    <div className="px-6 mt-4 w-full">
       <div className="flex justify-between items-center">
         <Breadcrumbs>
           <BreadcrumbItem href={ADMIN_ROUTES.DASHBOARD}>
@@ -121,10 +141,14 @@ export default function DepartmentsAdminComponent() {
         </Button>
       </div>
 
+      <p className="mb-4">
+        {filteredCount} {tAdmin("entriesFound")}
+      </p>
+
       <Table
         aria-label={tAdmin("departments.title")}
         bottomContent={
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center">
             <Pagination
               isCompact
               showControls
@@ -132,8 +156,19 @@ export default function DepartmentsAdminComponent() {
               color="secondary"
               page={page}
               total={pages}
-              onChange={(page) => setPage(page)}
+              onChange={(newPage) => {
+                if (newPage !== page) setPage(newPage);
+              }}
               siblings={2}
+            />
+          </div>
+        }
+        topContent={
+          <div className="flex-row sm:flex w-full justify-between items-center">
+            <SearchForm
+              value={searchInput}
+              onChange={setSearchInput}
+              onSubmit={handleSearchSubmit}
             />
           </div>
         }
@@ -144,7 +179,7 @@ export default function DepartmentsAdminComponent() {
           <TableColumn>{tAdmin("name")}</TableColumn>
           <TableColumn>{tAdmin("actions")}</TableColumn>
         </TableHeader>
-        <TableBody items={items}>
+        <TableBody items={items} emptyContent={tAdmin("noData")}>
           {(item) => (
             <TableRow key={item.id}>
               <TableCell>{item.name || "-"}</TableCell>
@@ -203,7 +238,7 @@ export default function DepartmentsAdminComponent() {
                     </p>
                   </>
                 ) : (
-                  <p>{tAdmin("no_data")}</p>
+                  <p>{tAdmin("noData")}</p>
                 )}
               </ModalBody>
               <ModalFooter>
