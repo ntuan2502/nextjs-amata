@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.12.0...v1.13.0) (2025-05-27)
+
+
+### Features
+
+* **admin:** add reusable search functionality across admin pages ([f164b19](https://github.com/ntuan2502/nextjs-amata/commit/f164b1911345aa3d191e425f8bb8a9251cecc172))
+
 # [1.12.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.11.0...v1.12.0) (2025-05-26)
 
 
