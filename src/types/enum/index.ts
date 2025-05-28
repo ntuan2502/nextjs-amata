@@ -11,6 +11,11 @@ export enum Warranty {
   FIVE = "FIVE",
 }
 
+export enum OperatingSystem {
+  WINDOWS_10 = "WINDOWS_10",
+  WINDOWS_11 = "WINDOWS_11",
+}
+
 export enum TransactionType {
   TRANSFER = "TRANSFER",
   REPAIR = "REPAIR",

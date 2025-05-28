@@ -9,7 +9,7 @@ import {
   handleAxiosSuccess,
 } from "@/libs/handleAxiosFeedback";
 import { Asset, DeviceType, DeviceModel } from "@/types/data";
-import { Warranty } from "@/types/enum";
+import { OperatingSystem, Warranty } from "@/types/enum";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -17,6 +17,7 @@ import {
   Breadcrumbs,
   Button,
   DatePicker,
+  Divider,
   Input,
 } from "@heroui/react";
 import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
@@ -163,63 +164,6 @@ export default function AddAssetAdminComponent() {
         )}
       </Autocomplete>
 
-      <Input
-        key={tAsset("cpu")}
-        label={tAsset("cpu")}
-        value={formData.customProperties?.cpu}
-        onValueChange={(val) =>
-          setFormData((prev) => ({
-            ...prev,
-            customProperties: { ...prev.customProperties, cpu: val },
-          }))
-        }
-      />
-      <Input
-        key={tAsset("ram")}
-        label={tAsset("ram")}
-        value={formData.customProperties?.ram}
-        onValueChange={(val) =>
-          setFormData((prev) => ({
-            ...prev,
-            customProperties: { ...prev.customProperties, ram: val },
-          }))
-        }
-      />
-      <Input
-        key={tAsset("storage")}
-        label={tAsset("storage")}
-        value={formData.customProperties?.hardDrive}
-        onValueChange={(val) =>
-          setFormData((prev) => ({
-            ...prev,
-            customProperties: { ...prev.customProperties, hardDrive: val },
-          }))
-        }
-      />
-
-      <Input
-        key={tAsset("osType")}
-        label={tAsset("osType")}
-        value={formData.customProperties?.osType}
-        onValueChange={(val) =>
-          setFormData((prev) => ({
-            ...prev,
-            customProperties: { ...prev.customProperties, osType: val },
-          }))
-        }
-      />
-      <Input
-        key={tAsset("macAddress")}
-        label={tAsset("macAddress")}
-        value={formData.customProperties?.macAddress}
-        onValueChange={(val) =>
-          setFormData((prev) => ({
-            ...prev,
-            customProperties: { ...prev.customProperties, macAddress: val },
-          }))
-        }
-      />
-
       <DatePicker
         showMonthAndYearPickers
         label={tAsset("purchaseDate")}
@@ -256,6 +200,79 @@ export default function AddAssetAdminComponent() {
           <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
         )}
       </Autocomplete>
+
+      <Divider />
+
+      <Input
+        key={tAsset("cpu")}
+        label={tAsset("cpu")}
+        value={formData.customProperties?.cpu}
+        onValueChange={(val) =>
+          setFormData((prev) => ({
+            ...prev,
+            customProperties: { ...prev.customProperties, cpu: val },
+          }))
+        }
+      />
+      <Input
+        key={tAsset("ram")}
+        label={tAsset("ram")}
+        value={formData.customProperties?.ram}
+        onValueChange={(val) =>
+          setFormData((prev) => ({
+            ...prev,
+            customProperties: { ...prev.customProperties, ram: val },
+          }))
+        }
+      />
+
+      <Input
+        key={tAsset("storage")}
+        label={tAsset("storage")}
+        value={formData.customProperties?.hardDrive}
+        onValueChange={(val) =>
+          setFormData((prev) => ({
+            ...prev,
+            customProperties: { ...prev.customProperties, hardDrive: val },
+          }))
+        }
+      />
+
+      <Autocomplete
+        selectedKey={formData.customProperties?.osType ?? ""}
+        defaultItems={Object.entries(OperatingSystem).map(([, value]) => ({
+          key: value,
+          label: value,
+        }))}
+        label={tAsset("osType")}
+        onSelectionChange={(key) => {
+          if (key !== null) {
+            setFormData((prev) => ({
+              ...prev,
+              customProperties: {
+                ...prev.customProperties,
+                osType: key as OperatingSystem,
+              },
+            }));
+          }
+        }}
+      >
+        {(item) => (
+          <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
+        )}
+      </Autocomplete>
+
+      <Input
+        key={tAsset("macAddress")}
+        label={tAsset("macAddress")}
+        value={formData.customProperties?.macAddress}
+        onValueChange={(val) =>
+          setFormData((prev) => ({
+            ...prev,
+            customProperties: { ...prev.customProperties, macAddress: val },
+          }))
+        }
+      />
 
       <Button color="primary" onPress={handleSubmit}>
         {tCta("submit")}
