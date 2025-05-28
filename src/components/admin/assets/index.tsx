@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -30,7 +30,7 @@ import {
 import { EyeIcon } from "@/components/icons/EyeIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Asset, AssetTransaction, Office } from "@/types/data";
 import { rowsPerPage } from "@/constants/config";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
@@ -48,13 +48,16 @@ export default function AssetsAdminComponent() {
   const { tAdmin, tCta, tAsset, tAssetTransaction, tSwal } =
     useAppTranslations();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [page, setPage] = useState<number>(1);
   const [offices, setOffices] = useState<Office[]>([]);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [assetTransactions, setAssetTransactions] = useState<
     AssetTransaction[]
   >([]);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
   const [tabSelected, setTabSelected] = useState<string>("");
   const [searchInput, setSearchInput] = useState<string>("");
@@ -66,16 +69,64 @@ export default function AssetsAdminComponent() {
     fetchAssets();
   }, []);
 
-  useEffect(() => {
-    if (offices.length > 0 && !tabSelected) {
-      setTabSelected(offices[0].id);
-    }
-    setPage(1);
-  }, [offices, tabSelected]);
+  // 🧠 Hàm cập nhật URL với thứ tự office -> page -> search
+  const updateURL = useCallback(
+    (officeId: string, newPage: number = 1, newSearch: string = "") => {
+      const params = new URLSearchParams();
 
+      if (officeId) params.set("office", officeId);
+      params.set("page", newPage.toString());
+      if (newSearch) params.set("search", newSearch);
+
+      const url = `${pathname}?${params.toString()}`;
+      router.replace(url, { scroll: false });
+    },
+    [pathname, router]
+  );
+
+  // ⛳ Xử lý khi load trang và khi searchParams thay đổi
+  useEffect(() => {
+    const officeParam = searchParams.get("office");
+    const pageParam = searchParams.get("page");
+    const searchParam = searchParams.get("search") ?? "";
+
+    const fallbackOfficeId = offices.length > 0 ? offices[0].id : "";
+
+    const officeToSet = officeParam ?? fallbackOfficeId;
+    const pageToSet = pageParam ? Number(pageParam) : 1;
+
+    if (!officeParam || !pageParam) {
+      updateURL(officeToSet, pageToSet, searchParam);
+      return;
+    }
+
+    setTabSelected(officeToSet);
+    setPage(pageToSet);
+    setSearchInput(searchParam);
+    setSearchQuery(searchParam);
+  }, [searchParams, pathname, router, offices, updateURL]);
+
+  // 📌 Khi đổi tab (office)
+  const handleTabChange = (key: React.Key) => {
+    const officeId = String(key);
+    setTabSelected(officeId);
+    setPage(1);
+    updateURL(officeId, 1, searchQuery);
+  };
+
+  // 🔁 Khi đổi page
+  const handlePageChange = (newPage: number) => {
+    if (newPage !== page) {
+      setPage(newPage);
+      updateURL(tabSelected, newPage, searchQuery);
+    }
+  };
+
+  // 🔎 Khi submit tìm kiếm
   const handleSearchSubmit = () => {
     setSearchQuery(searchInput);
     setPage(1);
+    updateURL(tabSelected, 1, searchInput);
   };
 
   const fetchOffices = async () => {
@@ -115,7 +166,8 @@ export default function AssetsAdminComponent() {
       [tAsset("deviceType")]: item.deviceType?.name || "",
       [tAsset("deviceModel")]: item.deviceModel?.name || "",
       [tAsset("serialNumber")]: item.serialNumber || "",
-      [tAsset("office")]: item.assetTransactions?.[0]?.user?.office?.shortName || "",
+      [tAsset("office")]:
+        item.assetTransactions?.[0]?.user?.office?.shortName || "",
       [tAsset("user")]: item.assetTransactions?.[0]?.user?.name || "",
       [tAsset("department")]:
         item.assetTransactions?.[0]?.user?.department?.name || "",
@@ -241,7 +293,7 @@ export default function AssetsAdminComponent() {
       <Tabs
         aria-label="Office Tabs"
         selectedKey={tabSelected}
-        onSelectionChange={(key) => setTabSelected(String(key))}
+        onSelectionChange={handleTabChange}
         className="flex flex-wrap"
       >
         {offices.map((office) => (
@@ -250,7 +302,7 @@ export default function AssetsAdminComponent() {
               tAdmin={tAdmin}
               page={page}
               pages={pages}
-              setPage={setPage}
+              setPage={handlePageChange}
               searchInput={searchInput}
               setSearchInput={setSearchInput}
               handleSearchSubmit={handleSearchSubmit}

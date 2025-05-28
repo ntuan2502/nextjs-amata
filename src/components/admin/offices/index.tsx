@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -28,7 +28,7 @@ import {
 import { EyeIcon } from "@/components/icons/EyeIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Office } from "@/types/data";
 import { rowsPerPage } from "@/constants/config";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
@@ -41,9 +41,12 @@ import { SearchForm } from "@/components/ui/Search";
 export default function OfficesAdminComponent() {
   const { tAdmin, tCta, tSwal } = useAppTranslations();
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [page, setPage] = useState<number>(1);
   const [offices, setOffices] = useState<Office[]>([]);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedOffice, setSelectedOffice] = useState<Office | null>(null);
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -52,6 +55,46 @@ export default function OfficesAdminComponent() {
   useEffect(() => {
     fetchOffice();
   }, []);
+
+  // ✅ Hàm update URL theo thứ tự: page -> search
+  const updateURL = useCallback(
+    (newSearch: string, newPage: number) => {
+      const params = new URLSearchParams();
+
+      params.set("page", newPage.toString());
+      if (newSearch) params.set("search", newSearch);
+
+      const queryString = params.toString();
+      const url = queryString ? `${pathname}?${queryString}` : pathname;
+
+      router.replace(url, { scroll: false });
+    },
+    [pathname, router]
+  );
+
+  // ✅ Đồng bộ state với URL (theo thứ tự page -> search)
+  useEffect(() => {
+    const pageParam = searchParams.get("page");
+    const searchParam = searchParams.get("search") ?? "";
+
+    const pageToSet = pageParam ? Number(pageParam) : 1;
+
+    if (!pageParam) {
+      const params = new URLSearchParams();
+      params.set("page", "1");
+      if (searchParam) params.set("search", searchParam);
+
+      const queryString = params.toString();
+      const url = queryString ? `${pathname}?${queryString}` : pathname;
+
+      router.replace(url, { scroll: false });
+      return;
+    }
+
+    setPage(pageToSet);
+    setSearchInput(searchParam);
+    setSearchQuery(searchParam);
+  }, [searchParams, pathname, router]);
 
   const fetchOffice = async () => {
     try {
@@ -67,6 +110,7 @@ export default function OfficesAdminComponent() {
   const handleSearchSubmit = () => {
     setSearchQuery(searchInput);
     setPage(1);
+    updateURL(searchInput, 1);
   };
 
   const filteredData = useMemo(() => {
@@ -155,7 +199,10 @@ export default function OfficesAdminComponent() {
               page={page}
               total={pages}
               onChange={(newPage) => {
-                if (newPage !== page) setPage(newPage);
+                if (newPage !== page) {
+                  setPage(newPage);
+                  updateURL(searchQuery, newPage);
+                }
               }}
               siblings={2}
             />
