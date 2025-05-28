@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.13.2...v1.14.0) (2025-05-28)
+
+
+### Features
+
+* enhance asset management with new fields for operating system and end of life ([82e85df](https://github.com/ntuan2502/nextjs-amata/commit/82e85df93e1ebe40bc4a2417236064d6675f2c95))
+
 ## [1.13.2](https://github.com/ntuan2502/nextjs-amata/compare/v1.13.1...v1.13.2) (2025-05-28)
 
 
