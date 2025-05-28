@@ -395,6 +395,12 @@ export default function AssetsAdminComponent() {
                         .add(wordToNumber(selectedAsset.warranty) || 3, "year")
                         .format("YYYY-MM-DD")}
                     </p>
+                    <p>
+                      <strong>{tAsset("endOfLife")}:</strong>{" "}
+                      {dayjs(selectedAsset.purchaseDate)
+                        .add(5, "year")
+                        .format("YYYY-MM-DD")}
+                    </p>
                   </>
                 ) : (
                   <p>{tAdmin("noData")}</p>
@@ -558,6 +564,7 @@ function DataTable({
         <TableColumn>{tAsset("purchaseDate")}</TableColumn>
         <TableColumn>{tAsset("warranty")}</TableColumn>
         <TableColumn>{tAsset("endOfWarranty")}</TableColumn>
+        <TableColumn>{tAsset("endOfLife")}</TableColumn>
         <TableColumn>{tAdmin("actions")}</TableColumn>
       </TableHeader>
       <TableBody items={items} emptyContent={tAdmin("noData")}>
@@ -568,7 +575,11 @@ function DataTable({
               dayjs(item.purchaseDate)
                 .add(wordToNumber(item.warranty) || 3, "year")
                 .format("YYYY-MM-DD") <= dayjs().format("YYYY-MM-DD")
-                ? "bg-red-200"
+                ? dayjs(item.purchaseDate)
+                    .add(5, "year")
+                    .format("YYYY-MM-DD") <= dayjs().format("YYYY-MM-DD")
+                  ? "bg-red-300"
+                  : "bg-red-100"
                 : ""
             }
           >
@@ -597,6 +608,9 @@ function DataTable({
               {dayjs(item.purchaseDate)
                 .add(wordToNumber(item.warranty) || 3, "year")
                 .format("YYYY-MM-DD")}
+            </TableCell>
+            <TableCell>
+              {dayjs(item.purchaseDate).add(5, "year").format("YYYY-MM-DD")}
             </TableCell>
             <TableCell>
               <div className="flex gap-2 items-center">
