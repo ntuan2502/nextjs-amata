@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/ntuan2502/nextjs-amata/compare/v1.13.0...v1.13.1) (2025-05-28)
+
+
+### Bug Fixes
+
+* **auth:** set cookie expiration for user and tokens to 7 days ([3c54a4d](https://github.com/ntuan2502/nextjs-amata/commit/3c54a4dd04e3312d1cb8ee7bac507ed0f3ae0234))
+
 # [1.13.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.12.0...v1.13.0) (2025-05-27)
 
 
