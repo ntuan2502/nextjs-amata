@@ -115,7 +115,7 @@ export default function AssetsAdminComponent() {
       [tAsset("deviceType")]: item.deviceType?.name || "",
       [tAsset("deviceModel")]: item.deviceModel?.name || "",
       [tAsset("serialNumber")]: item.serialNumber || "",
-      [tAsset("office")]: item.assetTransactions?.[0]?.user?.office?.name || "",
+      [tAsset("office")]: item.assetTransactions?.[0]?.user?.office?.shortName || "",
       [tAsset("user")]: item.assetTransactions?.[0]?.user?.name || "",
       [tAsset("department")]:
         item.assetTransactions?.[0]?.user?.department?.name || "",
