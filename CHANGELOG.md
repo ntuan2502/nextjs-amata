@@ -1,3 +1,10 @@
+## [1.13.2](https://github.com/ntuan2502/nextjs-amata/compare/v1.13.1...v1.13.2) (2025-05-28)
+
+
+### Bug Fixes
+
+* **assets:** update office field to use shortName instead of name ([ad62228](https://github.com/ntuan2502/nextjs-amata/commit/ad62228b8790a605e82b47fb36a553ebe7f54e9e))
+
 ## [1.13.1](https://github.com/ntuan2502/nextjs-amata/compare/v1.13.0...v1.13.1) (2025-05-28)
 
 
