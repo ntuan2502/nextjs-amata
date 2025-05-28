@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   const updateUserInContext = (updatedUser: User) => {
-    Cookies.set("user", JSON.stringify(updatedUser), { path: "/" });
+    Cookies.set("user", JSON.stringify(updatedUser), { path: "/", expires: 7 });
     setUser(updatedUser);
   };
 
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const res = await axiosInstance.get(`${ENV.API_URL}/auth/profile`);
       const user = res.data.data.user;
 
-      Cookies.set("user", JSON.stringify(user), { path: "/" });
+      Cookies.set("user", JSON.stringify(user), { path: "/", expires: 7 });
       setUser(user);
     } catch (err) {
       handleAxiosError(err);
@@ -52,9 +52,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       const { user, accessToken, refreshToken } = res.data.data;
 
-      Cookies.set("accessToken", accessToken, { path: "/" });
-      Cookies.set("refreshToken", refreshToken, { path: "/" });
-      Cookies.set("user", JSON.stringify(user), { path: "/" });
+      Cookies.set("accessToken", accessToken, { path: "/", expires: 7 });
+      Cookies.set("refreshToken", refreshToken, { path: "/", expires: 7 });
+      Cookies.set("user", JSON.stringify(user), { path: "/", expires: 7 });
 
       setUser(user);
       router.push("/");
@@ -74,9 +74,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       name: string
     ) => {
       const user = { id, email, name };
-      Cookies.set("accessToken", accessToken, { path: "/" });
-      Cookies.set("refreshToken", refreshToken, { path: "/" });
-      Cookies.set("user", JSON.stringify(user), { path: "/" });
+      Cookies.set("accessToken", accessToken, { path: "/", expires: 7 });
+      Cookies.set("refreshToken", refreshToken, { path: "/", expires: 7 });
+      Cookies.set("user", JSON.stringify(user), { path: "/", expires: 7 });
 
       setUser(user);
       router.push("/");
