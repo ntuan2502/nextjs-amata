@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -32,14 +32,19 @@ import Link from "next/link";
 import dayjs from "dayjs";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { SearchForm } from "@/components/ui/Search";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function AssetTransactionsAdminComponent() {
   const { tAdmin, tCta, tAssetTransaction } = useAppTranslations();
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [page, setPage] = useState<number>(1);
   const [assetTransactions, setAssetTransactions] = useState<
     AssetTransaction[]
   >([]);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedAssetTransaction, setSelectedAssetTransaction] =
     useState<AssetTransaction | null>(null);
   const [searchInput, setSearchInput] = useState<string>("");
@@ -49,6 +54,46 @@ export default function AssetTransactionsAdminComponent() {
   useEffect(() => {
     fetchAssetTransactions();
   }, []);
+
+  // ✅ Hàm update URL theo thứ tự: page -> search
+  const updateURL = useCallback(
+    (newSearch: string, newPage: number) => {
+      const params = new URLSearchParams();
+
+      params.set("page", newPage.toString());
+      if (newSearch) params.set("search", newSearch);
+
+      const queryString = params.toString();
+      const url = queryString ? `${pathname}?${queryString}` : pathname;
+
+      router.replace(url, { scroll: false });
+    },
+    [pathname, router]
+  );
+
+  // ✅ Đồng bộ state với URL (theo thứ tự page -> search)
+  useEffect(() => {
+    const pageParam = searchParams.get("page");
+    const searchParam = searchParams.get("search") ?? "";
+
+    const pageToSet = pageParam ? Number(pageParam) : 1;
+
+    if (!pageParam) {
+      const params = new URLSearchParams();
+      params.set("page", "1");
+      if (searchParam) params.set("search", searchParam);
+
+      const queryString = params.toString();
+      const url = queryString ? `${pathname}?${queryString}` : pathname;
+
+      router.replace(url, { scroll: false });
+      return;
+    }
+
+    setPage(pageToSet);
+    setSearchInput(searchParam);
+    setSearchQuery(searchParam);
+  }, [searchParams, pathname, router]);
 
   const fetchAssetTransactions = async () => {
     try {
@@ -66,6 +111,7 @@ export default function AssetTransactionsAdminComponent() {
   const handleSearchSubmit = () => {
     setSearchQuery(searchInput);
     setPage(1);
+    updateURL(searchInput, 1);
   };
 
   const filteredData = useMemo(() => {
@@ -124,7 +170,12 @@ export default function AssetTransactionsAdminComponent() {
               color="secondary"
               page={page}
               total={pages}
-              onChange={(page) => setPage(page)}
+              onChange={(newPage) => {
+                if (newPage !== page) {
+                  setPage(newPage);
+                  updateURL(searchQuery, newPage);
+                }
+              }}
               siblings={2}
             />
           </div>
