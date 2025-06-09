@@ -40,9 +40,7 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
 
   const fetchAsset = useCallback(async () => {
     try {
-      const res = await axiosInstance.get(
-        `${ENV.API_URL}/assets/${id}?include=deviceType, deviceModel`
-      );
+      const res = await axiosInstance.get(`${ENV.API_URL}/assets/${id}`);
       const data: Asset = res.data.data.asset;
       setFormData(data);
       if (data.purchaseDate) {
@@ -205,10 +203,12 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
 
       <Autocomplete
         selectedKey={formData.warranty?.toString()}
-        defaultItems={Object.entries(Warranty).map(([, value]) => ({
-          key: value,
-          label: value,
-        }))}
+        defaultItems={Object.values(Warranty)
+          .filter((value) => typeof value === "number")
+          .map((value) => ({
+            key: value.toString(),
+            label: value.toString(),
+          }))}
         label={tAsset("warranty")}
         onSelectionChange={(key) => {
           if (key !== null) {
@@ -262,7 +262,7 @@ export default function EditAssetAdminComponent({ id }: { id: string }) {
 
       <Autocomplete
         selectedKey={formData.customProperties?.osType ?? ""}
-        defaultItems={Object.entries(OperatingSystem).map(([, value]) => ({
+        defaultItems={Object.values(OperatingSystem).map((value) => ({
           key: value,
           label: value,
         }))}

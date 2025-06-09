@@ -43,7 +43,7 @@
     "offices": {
       "title": "Văn phòng",
       "description": "Quản lý các địa điểm văn phòng.",
-      "internationalName": "Tên quốc tế",
+      "nameEn": "Tên (Tiếng Anh)",
       "shortName": "Tên viết tắt",
       "taxCode": "Mã số thuế",
       "address": "Địa chỉ"
@@ -68,6 +68,10 @@
     "assetTransactions": {
       "title": "Giao dịch tài sản",
       "description": "Quản lý các giao dịch tài sản và chi tiết của chúng."
+    },
+    "assetTransferBatch": {
+      "title": "Chuyển đổi tài sản",
+      "description": "Quản lý chuyển đổi tài sản và chi tiết của chúng."
     }
   },
   "auth": {
@@ -129,7 +133,8 @@
     "endOfWarranty": "Ngày kết thúc bảo hành",
     "endOfLife": "Ngày kết thúc sử dụng",
     "year": "Năm",
-    "years": "Năm"
+    "years": "Năm",
+    "relatedAssets": "Tài sản liên quan"
   },
   "assetTransaction": {
     "internalCode": "Mã nội bộ",
@@ -143,7 +148,9 @@
     "status": "Trạng thái",
     "file": "Tập tin",
     "fromUser": "Người gửi",
-    "toUser": "Người nhận"
+    "toUser": "Người nhận",
+    "noSignature": "Chưa có chữ ký hoặc chưa xác nhận chữ ký",
+    "description": "Mô tả"
   },
   "cta": {
     "add": "Thêm",

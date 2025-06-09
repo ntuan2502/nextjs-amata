@@ -41,9 +41,7 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
 
   const fetchUser = useCallback(async () => {
     try {
-      const res = await axiosInstance.get(
-        `${ENV.API_URL}/users/${id}?include=office, department`
-      );
+      const res = await axiosInstance.get(`${ENV.API_URL}/users/${id}`);
       const data: User = res.data.data.user;
       setFormData(data);
       if (data.dob) {
@@ -147,8 +145,6 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
         value={time}
         onChange={setTime}
         calendarProps={{
-          // focusedValue: time,
-          // onFocusChange: setTime,
           nextButtonProps: {
             variant: "bordered",
           },
@@ -156,17 +152,6 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
             variant: "bordered",
           },
         }}
-        // CalendarTopContent={
-        //   <ButtonGroup
-        //     fullWidth
-        //     className="px-3 pb-2 pt-3 bg-content1 [&>button]:text-default-500 [&>button]:border-default-200/60"
-        //     radius="full"
-        //     size="sm"
-        //
-        //   >
-        //     <Button onPress={() => setTime(defaultDate)}>Today</Button>{" "}
-        //   </ButtonGroup>
-        // }
       />
       <RadioGroup
         label={tLabels("genderLabel")}
@@ -182,7 +167,7 @@ export default function EditUserAdminComponent({ id }: { id: string }) {
       </RadioGroup>
 
       <Autocomplete
-        selectedKey={formData.office?.id?.toString()} // Đảm bảo kiểu string
+        selectedKey={formData.office?.id?.toString()}
         defaultItems={offices}
         label={tAdmin("users.office")}
         onSelectionChange={(key) => {

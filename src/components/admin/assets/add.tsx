@@ -182,10 +182,12 @@ export default function AddAssetAdminComponent() {
 
       <Autocomplete
         selectedKey={formData.warranty?.toString()}
-        defaultItems={Object.entries(Warranty).map(([, value]) => ({
-          key: value,
-          label: value,
-        }))}
+        defaultItems={Object.values(Warranty)
+          .filter((value) => typeof value === "number")
+          .map((value) => ({
+            key: value.toString(),
+            label: value.toString(),
+          }))}
         label={tAsset("warranty")}
         onSelectionChange={(key) => {
           if (key !== null) {
@@ -240,7 +242,7 @@ export default function AddAssetAdminComponent() {
 
       <Autocomplete
         selectedKey={formData.customProperties?.osType ?? ""}
-        defaultItems={Object.entries(OperatingSystem).map(([, value]) => ({
+        defaultItems={Object.values(OperatingSystem).map((value) => ({
           key: value,
           label: value,
         }))}

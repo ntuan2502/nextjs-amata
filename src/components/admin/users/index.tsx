@@ -126,7 +126,7 @@ export default function UsersAdminComponent() {
         item.name?.toLowerCase().includes(keyword) ||
         item.email?.toLowerCase().includes(keyword) ||
         item.phone?.toLowerCase().includes(keyword) ||
-        item.office?.name?.toLowerCase().includes(keyword) ||
+        item.office?.shortName?.toLowerCase().includes(keyword) ||
         item.department?.name?.toLowerCase().includes(keyword)
       );
     });
@@ -251,7 +251,7 @@ export default function UsersAdminComponent() {
                   </Link>
                 </div>
               </TableCell>
-              <TableCell>{item.office?.name || "-"}</TableCell>
+              <TableCell>{item.office?.shortName || "-"}</TableCell>
               <TableCell>{item.department?.name || "-"}</TableCell>
               <TableCell>
                 <div className="flex gap-2 items-center">
@@ -315,7 +315,7 @@ export default function UsersAdminComponent() {
                     </p>
                     <p>
                       <strong>{tAdmin("users.office")}:</strong>{" "}
-                      {selectedUser.office?.name}
+                      {selectedUser.office?.shortName}
                     </p>
                     <p>
                       <strong>{tAdmin("users.department")}:</strong>{" "}

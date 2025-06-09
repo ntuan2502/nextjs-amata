@@ -23,6 +23,8 @@ import {
   Breadcrumbs,
   Button,
   Input,
+  Select,
+  SelectItem,
   Textarea,
 } from "@heroui/react";
 import { useCallback, useEffect, useState } from "react";
@@ -42,9 +44,12 @@ export default function CreateRequestAssetAdminComponent({
   const router = useRouter();
   const { tAdmin, tCta, tAsset, tAssetTransaction } = useAppTranslations();
   const [formData, setFormData] = useState<Partial<AssetTransaction>>({});
+
+  const [assets, setAssets] = useState<Asset[]>([]);
   const [offices, setOffices] = useState<Office[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [relatedAssets, setRelatedAssets] = useState<Set<string>>(new Set([]));
 
   const handleDownload = (url: string) => {
     formData.signature = url;
@@ -61,6 +66,17 @@ export default function CreateRequestAssetAdminComponent({
       handleAxiosError(err);
     }
   }, [id]);
+
+  const fetchAssets = async () => {
+    try {
+      const res = await axiosInstance.get(`${ENV.API_URL}/assets`);
+      const data: Asset[] = res.data.data.assets;
+
+      setAssets(data);
+    } catch (err) {
+      handleAxiosError(err);
+    }
+  };
 
   const fetchOffices = async () => {
     try {
@@ -97,10 +113,12 @@ export default function CreateRequestAssetAdminComponent({
 
   useEffect(() => {
     fetchAsset();
+    fetchAssets();
     fetchOffices();
     fetchDepartments();
     fetchUsers();
   }, [fetchAsset]);
+
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
@@ -122,8 +140,7 @@ export default function CreateRequestAssetAdminComponent({
       note,
       type,
     } = formData;
-    if (!signature)
-      return toast.error("Chưa có chữ ký hoặc chưa xác nhận chữ ký");
+    if (!signature) return toast.error(tAssetTransaction("noSignature"));
     try {
       const formDataToSend = new FormData();
 
@@ -134,9 +151,11 @@ export default function CreateRequestAssetAdminComponent({
       formDataToSend.append("toUserId", toUser?.id || "");
       formDataToSend.append("type", type || "");
       formDataToSend.append("note", note || "");
+      Array.from(relatedAssets).forEach(assetId => {
+        formDataToSend.append("relatedAssets[]", assetId);
+      });
 
       if (signature) {
-        // Tạo file từ base64
         const file = base64ToFile(signature, "signature.png");
         formDataToSend.append("fromSignature", file);
       }
@@ -187,6 +206,22 @@ export default function CreateRequestAssetAdminComponent({
         type="text"
         value={formData.asset.internalCode}
       />
+
+      <Select
+        label={tAsset("relatedAssets")}
+        selectedKeys={relatedAssets}
+        selectionMode="multiple"
+        onSelectionChange={(keys) => {
+          if (typeof keys === "string") return;
+          setRelatedAssets(new Set(Array.from(keys).map(String)));
+        }}
+      >
+        {assets
+          .filter((a) => a.id !== formData.asset?.id)
+          .map((asset) => (
+            <SelectItem key={asset.id}>{asset.internalCode}</SelectItem>
+          ))}
+      </Select>
 
       <Autocomplete
         defaultItems={offices}
@@ -278,8 +313,7 @@ export default function CreateRequestAssetAdminComponent({
       </Autocomplete>
 
       <Textarea
-        label="Description"
-        placeholder="Enter your description"
+        label={tAssetTransaction("description")}
         value={formData.note || ""}
         onChange={(e) =>
           setFormData((prev) => ({ ...prev, note: e.target.value }))

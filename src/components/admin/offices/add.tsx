@@ -20,18 +20,18 @@ export default function AddOfficeAdminComponent() {
 
   const fields = [
     { name: "name", label: tAdmin("name") },
-    { name: "internationalName", label: tAdmin("offices.internationalName") },
+    { name: "nameEn", label: tAdmin("offices.nameEn") },
     { name: "shortName", label: tAdmin("offices.shortName") },
     { name: "taxCode", label: tAdmin("offices.taxCode") },
     { name: "address", label: tAdmin("offices.address") },
   ];
 
   const handleSubmit = async () => {
-    const { name, internationalName, shortName, taxCode, address } = formData;
+    const { name, nameEn, shortName, taxCode, address } = formData;
     try {
       const res = await axiosInstance.post(`${ENV.API_URL}/offices`, {
         name,
-        internationalName,
+        nameEn,
         shortName,
         taxCode,
         address,

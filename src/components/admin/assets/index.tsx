@@ -38,7 +38,6 @@ import LoadingComponent from "@/components/ui/Loading";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import Link from "next/link";
 import dayjs from "dayjs";
-import { wordToNumber } from "@/utils/function";
 import Swal from "sweetalert2";
 import { Icon } from "@iconify/react";
 import * as XLSX from "xlsx";
@@ -160,7 +159,7 @@ export default function AssetsAdminComponent() {
   };
 
   const exportToExcel = () => {
-    const officeSeleted = offices.find((o) => o.id === tabSelected);
+    const officeSelected = offices.find((o) => o.id === tabSelected);
     const exportData = filteredData.map((item) => ({
       [tAsset("code")]: item.internalCode || "",
       [tAsset("deviceType")]: item.deviceType?.name || "",
@@ -178,10 +177,10 @@ export default function AssetsAdminComponent() {
       [tAsset("purchaseDate")]: item.purchaseDate
         ? dayjs(item.purchaseDate).format("YYYY-MM-DD")
         : "",
-      [tAsset("warranty")]: wordToNumber(item.warranty),
+      [tAsset("warranty")]: item.warranty,
       [tAsset("endOfWarranty")]: item.purchaseDate
         ? dayjs(item.purchaseDate)
-            .add(wordToNumber(item.warranty) || 3, "year")
+            .add(item.warranty || 3, "year")
             .format("YYYY-MM-DD")
         : "",
     }));
@@ -192,7 +191,7 @@ export default function AssetsAdminComponent() {
 
     XLSX.writeFile(
       workbook,
-      `AssetsReport_${officeSeleted?.shortName}_${dayjs().format(
+      `AssetsReport_${officeSelected?.shortName}_${dayjs().format(
         "YYYYMMDD_HHmmss"
       )}.xlsx`
     );
@@ -271,7 +270,7 @@ export default function AssetsAdminComponent() {
   if (isLoading) return <LoadingComponent />;
 
   return (
-    <div className="px-6 mt-4 w-full">
+    <div className="px-6 mt-4 w-full bg-red-100">
       <div className="flex justify-between items-center">
         <Breadcrumbs>
           <BreadcrumbItem href={ADMIN_ROUTES.DASHBOARD}>
@@ -351,7 +350,7 @@ export default function AssetsAdminComponent() {
                     </p>
                     <p>
                       <strong>{tAsset("office")}:</strong>{" "}
-                      {selectedAsset.assetTransactions?.[0]?.user?.office?.name}
+                      {selectedAsset.assetTransactions?.[0]?.user?.office?.shortName}
                     </p>
                     <p>
                       <strong>{tAsset("user")}:</strong>{" "}
@@ -387,12 +386,12 @@ export default function AssetsAdminComponent() {
                     </p>
                     <p>
                       <strong>{tAsset("warranty")}:</strong>{" "}
-                      {wordToNumber(selectedAsset.warranty)}
+                      {selectedAsset.warranty}
                     </p>
                     <p>
                       <strong>{tAsset("endOfWarranty")}:</strong>{" "}
                       {dayjs(selectedAsset.purchaseDate)
-                        .add(wordToNumber(selectedAsset.warranty) || 3, "year")
+                        .add(selectedAsset.warranty || 3, "year")
                         .format("YYYY-MM-DD")}
                     </p>
                     <p>
@@ -427,10 +426,10 @@ export default function AssetsAdminComponent() {
                     {(item) => (
                       <TableRow key={item.id}>
                         <TableCell>{item.asset?.internalCode || "-"}</TableCell>
-                        <TableCell>{item.office?.name || "-"}</TableCell>
+                        <TableCell>{item.office?.shortName || "-"}</TableCell>
                         <TableCell>{item.department?.name || "-"}</TableCell>
                         <TableCell>{item.user?.name || "-"}</TableCell>
-                        <TableCell>{item.role || "-"}</TableCell>
+                        <TableCell>{item.direction || "-"}</TableCell>
                         <TableCell>{item.type || "-"}</TableCell>
                         <TableCell>{item.status || "-"}</TableCell>
                         <TableCell>
@@ -573,7 +572,7 @@ function DataTable({
             key={item.id}
             className={
               dayjs(item.purchaseDate)
-                .add(wordToNumber(item.warranty) || 3, "year")
+                .add(item.warranty || 3, "year")
                 .format("YYYY-MM-DD") <= dayjs().format("YYYY-MM-DD")
                 ? dayjs(item.purchaseDate)
                     .add(5, "year")
@@ -603,10 +602,10 @@ function DataTable({
             <TableCell>
               {dayjs(item.purchaseDate).format("YYYY-MM-DD")}
             </TableCell>
-            <TableCell>{wordToNumber(item.warranty)}</TableCell>
+            <TableCell>{item.warranty}</TableCell>
             <TableCell>
               {dayjs(item.purchaseDate)
-                .add(wordToNumber(item.warranty) || 3, "year")
+                .add(item.warranty || 3, "year")
                 .format("YYYY-MM-DD")}
             </TableCell>
             <TableCell>

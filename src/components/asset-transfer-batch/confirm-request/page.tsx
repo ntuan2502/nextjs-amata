@@ -14,7 +14,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-export default function ConfirmRequestAssetComponent({ id }: { id: string }) {
+export default function ConfirmRequestAssetTransferBatchComponent({ id }: { id: string }) {
   const [signature, setSignature] = useState<string | null>(null);
   const [isConfirm, setIsConfirm] = useState(false);
   const { tCta } = useAppTranslations();
@@ -25,7 +25,7 @@ export default function ConfirmRequestAssetComponent({ id }: { id: string }) {
   useEffect(() => {
     async function getConfirmRequest(id: string) {
       const res = await axios.get(
-        `${ENV.API_URL}/asset-transactions/confirm-request/${id}?type=${type}`
+        `${ENV.API_URL}/asset-transfer-batch/confirm-request/${id}?type=${type}`
       );
       if (res.status === 200) setIsConfirm(true);
       else setIsConfirm(false);
@@ -47,7 +47,7 @@ export default function ConfirmRequestAssetComponent({ id }: { id: string }) {
       }
 
       const res = await axios.post(
-        `${ENV.API_URL}/asset-transactions/confirm-request/${id}?type=${type}`,
+        `${ENV.API_URL}/asset-transfer-batch/confirm-request/${id}?type=${type}`,
         formDataToSend,
         {
           headers: {

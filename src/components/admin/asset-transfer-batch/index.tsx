@@ -23,7 +23,7 @@ import axiosInstance from "@/libs/axiosInstance";
 import { ENV } from "@/config";
 import { handleAxiosError } from "@/libs/handleAxiosFeedback";
 import { EyeIcon } from "@/components/icons/EyeIcon";
-import { AssetTransaction } from "@/types/data";
+import { AssetTransferBatch } from "@/types/data";
 import { rowsPerPage } from "@/constants/config";
 import { useAppTranslations } from "@/hooks/useAppTranslations";
 import LoadingComponent from "@/components/ui/Loading";
@@ -31,8 +31,10 @@ import { ADMIN_ROUTES } from "@/constants/routes";
 import dayjs from "dayjs";
 import { SearchForm } from "@/components/ui/Search";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
-export default function AssetTransactionsAdminComponent() {
+export default function AssetTransferBatchAdminComponent() {
   const { tAdmin, tCta, tAssetTransaction } = useAppTranslations();
   const pathname = usePathname();
   const router = useRouter();
@@ -40,17 +42,17 @@ export default function AssetTransactionsAdminComponent() {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [page, setPage] = useState<number>(1);
-  const [assetTransactions, setAssetTransactions] = useState<
-    AssetTransaction[]
+  const [assetTransferBatch, setAssetTransferBatch] = useState<
+    AssetTransferBatch[]
   >([]);
-  const [selectedAssetTransaction, setSelectedAssetTransaction] =
-    useState<AssetTransaction | null>(null);
+  const [selectedAssetTransferBatch, setSelectedAssetTransferBatch] =
+    useState<AssetTransferBatch | null>(null);
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetchAssetTransactions();
+    fetchAssetTransferBatch();
   }, []);
 
   // ✅ Hàm update URL theo thứ tự: page -> search
@@ -93,10 +95,12 @@ export default function AssetTransactionsAdminComponent() {
     setSearchQuery(searchParam);
   }, [searchParams, pathname, router]);
 
-  const fetchAssetTransactions = async () => {
+  const fetchAssetTransferBatch = async () => {
     try {
-      const res = await axiosInstance.get(`${ENV.API_URL}/asset-transactions`);
-      setAssetTransactions(res.data.data.assetTransactions);
+      const res = await axiosInstance.get(
+        `${ENV.API_URL}/asset-transfer-batch`
+      );
+      setAssetTransferBatch(res.data.data.assetTransferBatch);
     } catch (err) {
       handleAxiosError(err);
     } finally {
@@ -111,21 +115,15 @@ export default function AssetTransactionsAdminComponent() {
   };
 
   const filteredData = useMemo(() => {
-    if (!searchQuery) return assetTransactions;
+    if (!searchQuery) return assetTransferBatch;
     const keyword = searchQuery.toLowerCase();
-    return assetTransactions.filter((item) => {
+    return assetTransferBatch.filter((item) => {
       return (
-        item.asset?.internalCode?.toLowerCase().includes(keyword) ||
-        item.office?.shortName.toLowerCase().includes(keyword) ||
-        item.department?.name.toLowerCase().includes(keyword) ||
-        item.user?.name?.toLowerCase().includes(keyword) ||
-        item.direction?.toLowerCase().includes(keyword) ||
-        item.type?.toLowerCase().includes(keyword) ||
-        item.status?.toLowerCase().includes(keyword) ||
+        item.note?.toLowerCase().includes(keyword) ||
         dayjs(item.createdAt).format("HH:mm:ss YYYY-MM-DD").includes(keyword)
       );
     });
-  }, [assetTransactions, searchQuery]);
+  }, [assetTransferBatch, searchQuery]);
 
   const pages = Math.max(Math.ceil(filteredData.length / rowsPerPage), 1);
   const filteredCount = useMemo(() => filteredData.length, [filteredData]);
@@ -145,8 +143,8 @@ export default function AssetTransactionsAdminComponent() {
           <BreadcrumbItem href={ADMIN_ROUTES.DASHBOARD}>
             {tAdmin("dashboard")}
           </BreadcrumbItem>
-          <BreadcrumbItem href={ADMIN_ROUTES.ASSET_TRANSACTION}>
-            {tAdmin("assetTransactions.title")}
+          <BreadcrumbItem href={ADMIN_ROUTES.ASSET_TRANSFER_BATCH}>
+            {tAdmin("assetTransferBatch.title")}
           </BreadcrumbItem>
         </Breadcrumbs>
       </div>
@@ -156,7 +154,7 @@ export default function AssetTransactionsAdminComponent() {
       </p>
 
       <Table
-        aria-label={tAdmin("assetTransactions.title")}
+        aria-label={tAdmin("assetTransferBatch.title")}
         bottomContent={
           <div className="flex justify-center">
             <Pagination
@@ -189,31 +187,16 @@ export default function AssetTransactionsAdminComponent() {
         classNames={{ wrapper: "min-h-[222px] w-full" }}
       >
         <TableHeader>
-          <TableColumn>{tAssetTransaction("internalCode")}</TableColumn>
-          <TableColumn>{tAssetTransaction("office")}</TableColumn>
-          <TableColumn>{tAssetTransaction("department")}</TableColumn>
-          <TableColumn>{tAssetTransaction("user")}</TableColumn>
-          <TableColumn>{tAssetTransaction("role")}</TableColumn>
-          <TableColumn>{tAssetTransaction("type")}</TableColumn>
-          <TableColumn>{tAssetTransaction("status")}</TableColumn>
-          <TableColumn>{tAssetTransaction("signedAt")}</TableColumn>
+          <TableColumn>ID</TableColumn>
+          <TableColumn>Note</TableColumn>
           <TableColumn>{tAdmin("actions")}</TableColumn>
         </TableHeader>
         <TableBody items={items} emptyContent={tAdmin("noData")}>
           {(item) => (
             <TableRow key={item.id}>
-              <TableCell>{item.asset?.internalCode || "-"}</TableCell>
-              <TableCell>{item.office?.shortName || "-"}</TableCell>
-              <TableCell>{item.department?.name || "-"}</TableCell>
-              <TableCell>{item.user?.name || "-"}</TableCell>
-              <TableCell>{item.direction || "-"}</TableCell>
-              <TableCell>{item.type || "-"}</TableCell>
-              <TableCell>{item.status || "-"}</TableCell>
-              <TableCell>
-                {item.signedAt
-                  ? dayjs(item.signedAt).format("HH:mm:ss YYYY-MM-DD")
-                  : "-"}
-              </TableCell>
+              <TableCell>{item.id || "-"}</TableCell>
+              <TableCell>{item.note || "-"}</TableCell>
+
               <TableCell>
                 <div className="flex gap-2 items-center">
                   <Tooltip content={tCta("view")}>
@@ -221,13 +204,39 @@ export default function AssetTransactionsAdminComponent() {
                       isIconOnly
                       variant="light"
                       onPress={() => {
-                        setSelectedAssetTransaction(item);
+                        setSelectedAssetTransferBatch(item);
                         onOpen();
                       }}
                     >
                       <EyeIcon />
                     </Button>
                   </Tooltip>
+                  {item.assetTransactions.length > 0 && (
+                    <Tooltip content={tCta("confirmRequest")}>
+                      <Link
+                        href={`/asset-transfer-batch/${item.id}/confirm-request?type=TRANSFER`}
+                      >
+                        <Icon
+                          className="pointer-events-none text-2xl"
+                          icon="fa6-solid:code-merge"
+                        />
+                      </Link>
+                    </Tooltip>
+                  )}
+                  {item.handover && (
+                    <Tooltip content={tAssetTransaction("file")}>
+                      <Link
+                        href={ENV.API_URL + item.handover.filePath}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Icon
+                          className="pointer-events-none text-2xl"
+                          icon="line-md:file-filled"
+                        />
+                      </Link>
+                    </Tooltip>
+                  )}
                 </div>
               </TableCell>
             </TableRow>
@@ -246,31 +255,13 @@ export default function AssetTransactionsAdminComponent() {
             <>
               <ModalHeader>{tAdmin("information")}</ModalHeader>
               <ModalBody className="space-y-2">
-                {selectedAssetTransaction ? (
+                {selectedAssetTransferBatch ? (
                   <>
                     <p>
-                      <strong>{tAssetTransaction("internalCode")}:</strong>{" "}
-                      {selectedAssetTransaction.asset?.internalCode}
+                      <strong>ID:</strong> {selectedAssetTransferBatch.id}
                     </p>
                     <p>
-                      <strong>{tAssetTransaction("office")}:</strong>{" "}
-                      {selectedAssetTransaction.office?.shortName}
-                    </p>
-                    <p>
-                      <strong>{tAssetTransaction("department")}:</strong>{" "}
-                      {selectedAssetTransaction.department?.name}
-                    </p>
-                    <p>
-                      <strong>{tAssetTransaction("user")}:</strong>{" "}
-                      {selectedAssetTransaction.user?.name}
-                    </p>
-                    <p>
-                      <strong>{tAssetTransaction("signedAt")}:</strong>{" "}
-                      {selectedAssetTransaction.signedAt
-                        ? dayjs(selectedAssetTransaction.signedAt).format(
-                            "HH:mm:ss YYYY-MM-DD"
-                          )
-                        : "-"}
+                      <strong>Note:</strong> {selectedAssetTransferBatch.note}
                     </p>
                   </>
                 ) : (
