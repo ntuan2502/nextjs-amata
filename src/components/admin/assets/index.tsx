@@ -174,6 +174,8 @@ export default function AssetsAdminComponent() {
       [tAsset("ram")]: item.customProperties?.ram || "",
       [tAsset("storage")]: item.customProperties?.hardDrive || "",
       [tAsset("os")]: item.customProperties?.osType || "",
+      [tAsset("macAddress")]: item.customProperties?.macAddress || "",
+      [tAssetTransaction("type")]: item.assetTransactions?.[0].type || "",
       [tAsset("purchaseDate")]: item.purchaseDate
         ? dayjs(item.purchaseDate).format("YYYY-MM-DD")
         : "",
@@ -314,6 +316,7 @@ export default function AssetsAdminComponent() {
               onOpen={onOpen}
               handleDelete={handleDelete}
               exportToExcel={exportToExcel}
+              tAssetTransaction={tAssetTransaction}
             />
           </Tab>
         ))}
@@ -350,7 +353,10 @@ export default function AssetsAdminComponent() {
                     </p>
                     <p>
                       <strong>{tAsset("office")}:</strong>{" "}
-                      {selectedAsset.assetTransactions?.[0]?.user?.office?.shortName}
+                      {
+                        selectedAsset.assetTransactions?.[0]?.user?.office
+                          ?.shortName
+                      }
                     </p>
                     <p>
                       <strong>{tAsset("user")}:</strong>{" "}
@@ -379,6 +385,14 @@ export default function AssetsAdminComponent() {
                     <p>
                       <strong>{tAsset("os")}:</strong>{" "}
                       {selectedAsset.customProperties?.osType}
+                    </p>
+                    <p>
+                      <strong>{tAsset("macAddress")}:</strong>{" "}
+                      {selectedAsset.customProperties?.macAddress || "-"}
+                    </p>
+                    <p>
+                      <strong>{tAssetTransaction("type")}:</strong>{" "}
+                      {selectedAsset.assetTransactions?.[0]?.type || "-"}
                     </p>
                     <p>
                       <strong>{tAsset("purchaseDate")}:</strong>{" "}
@@ -492,6 +506,7 @@ interface DataTableProps {
   onOpen: () => void;
   handleDelete: (item: Asset) => void;
   exportToExcel: () => void;
+  tAssetTransaction: (key: string) => string;
 }
 
 function DataTable({
@@ -511,6 +526,7 @@ function DataTable({
   onOpen,
   handleDelete,
   exportToExcel,
+  tAssetTransaction,
 }: DataTableProps) {
   return (
     <Table
@@ -560,6 +576,7 @@ function DataTable({
         <TableColumn>{tAsset("ram")}</TableColumn>
         <TableColumn>{tAsset("storage")}</TableColumn>
         <TableColumn>{tAsset("os")}</TableColumn>
+        <TableColumn>{tAssetTransaction("type")}</TableColumn>
         <TableColumn>{tAsset("purchaseDate")}</TableColumn>
         <TableColumn>{tAsset("warranty")}</TableColumn>
         <TableColumn>{tAsset("endOfWarranty")}</TableColumn>
@@ -599,6 +616,7 @@ function DataTable({
             <TableCell>{item.customProperties?.ram || "-"}</TableCell>
             <TableCell>{item.customProperties?.hardDrive || "-"}</TableCell>
             <TableCell>{item.customProperties?.osType || "-"}</TableCell>
+            <TableCell>{item.assetTransactions?.[0]?.type || "-"}</TableCell>
             <TableCell>
               {dayjs(item.purchaseDate).format("YYYY-MM-DD")}
             </TableCell>
