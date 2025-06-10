@@ -33,6 +33,7 @@ import { SearchForm } from "@/components/ui/Search";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { TransactionDirection, TransactionStatus } from "@/types/enum";
 
 export default function AssetTransferBatchAdminComponent() {
   const { tAdmin, tCta, tAssetTransaction } = useAppTranslations();
@@ -188,6 +189,7 @@ export default function AssetTransferBatchAdminComponent() {
       >
         <TableHeader>
           <TableColumn>ID</TableColumn>
+          <TableColumn>Data</TableColumn>
           <TableColumn>Note</TableColumn>
           <TableColumn>{tAdmin("actions")}</TableColumn>
         </TableHeader>
@@ -195,8 +197,17 @@ export default function AssetTransferBatchAdminComponent() {
           {(item) => (
             <TableRow key={item.id}>
               <TableCell>{item.id || "-"}</TableCell>
+              <TableCell>
+                {item.assetTransactions
+                  .filter(
+                    (tx) =>
+                      tx.status === TransactionStatus.COMPLETED &&
+                      tx.direction === TransactionDirection.INCOMING
+                  )
+                  .map((tx) => tx.asset?.internalCode ?? "")
+                  .join(", ")}
+              </TableCell>
               <TableCell>{item.note || "-"}</TableCell>
-
               <TableCell>
                 <div className="flex gap-2 items-center">
                   <Tooltip content={tCta("view")}>
@@ -211,7 +222,9 @@ export default function AssetTransferBatchAdminComponent() {
                       <EyeIcon />
                     </Button>
                   </Tooltip>
-                  {item.assetTransactions.length > 0 && (
+                  {item.assetTransactions.some(
+                    (tx) => tx.status === "PENDING"
+                  ) && (
                     <Tooltip content={tCta("confirmRequest")}>
                       <Link
                         href={`/asset-transfer-batch/${item.id}/confirm-request?type=TRANSFER`}

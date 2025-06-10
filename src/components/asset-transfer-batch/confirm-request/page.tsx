@@ -7,17 +7,32 @@ import {
   handleAxiosError,
   handleAxiosSuccess,
 } from "@/libs/handleAxiosFeedback";
+import { AssetTransferBatch } from "@/types/data";
 import { base64ToFile } from "@/utils/function";
-import { Button } from "@heroui/react";
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@heroui/react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-export default function ConfirmRequestAssetTransferBatchComponent({ id }: { id: string }) {
+export default function ConfirmRequestAssetTransferBatchComponent({
+  id,
+}: {
+  id: string;
+}) {
   const [signature, setSignature] = useState<string | null>(null);
   const [isConfirm, setIsConfirm] = useState(false);
-  const { tCta } = useAppTranslations();
+  const { tCta, tAssetTransaction, tAsset } = useAppTranslations();
+  const [assetTransferBatch, setAssetTransferBatch] =
+    useState<AssetTransferBatch>();
 
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
@@ -27,15 +42,16 @@ export default function ConfirmRequestAssetTransferBatchComponent({ id }: { id: 
       const res = await axios.get(
         `${ENV.API_URL}/asset-transfer-batch/confirm-request/${id}?type=${type}`
       );
-      if (res.status === 200) setIsConfirm(true);
-      else setIsConfirm(false);
+      if (res.status === 200) {
+        setIsConfirm(true);
+        setAssetTransferBatch(res.data.data.assetTransferBatch);
+      } else setIsConfirm(false);
     }
     getConfirmRequest(id);
   }, [id, type]);
 
   const handleSubmit = async () => {
-    if (!signature)
-      return toast.error("Chưa có chữ ký hoặc chưa xác nhận chữ ký");
+    if (!signature) return toast.error(tAssetTransaction("noSignature"));
 
     try {
       const formDataToSend = new FormData();
@@ -67,13 +83,45 @@ export default function ConfirmRequestAssetTransferBatchComponent({ id }: { id: 
   if (!isConfirm) {
     return <>NotFound</>;
   }
+
+  console.log(assetTransferBatch);
   return (
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="flex w-full max-w-lg flex-col gap-4 rounded-large px-8 pb-10 pt-6">
-        <ReactSignature onDownload={handleDownload} />
-        <Button color="primary" onPress={handleSubmit}>
-          {tCta("submit")}
-        </Button>
+    <div className="w-full">
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="flex w-full max-w-lg flex-col gap-4 rounded-large px-8 pb-10 pt-6">
+          <ReactSignature onDownload={handleDownload} />
+          <Button color="primary" onPress={handleSubmit}>
+            {tCta("submit")}
+          </Button>
+        </div>
+      </div>
+      <div className="flex items-center justify-center">
+        <div className="flex w-full max-w-3xl">
+          <Table aria-label="Example static collection table">
+            <TableHeader>
+              <TableColumn>{tAsset("code")}</TableColumn>
+              <TableColumn>{tAsset("deviceType")}</TableColumn>
+              <TableColumn>{tAsset("deviceModel")}</TableColumn>
+            </TableHeader>
+            <TableBody>
+              {(assetTransferBatch?.assetTransactions || []).map(
+                (assetTransaction) => (
+                  <TableRow key={assetTransaction.id}>
+                    <TableCell>
+                      {assetTransaction.asset?.internalCode}
+                    </TableCell>
+                    <TableCell>
+                      {assetTransaction.asset?.deviceType?.name}
+                    </TableCell>
+                    <TableCell>
+                      {assetTransaction.asset?.deviceModel?.name}
+                    </TableCell>
+                  </TableRow>
+                )
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
