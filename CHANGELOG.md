@@ -1,3 +1,17 @@
+# [1.15.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.14.0...v1.15.0) (2025-06-12)
+
+
+### Bug Fixes
+
+* downgrade @heroui/react to version 2.8.0-beta.4 ([af201ad](https://github.com/ntuan2502/nextjs-amata/commit/af201ad6c7f45db42db0f350b1eb389e58a2db62))
+
+
+### Features
+
+* **asset-transfer:** enhance batch component with transaction details and confirmation ([366e18a](https://github.com/ntuan2502/nextjs-amata/commit/366e18ae0392d01b52c982e44a2a5617022123bb))
+* **assets:** add asset transfer batch management and refactor related systems ([46e4c17](https://github.com/ntuan2502/nextjs-amata/commit/46e4c17bd0bbdd59ac1b92ad14ffc9ff08d33632))
+* **assets:** add mac address and transaction type fields to asset details ([1519f73](https://github.com/ntuan2502/nextjs-amata/commit/1519f73dad9e982a3b6b61466718e84394f0cb36))
+
 # [1.14.0](https://github.com/ntuan2502/nextjs-amata/compare/v1.13.2...v1.14.0) (2025-05-28)
 
 
