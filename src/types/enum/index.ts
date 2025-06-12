@@ -4,16 +4,16 @@ export enum Gender {
 }
 
 export enum Warranty {
-  ONE = "ONE",
-  TWO = "TWO",
-  THREE = "THREE",
-  FOUR = "FOUR",
-  FIVE = "FIVE",
+  ONE = 1,
+  TWO = 2,
+  THREE = 3,
+  FOUR = 4,
+  FIVE = 5,
 }
 
 export enum OperatingSystem {
-  WINDOWS_10 = "WINDOWS_10",
-  WINDOWS_11 = "WINDOWS_11",
+  "Windows 10" = "Windows 10",
+  "Windows 11" = "Windows 11",
 }
 
 export enum TransactionType {
@@ -34,7 +34,7 @@ export enum TransactionStatus {
   CANCELLED = "CANCELLED",
 }
 
-export enum TransactionRole {
-  FROM = "FROM",
-  TO = "TO",
+export enum TransactionDirection {
+  OUTGOING = "OUTGOING",
+  INCOMING = "INCOMING",
 }

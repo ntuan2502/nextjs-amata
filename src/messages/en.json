@@ -43,7 +43,7 @@
     "offices": {
       "title": "Offices",
       "description": "Manage office locations.",
-      "internationalName": "International name",
+      "nameEn": "Name (English)",
       "shortName": "Short name",
       "taxCode": "Tax code",
       "address": "Address"
@@ -68,6 +68,10 @@
     "assetTransactions": {
       "title": "Asset Transactions",
       "description": "Manage asset transactions and their details."
+    },
+    "assetTransferBatch": {
+      "title": "Asset Transfer Batch",
+      "description": "Manage asset transfer batch and their details."
     }
   },
   "auth": {
@@ -129,7 +133,8 @@
     "endOfWarranty": "End of Warranty",
     "endOfLife": "End of Life",
     "year": "Year",
-    "years": "Years"
+    "years": "Years",
+    "relatedAssets": "Related Assets"
   },
   "assetTransaction": {
     "internalCode": "Internal Code",
@@ -143,7 +148,9 @@
     "status": "Status",
     "file": "File",
     "fromUser": "From User",
-    "toUser": "To User"
+    "toUser": "To User",
+    "noSignature": "No signature or signature not confirmed",
+    "description": "Description"
   },
   "cta": {
     "add": "Add",

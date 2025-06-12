@@ -1,17 +1,16 @@
 import { ButtonProps } from "@heroui/react";
 import {
   Gender,
-  TransactionRole,
+  TransactionDirection,
   TransactionStatus,
   TransactionType,
-  Warranty,
 } from "./enum";
 
 export type Office = {
   id: string;
   name: string;
-  internationalName?: string;
-  shortName?: string;
+  nameEn?: string;
+  shortName: string;
   taxCode: string;
   address?: string;
 };
@@ -47,7 +46,7 @@ export type Asset = {
   internalCode: string;
   serialNumber: string;
   purchaseDate: string;
-  warranty: Warranty;
+  warranty: number;
   deviceType?: DeviceType;
   deviceModel?: DeviceModel;
   customProperties?: {
@@ -60,6 +59,18 @@ export type Asset = {
   assetTransactions?: AssetTransaction[];
 };
 
+export type AssetTransferBatch = {
+  id: string;
+  note?: string;
+  assetTransactions: AssetTransaction[];
+  handover: File;
+  createdAt: Date;
+};
+
+export type File = {
+  filePath: string;
+};
+
 export type AssetTransaction = {
   id: string;
   note?: string;
@@ -67,7 +78,7 @@ export type AssetTransaction = {
   signature?: string;
   signedAt?: Date;
 
-  role?: TransactionRole;
+  direction?: TransactionDirection;
   type?: TransactionType;
   status?: TransactionStatus;
 

@@ -119,7 +119,7 @@ export default function OfficesAdminComponent() {
     return offices.filter((item) => {
       return (
         item.name?.toLowerCase().includes(keyword) ||
-        item.internationalName?.toLowerCase().includes(keyword) ||
+        item.nameEn?.toLowerCase().includes(keyword) ||
         item.shortName?.toLowerCase().includes(keyword)
       );
     });
@@ -222,7 +222,7 @@ export default function OfficesAdminComponent() {
       >
         <TableHeader>
           <TableColumn>{tAdmin("name")}</TableColumn>
-          <TableColumn>{tAdmin("offices.internationalName")}</TableColumn>
+          <TableColumn>{tAdmin("offices.nameEn")}</TableColumn>
           <TableColumn>{tAdmin("offices.shortName")}</TableColumn>
 
           <TableColumn>{tAdmin("actions")}</TableColumn>
@@ -231,7 +231,7 @@ export default function OfficesAdminComponent() {
           {(item) => (
             <TableRow key={item.id}>
               <TableCell>{item.name || "-"}</TableCell>
-              <TableCell>{item.internationalName || "-"}</TableCell>
+              <TableCell>{item.nameEn || "-"}</TableCell>
               <TableCell>{item.shortName || "-"}</TableCell>
 
               <TableCell>
@@ -287,8 +287,8 @@ export default function OfficesAdminComponent() {
                       <strong>{tAdmin("name")}:</strong> {selectedOffice.name}
                     </p>
                     <p>
-                      <strong>{tAdmin("offices.internationalName")}:</strong>{" "}
-                      {selectedOffice.internationalName}
+                      <strong>{tAdmin("offices.nameEn")}:</strong>{" "}
+                      {selectedOffice.nameEn}
                     </p>
                     <p>
                       <strong>{tAdmin("offices.shortName")}:</strong>{" "}

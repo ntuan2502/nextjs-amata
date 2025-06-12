@@ -33,18 +33,18 @@ export default function EditOfficeAdminComponent({ id }: { id: string }) {
 
   const fields = [
     { name: "name", label: tAdmin("name") },
-    { name: "internationalName", label: tAdmin("offices.internationalName") },
+    { name: "nameEn", label: tAdmin("offices.nameEn") },
     { name: "shortName", label: tAdmin("offices.shortName") },
     { name: "taxCode", label: tAdmin("offices.taxCode") },
     { name: "address", label: tAdmin("offices.address") },
   ];
 
   const handleSubmit = async () => {
-    const { name, internationalName, shortName, taxCode, address } = formData;
+    const { name, nameEn, shortName, taxCode, address } = formData;
     try {
       const res = await axiosInstance.patch(`${ENV.API_URL}/offices/${id}`, {
         name,
-        internationalName,
+        nameEn,
         shortName,
         taxCode,
         address,
