@@ -307,9 +307,9 @@ export default function CreateRequestAssetAdminComponent({
         <AutocompleteItem key={TransactionType.TRANSFER}>
           {TransactionType.TRANSFER}
         </AutocompleteItem>
-        <AutocompleteItem key={TransactionType.RETURN}>
+        {/* <AutocompleteItem key={TransactionType.RETURN}>
           {TransactionType.RETURN}
-        </AutocompleteItem>
+        </AutocompleteItem> */}
       </Autocomplete>
 
       <Textarea

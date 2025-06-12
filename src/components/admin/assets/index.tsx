@@ -272,7 +272,7 @@ export default function AssetsAdminComponent() {
   if (isLoading) return <LoadingComponent />;
 
   return (
-    <div className="px-6 mt-4 w-full bg-red-100">
+    <div className="px-6 mt-4 w-full">
       <div className="flex justify-between items-center">
         <Breadcrumbs>
           <BreadcrumbItem href={ADMIN_ROUTES.DASHBOARD}>
@@ -566,10 +566,10 @@ function DataTable({
     >
       <TableHeader>
         <TableColumn>{tAsset("code")}</TableColumn>
-        <TableColumn>{tAsset("deviceType")}</TableColumn>
+        {/* <TableColumn>{tAsset("deviceType")}</TableColumn> */}
         <TableColumn>{tAsset("deviceModel")}</TableColumn>
         <TableColumn>{tAsset("serialNumber")}</TableColumn>
-        <TableColumn>{tAsset("office")}</TableColumn>
+        {/* <TableColumn>{tAsset("office")}</TableColumn> */}
         <TableColumn>{tAsset("user")}</TableColumn>
         <TableColumn>{tAsset("department")}</TableColumn>
         <TableColumn>{tAsset("cpu")}</TableColumn>
@@ -600,12 +600,12 @@ function DataTable({
             }
           >
             <TableCell>{item.internalCode}</TableCell>
-            <TableCell>{item.deviceType?.name || "-"}</TableCell>
+            {/* <TableCell>{item.deviceType?.name || "-"}</TableCell> */}
             <TableCell>{item.deviceModel?.name || "-"}</TableCell>
             <TableCell>{item.serialNumber}</TableCell>
-            <TableCell>
+            {/* <TableCell>
               {item.assetTransactions?.[0]?.user?.office?.shortName || "-"}
-            </TableCell>
+            </TableCell> */}
             <TableCell>
               {item.assetTransactions?.[0]?.user?.name || "-"}
             </TableCell>
